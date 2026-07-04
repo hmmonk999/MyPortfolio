@@ -1,26 +1,15 @@
-<header class="site-header">
-  <div class="container site-header__inner">
-    <a href="index.html" class="brand">Your Name</a>
+<nav class="site-nav" aria-label="Primary">
+  <a href="index.html" class="site-nav__brand" data-nav="index">Your Name</a>
 
-    <nav class="site-nav" aria-label="Primary">
-      <a href="index.html" data-nav="index">Home</a>
-      <a href="projects.html" data-nav="projects">Projects</a>
-      <a href="about.html" data-nav="about">About</a>
-    </nav>
-
-    <button
-      type="button"
-      class="btn btn--secondary btn--sm nav-toggle"
-      aria-expanded="false"
-      aria-controls="mobile-nav"
-    >
-      Menu
-    </button>
-  </div>
-
-  <nav id="mobile-nav" class="mobile-nav container" aria-label="Mobile">
-    <a href="index.html" data-nav="index">Home</a>
-    <a href="projects.html" data-nav="projects">Projects</a>
-    <a href="about.html" data-nav="about">About</a>
-  </nav>
-</header>
+  <ul class="site-nav__list">
+    <li>
+      <a href="index.html" data-nav="index" class="site-nav__link">Home</a>
+    </li>
+    <li>
+      <a href="projects.html" data-nav="projects" class="site-nav__link">Projects</a>
+    </li>
+    <li>
+      <a href="index.html#about-me" data-nav="about" class="site-nav__link">About Me</a>
+    </li>
+  </ul>
+</nav>

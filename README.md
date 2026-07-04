@@ -6,10 +6,10 @@ to be easy to reskin and extend as you add real projects.
 ## How it's organized
 
 ```
-index.html                 Home page
+index.html                 Home page — hero, selected work, and the
+                            "About Me" section (#about-me)
 projects.html               All projects, with tag filtering
 case-study-template.html    Duplicate this per project (see comment inside)
-about.html
 styleguide.html             Every component in one place — your reference,
                              not linked from the public nav
 partials/
@@ -19,17 +19,37 @@ css/
   tokens.css                 Colors, type scale, spacing, radius — change
                               values here to reskin the whole site
   base.css                   Reset + default element styles
-  layout.css                 Header/footer/hero/grid structure
+  layout.css                 Nav (side rail / bottom tab bar), footer, hero,
+                              grid structure
   components.css             Buttons, cards, tags, forms, filter chips —
                               the "component library"
   utilities.css               Small helper classes (text-muted, mt-lg, etc.)
 js/
   include.js                  Loads partials/header.html and footer.html into
                               every page
-  main.js                     Mobile nav toggle, active nav link, project
-                              tag filter
+  main.js                     Active nav link, footer year, project tag filter
 assets/img/                   Images, favicon
 ```
+
+## Navigation
+
+The nav only has three primary items: **Home** (`index.html`), **Projects**
+(`projects.html`), and **About Me** (`index.html#about-me`, a section on the
+home page rather than its own file). It's responsive without a hamburger
+menu:
+
+- **Mobile:** fixed tab bar along the bottom of the screen.
+- **Tablet and desktop (≥700px):** fixed rail along the left side.
+
+Both are the same `.site-nav` markup in `partials/header.html` — the layout
+switch happens entirely in the `@media (min-width: 700px)` block in
+`css/layout.css`. `body` has matching padding (`--tabbar-height` on mobile,
+`--nav-width` on desktop, both defined in `css/tokens.css`) so page content
+never sits underneath the fixed nav. To add another primary nav item, add a
+matching `<li>` in both places; to link to a secondary page instead (like
+`case-study-template.html` or `styleguide.html`), keep it out of the nav and
+link to it from within a page instead, the way project cards link to case
+studies.
 
 ## Editing
 

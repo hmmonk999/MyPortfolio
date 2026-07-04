@@ -61,6 +61,8 @@
   /* ---- Layout ---- */
   --container-width: 1120px;
   --container-padding: var(--space-sm);
+  --nav-width: 220px;
+  --tabbar-height: 64px;
 
   /* ---- Radius & shadow ---- */
   --radius-sm: 4px;

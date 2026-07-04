@@ -2,7 +2,6 @@
    been injected by include.js. */
 document.addEventListener("includes:loaded", () => {
   setActiveNavLink();
-  setupMobileNav();
   setFooterYear();
 });
 
@@ -16,26 +15,6 @@ function setActiveNavLink() {
     if (link.getAttribute("data-nav") === page) {
       link.setAttribute("aria-current", "page");
     }
-  });
-}
-
-function setupMobileNav() {
-  const toggle = document.querySelector(".nav-toggle");
-  const menu = document.getElementById("mobile-nav");
-  if (!toggle || !menu) return;
-
-  toggle.addEventListener("click", () => {
-    const isOpen = menu.classList.toggle("is-open");
-    toggle.setAttribute("aria-expanded", String(isOpen));
-    toggle.textContent = isOpen ? "Close" : "Menu";
-  });
-
-  menu.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => {
-      menu.classList.remove("is-open");
-      toggle.setAttribute("aria-expanded", "false");
-      toggle.textContent = "Menu";
-    });
   });
 }
 
