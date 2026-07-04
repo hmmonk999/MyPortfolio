@@ -1,0 +1,45 @@
+/* Small single-purpose helper classes. Reach for these before writing
+   new one-off CSS in a page. */
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+.text-center {
+  text-align: center;
+}
+.text-accent {
+  color: var(--color-accent);
+}
+
+.mt-0 { margin-top: 0; }
+.mb-0 { margin-bottom: 0; }
+.mt-lg { margin-top: var(--space-lg); }
+.mb-lg { margin-bottom: var(--space-lg); }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space-sm);
+  top: -40px;
+  background: var(--color-accent);
+  color: var(--color-accent-text);
+  padding: var(--space-2xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  z-index: 100;
+  transition: top var(--transition-fast);
+}
+
+.skip-link:focus {
+  top: var(--space-sm);
+}

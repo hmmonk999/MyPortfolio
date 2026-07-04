@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Component Library — Your Name</title>
+  <meta name="description" content="Internal reference: every component and design token used on this site." />
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/utilities.css" />
+</head>
+<body>
+  <!--
+    This page isn't linked from the public nav — it's your own reference.
+    Every component and token in the site should show up here. When you
+    tweak css/tokens.css or css/components.css, reload this page to see
+    the effect on everything at once before checking the real pages.
+  -->
+  <div data-include="partials/header.html"></div>
+
+  <main id="main">
+    <section class="section container">
+      <h1>Component library</h1>
+      <p class="hero__lead mb-lg">Living reference for every reusable style in this project. Not linked from the public site.</p>
+
+      <h2>Color tokens</h2>
+      <div class="grid grid--3up mb-lg">
+        <div class="swatch">
+          <div class="swatch__color" style="background: var(--color-bg); border-bottom: 1px solid var(--color-border);"></div>
+          <div class="swatch__label">--color-bg</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background: var(--color-surface);"></div>
+          <div class="swatch__label">--color-surface</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background: var(--color-text);"></div>
+          <div class="swatch__label">--color-text</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background: var(--color-text-muted);"></div>
+          <div class="swatch__label">--color-text-muted</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background: var(--color-accent);"></div>
+          <div class="swatch__label">--color-accent</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background: var(--color-accent-soft);"></div>
+          <div class="swatch__label">--color-accent-soft</div>
+        </div>
+      </div>
+
+      <h2>Typography</h2>
+      <div class="stack mb-lg">
+        <h1 class="mb-0">Heading 1 / --fs-3xl</h1>
+        <h2 class="mb-0">Heading 2 / --fs-2xl</h2>
+        <h3 class="mb-0">Heading 3 / --fs-xl</h3>
+        <h4 class="mb-0">Heading 4 / --fs-lg</h4>
+        <p class="mb-0">Body text / --fs-base. The quick brown fox jumps over the lazy dog.</p>
+        <p class="text-muted mb-0">Muted text / --color-text-muted, used for secondary copy and captions.</p>
+      </div>
+
+      <h2>Buttons</h2>
+      <div class="cluster mb-lg">
+        <button class="btn btn--primary">Primary</button>
+        <button class="btn btn--secondary">Secondary</button>
+        <button class="btn btn--ghost">Ghost</button>
+        <button class="btn btn--primary btn--sm">Small primary</button>
+      </div>
+
+      <h2>Tags</h2>
+      <div class="cluster mb-lg">
+        <span class="tag">Accent tag</span>
+        <span class="tag tag--neutral">Neutral tag</span>
+      </div>
+
+      <h2>Filter chips</h2>
+      <div class="cluster mb-lg">
+        <button class="filter-chip is-active">Active chip</button>
+        <button class="filter-chip">Inactive chip</button>
+      </div>
+
+      <h2>Card</h2>
+      <div class="grid grid--3up mb-lg">
+        <article class="card card--project">
+          <div class="card__media">
+            <img src="https://placehold.co/640x400?text=Card+Media" alt="" />
+          </div>
+          <div class="card__body">
+            <div class="card__tags">
+              <span class="tag">Tag</span>
+              <span class="tag tag--neutral">Tag</span>
+            </div>
+            <h3 class="card__title"><a href="#">Card title acts as the link</a></h3>
+            <p class="card__excerpt">Short supporting excerpt text goes here, one or two lines.</p>
+          </div>
+        </article>
+      </div>
+
+      <h2>Form fields</h2>
+      <div class="mb-lg" style="max-width: 420px;">
+        <div class="form-field">
+          <label for="sg-input">Text input</label>
+          <input type="text" id="sg-input" placeholder="Placeholder" />
+        </div>
+        <div class="form-field">
+          <label for="sg-textarea">Textarea</label>
+          <textarea id="sg-textarea" placeholder="Placeholder"></textarea>
+        </div>
+      </div>
+
+      <h2>Meta list</h2>
+      <ul class="meta-list mb-lg" style="max-width: 320px;">
+        <li class="meta-list__item">
+          <span class="meta-list__label">Label</span>
+          <span>Value</span>
+        </li>
+        <li class="meta-list__item">
+          <span class="meta-list__label">Label</span>
+          <span>Value</span>
+        </li>
+      </ul>
+
+      <h2>Spacing scale</h2>
+      <div class="stack" style="--gap: var(--space-2xs);">
+        <div style="background: var(--color-accent-soft); width: var(--space-3xs); height: 12px;"></div>
+        <div style="background: var(--color-accent-soft); width: var(--space-2xs); height: 12px;"></div>
+        <div style="background: var(--color-accent-soft); width: var(--space-xs); height: 12px;"></div>
+        <div style="background: var(--color-accent-soft); width: var(--space-sm); height: 12px;"></div>
+        <div style="background: var(--color-accent-soft); width: var(--space-md); height: 12px;"></div>
+        <div style="background: var(--color-accent-soft); width: var(--space-lg); height: 12px;"></div>
+        <div style="background: var(--color-accent-soft); width: var(--space-xl); height: 12px;"></div>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+
+  <script src="js/include.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

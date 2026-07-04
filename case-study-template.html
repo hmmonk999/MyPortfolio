@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Title — Your Name</title>
+  <meta name="description" content="Case study: short one-line summary of the project." />
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/utilities.css" />
+</head>
+<body>
+  <!--
+    HOW TO USE THIS TEMPLATE
+    Duplicate this file per project (e.g. "case-study-fintech-onboarding.html"),
+    then:
+      1. Update <title> and meta description above.
+      2. Replace the hero heading, summary, and tags.
+      3. Replace section content in <main> — keep the same structure/classes.
+      4. Update the sidebar meta list (role, timeline, tools).
+      5. Link to it from projects.html (and index.html if it's featured).
+  -->
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div data-include="partials/header.html"></div>
+
+  <main id="main">
+    <section class="hero container">
+      <div class="cluster mb-lg">
+        <span class="tag">UX Research</span>
+        <span class="tag tag--neutral">Mobile</span>
+      </div>
+      <h1>Redesigning onboarding for a fintech app</h1>
+      <p class="hero__lead">
+        One or two sentences summarizing the problem, your role, and the
+        outcome — this is the version someone skimming your portfolio should
+        remember.
+      </p>
+    </section>
+
+    <section class="container section--tight">
+      <div class="card__media" style="border-radius: var(--radius-lg); aspect-ratio: 16/9;">
+        <img src="https://placehold.co/1200x675?text=Hero+Image" alt="Primary project screenshot" />
+      </div>
+    </section>
+
+    <section class="container section">
+      <div class="detail-layout">
+        <div class="stack" style="--gap: var(--space-xl);">
+          <div>
+            <h2>The problem</h2>
+            <p>
+              Describe the situation before your work: what was broken, what
+              user or business pain existed, and how you learned about it
+              (support tickets, analytics, stakeholder ask, research).
+            </p>
+          </div>
+
+          <div>
+            <h2>My process</h2>
+            <p>
+              Walk through your approach: discovery/research methods,
+              synthesis, ideation, prototyping, and testing. Call out
+              specific decisions and why you made them, not just deliverables.
+            </p>
+            <div class="grid grid--2up mt-lg">
+              <img src="https://placehold.co/600x400?text=Process+Artifact+1" alt="" />
+              <img src="https://placehold.co/600x400?text=Process+Artifact+2" alt="" />
+            </div>
+          </div>
+
+          <div>
+            <h2>The solution</h2>
+            <p>
+              Explain the final design and why it addresses the problem.
+              Include key screens, flows, or interaction details a hiring
+              manager would want to see.
+            </p>
+          </div>
+
+          <div>
+            <h2>Results</h2>
+            <p>
+              Quantify impact where you can (conversion, time-on-task, CSAT,
+              adoption) and note qualitative wins if numbers aren't
+              available. Be honest about tradeoffs or what you'd do
+              differently.
+            </p>
+          </div>
+        </div>
+
+        <aside class="stack" style="--gap: var(--space-lg);">
+          <ul class="meta-list">
+            <li class="meta-list__item">
+              <span class="meta-list__label">Role</span>
+              <span>Senior UX Designer</span>
+            </li>
+            <li class="meta-list__item">
+              <span class="meta-list__label">Timeline</span>
+              <span>8 weeks</span>
+            </li>
+            <li class="meta-list__item">
+              <span class="meta-list__label">Team</span>
+              <span>1 designer, 1 PM, 3 engineers</span>
+            </li>
+            <li class="meta-list__item">
+              <span class="meta-list__label">Tools</span>
+              <span>Figma, Maze, UserTesting</span>
+            </li>
+          </ul>
+
+          <a class="btn btn--secondary" href="projects.html">&larr; Back to projects</a>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+
+  <script src="js/include.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

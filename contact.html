@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Your Name</title>
+  <meta name="description" content="Get in touch with Your Name, Senior UX Designer." />
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/utilities.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div data-include="partials/header.html"></div>
+
+  <main id="main">
+    <section class="section container" style="max-width: 640px;">
+      <h1>Contact</h1>
+      <p class="hero__lead mb-lg">
+        The fastest way to reach me is email. If you'd rather use the form,
+        it goes straight to my inbox too.
+      </p>
+
+      <p>
+        <a class="btn btn--secondary" href="mailto:you@example.com">you@example.com</a>
+      </p>
+
+      <!--
+        GitHub Pages serves static files only — this form has no backend.
+        To make it actually send email, point the form `action` at a free
+        form-endpoint service such as Formspree (formspree.io) or
+        Getform, then remove this comment. Until then, the mailto link
+        above is the working option.
+      -->
+      <form class="mt-lg" action="https://formspree.io/f/your-form-id" method="POST">
+        <div class="form-field">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required />
+        </div>
+        <div class="form-field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+        <div class="form-field">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" required></textarea>
+        </div>
+        <button type="submit" class="btn btn--primary">Send message</button>
+      </form>
+    </section>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+
+  <script src="js/include.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
