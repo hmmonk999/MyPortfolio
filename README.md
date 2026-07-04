@@ -10,7 +10,6 @@ index.html                 Home page
 projects.html               All projects, with tag filtering
 case-study-template.html    Duplicate this per project (see comment inside)
 about.html
-contact.html
 styleguide.html             Every component in one place — your reference,
                              not linked from the public nav
 partials/
@@ -82,11 +81,3 @@ Then open `http://localhost:8000`.
    within a minute or two.
 
 No build step is required — GitHub Pages serves these static files directly.
-
-## Contact form note
-
-`contact.html` includes a form, but GitHub Pages only serves static files —
-there's no server to receive submissions. The mailto link works out of the
-box; to make the form itself send email, point its `action` at a free
-form-backend service like [Formspree](https://formspree.io) and remove the
-HTML comment above the form.
