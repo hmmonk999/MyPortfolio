@@ -39,7 +39,8 @@
 }
 
 @media (min-width: 600px) {
-  .grid--2up {
+  .grid--2up,
+  .grid--3up {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -90,7 +91,7 @@
   color: var(--color-accent);
 }
 
-.nav-toggle {
+button.nav-toggle {
   display: inline-flex;
 }
 
@@ -98,7 +99,7 @@
   .site-nav {
     display: flex;
   }
-  .nav-toggle {
+  button.nav-toggle {
     display: none;
   }
 }

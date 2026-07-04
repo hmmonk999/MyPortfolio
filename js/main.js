@@ -44,8 +44,11 @@ function setFooterYear() {
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 }
 
-/* ---- Project tag filter (only runs on projects.html) ---- */
-document.addEventListener("DOMContentLoaded", () => {
+/* ---- Project tag filter (only runs on projects.html) ----
+   Runs immediately rather than waiting on DOMContentLoaded: this script
+   tag sits at the end of the body, so the DOM is already parsed and
+   that event has already fired by the time this file executes. */
+(() => {
   const filterBar = document.querySelector("[data-filter-bar]");
   const cards = document.querySelectorAll("[data-project-card]");
   if (!filterBar || !cards.length) return;
@@ -66,4 +69,4 @@ document.addEventListener("DOMContentLoaded", () => {
       card.style.display = match ? "" : "none";
     });
   });
-});
+})();
