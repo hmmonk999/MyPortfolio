@@ -62,6 +62,7 @@
   --container-width: 1120px;
   --container-padding: var(--space-sm);
   --nav-width: 220px;
+  --nav-width-collapsed: 76px;
   --tabbar-height: 64px;
 
   /* ---- Radius & shadow ---- */
@@ -85,7 +86,8 @@
   */
 }
 
-/* Optional dark-mode hook, off by default. Add class="theme-dark" to <html> to use. */
+/* Dark mode. Toggled by the theme switcher in the side nav (js/main.js),
+   which adds/removes this class on <html> and persists the choice. */
 .theme-dark {
   --color-bg: #121214;
   --color-surface: #1b1b1f;

@@ -11,6 +11,13 @@
   <link rel="stylesheet" href="css/layout.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/utilities.css" />
+  <script>
+    (function () {
+      var stored = localStorage.getItem("theme");
+      var dark = stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      if (dark) document.documentElement.classList.add("theme-dark");
+    })();
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -19,8 +26,15 @@
 
   <main id="main">
     <section class="section container">
+      <a class="back-link" href="index.html#projects">
+        <svg class="back-link__icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        Back to selected work
+      </a>
+
       <div class="section-heading">
-        <h1 class="section-heading__title">Projects</h1>
+        <h1 class="section-heading__title">All Projects</h1>
       </div>
 
       <div class="filter-bar" data-filter-bar>

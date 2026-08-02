@@ -11,6 +11,13 @@
   <link rel="stylesheet" href="css/layout.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/utilities.css" />
+  <script>
+    (function () {
+      var stored = localStorage.getItem("theme");
+      var dark = stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      if (dark) document.documentElement.classList.add("theme-dark");
+    })();
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -31,7 +38,7 @@
       </div>
     </section>
 
-    <section class="section container">
+    <section id="projects" class="section container">
       <div class="section-heading">
         <h2 class="section-heading__title">Selected work</h2>
         <a class="btn btn--ghost" href="projects.html">See all projects &rarr;</a>
@@ -83,52 +90,29 @@
     </section>
 
     <section id="about-me" class="section container">
+      <div class="section-heading">
+        <h2 class="section-heading__title">About me</h2>
+        <a class="btn btn--ghost" href="about.html">Read my full story &rarr;</a>
+      </div>
+
       <div class="detail-layout">
         <div class="stack" style="--gap: var(--space-lg);">
-          <h2>About me</h2>
           <p>
             I'm Your Name, a senior UX designer with N years of experience
             designing complex B2B and consumer products. I care about
             grounding design decisions in research, and about leaving
             behind systems — not just screens — that teams can build on.
           </p>
-          <p>
-            Replace this with your real bio: your background, the kinds of
-            problems you like solving, and what you're looking for next.
-          </p>
-
-          <h3 class="mt-lg">Experience</h3>
-          <ul class="meta-list">
-            <li class="meta-list__item">
-              <span class="meta-list__label">2022 &ndash; Present</span>
-              <span><strong>Senior UX Designer</strong> &mdash; Company Name</span>
-            </li>
-            <li class="meta-list__item">
-              <span class="meta-list__label">2019 &ndash; 2022</span>
-              <span><strong>UX Designer</strong> &mdash; Company Name</span>
-            </li>
-            <li class="meta-list__item">
-              <span class="meta-list__label">2017 &ndash; 2019</span>
-              <span><strong>Junior Designer</strong> &mdash; Company Name</span>
-            </li>
-          </ul>
+          <div class="cluster">
+            <span class="tag tag--neutral">UX Research</span>
+            <span class="tag tag--neutral">Interaction Design</span>
+            <span class="tag tag--neutral">Design Systems</span>
+          </div>
         </div>
 
         <aside class="stack" style="--gap: var(--space-lg);">
           <div class="card__media" style="border-radius: var(--radius-lg); aspect-ratio: 1;">
             <img src="https://placehold.co/480x480?text=Headshot" alt="Portrait of Your Name" />
-          </div>
-
-          <div>
-            <h3>Skills</h3>
-            <div class="cluster">
-              <span class="tag tag--neutral">UX Research</span>
-              <span class="tag tag--neutral">Interaction Design</span>
-              <span class="tag tag--neutral">Design Systems</span>
-              <span class="tag tag--neutral">Prototyping</span>
-              <span class="tag tag--neutral">Usability Testing</span>
-              <span class="tag tag--neutral">Figma</span>
-            </div>
           </div>
         </aside>
       </div>

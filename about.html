@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Me — Your Name</title>
+  <meta name="description" content="About Your Name, Senior UX Designer — background, experience, and skills." />
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/utilities.css" />
+  <script>
+    (function () {
+      var stored = localStorage.getItem("theme");
+      var dark = stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      if (dark) document.documentElement.classList.add("theme-dark");
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div data-include="partials/header.html"></div>
+
+  <main id="main">
+    <section class="section container">
+      <a class="back-link" href="index.html#about-me">
+        <svg class="back-link__icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        Back to about me
+      </a>
+
+      <div class="section-heading">
+        <h1 class="section-heading__title">About me</h1>
+      </div>
+
+      <div class="detail-layout">
+        <div class="stack" style="--gap: var(--space-lg);">
+          <p>
+            I'm Your Name, a senior UX designer with N years of experience
+            designing complex B2B and consumer products. I care about
+            grounding design decisions in research, and about leaving
+            behind systems — not just screens — that teams can build on.
+          </p>
+          <p>
+            Replace this with your real bio: your background, the kinds of
+            problems you like solving, and what you're looking for next.
+          </p>
+
+          <h2 class="mt-lg">Experience</h2>
+          <ol class="timeline">
+            <li class="timeline__company">
+              <div class="timeline__company-header">
+                <span class="timeline__company-range">2017 &ndash; Present</span>
+                <h3 class="timeline__company-name">Company Name</h3>
+              </div>
+              <ol class="timeline__roles">
+                <li class="timeline__role">
+                  <span class="timeline__dot" aria-hidden="true"></span>
+                  <div class="timeline__role-body">
+                    <span class="timeline__role-title">Senior UX Designer</span>
+                    <span class="timeline__role-range">4 yrs</span>
+                  </div>
+                </li>
+                <li class="timeline__role">
+                  <span class="timeline__dot" aria-hidden="true"></span>
+                  <div class="timeline__role-body">
+                    <span class="timeline__role-title">UX Designer</span>
+                    <span class="timeline__role-range">3 yrs</span>
+                  </div>
+                </li>
+                <li class="timeline__role">
+                  <span class="timeline__dot" aria-hidden="true"></span>
+                  <div class="timeline__role-body">
+                    <span class="timeline__role-title">Junior Designer</span>
+                    <span class="timeline__role-range">2 yrs</span>
+                  </div>
+                </li>
+              </ol>
+            </li>
+
+            <li class="timeline__company">
+              <div class="timeline__company-header">
+                <span class="timeline__company-range">2015 &ndash; 2017</span>
+                <h3 class="timeline__company-name">Previous Company</h3>
+              </div>
+              <ol class="timeline__roles">
+                <li class="timeline__role">
+                  <span class="timeline__dot" aria-hidden="true"></span>
+                  <div class="timeline__role-body">
+                    <span class="timeline__role-title">Design Intern</span>
+                    <span class="timeline__role-range">2 yrs</span>
+                  </div>
+                </li>
+              </ol>
+            </li>
+          </ol>
+        </div>
+
+        <aside class="stack" style="--gap: var(--space-lg);">
+          <div class="card__media" style="border-radius: var(--radius-lg); aspect-ratio: 1;">
+            <img src="https://placehold.co/480x480?text=Headshot" alt="Portrait of Your Name" />
+          </div>
+
+          <div>
+            <h2>Skills</h2>
+            <div class="cluster">
+              <span class="tag tag--neutral">UX Research</span>
+              <span class="tag tag--neutral">Interaction Design</span>
+              <span class="tag tag--neutral">Design Systems</span>
+              <span class="tag tag--neutral">Prototyping</span>
+              <span class="tag tag--neutral">Usability Testing</span>
+              <span class="tag tag--neutral">Figma</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="testimonial">
+        <div class="testimonial__avatars" role="tablist" aria-label="Testimonials">
+          <button type="button" class="testimonial__avatar is-active" role="tab" aria-selected="true" id="testimonial-tab-0" aria-controls="testimonial-panel-0" data-testimonial-tab="0" style="--avatar-color: #ef6a1e;">
+            <span class="testimonial__avatar-inner">
+              <span class="testimonial__avatar-media"></span>
+              <span class="testimonial__badge">Boss</span>
+            </span>
+          </button>
+          <button type="button" class="testimonial__avatar" role="tab" aria-selected="false" id="testimonial-tab-1" aria-controls="testimonial-panel-1" data-testimonial-tab="1" style="--avatar-color: #f6b58c;">
+            <span class="testimonial__avatar-inner">
+              <span class="testimonial__avatar-media"></span>
+              <span class="testimonial__badge">Dev</span>
+            </span>
+          </button>
+          <button type="button" class="testimonial__avatar" role="tab" aria-selected="false" id="testimonial-tab-2" aria-controls="testimonial-panel-2" data-testimonial-tab="2" style="--avatar-color: #6f93a1;">
+            <span class="testimonial__avatar-inner">
+              <span class="testimonial__avatar-media"></span>
+              <span class="testimonial__badge">Boss</span>
+            </span>
+          </button>
+          <button type="button" class="testimonial__avatar" role="tab" aria-selected="false" id="testimonial-tab-3" aria-controls="testimonial-panel-3" data-testimonial-tab="3" style="--avatar-color: #b9c7ee;">
+            <span class="testimonial__avatar-inner">
+              <span class="testimonial__avatar-media"></span>
+              <span class="testimonial__badge">Client</span>
+            </span>
+          </button>
+          <button type="button" class="testimonial__avatar" role="tab" aria-selected="false" id="testimonial-tab-4" aria-controls="testimonial-panel-4" data-testimonial-tab="4" style="--avatar-color: #6d9a9a;">
+            <span class="testimonial__avatar-inner">
+              <span class="testimonial__avatar-media"></span>
+              <span class="testimonial__badge">Boss</span>
+            </span>
+          </button>
+        </div>
+
+        <div class="testimonial__rail" aria-hidden="true">
+          <button type="button" class="testimonial__rail-segment is-active" tabindex="-1" data-testimonial-segment="0" style="--avatar-color: #ef6a1e;"></button>
+          <button type="button" class="testimonial__rail-segment" tabindex="-1" data-testimonial-segment="1" style="--avatar-color: #f6b58c;"></button>
+          <button type="button" class="testimonial__rail-segment" tabindex="-1" data-testimonial-segment="2" style="--avatar-color: #6f93a1;"></button>
+          <button type="button" class="testimonial__rail-segment" tabindex="-1" data-testimonial-segment="3" style="--avatar-color: #b9c7ee;"></button>
+          <button type="button" class="testimonial__rail-segment" tabindex="-1" data-testimonial-segment="4" style="--avatar-color: #6d9a9a;"></button>
+        </div>
+
+        <div class="testimonial__content">
+          <h2 class="testimonial__heading">What others say about me</h2>
+          <div class="testimonial__panels">
+            <div class="testimonial__panel" id="testimonial-panel-0" role="tabpanel" aria-labelledby="testimonial-tab-0" data-testimonial-panel="0">
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Suspendisse porta felis risus, non placerat lacus rutrum
+                congue. Vivamus porttitor odio mi, sed convallis enim cursus
+                non. Nulla sed arcu velit. Aenean cursus eu velit ac laoreet.
+              </p>
+              <p>
+                Phasellus in massa vitae urna dignissim dictum. Nam rutrum
+                vestibulum augue, vel varius leo mattis non. Morbi vitae
+                nunc porttitor nunc fermentum feugiat lobortis in tortor.
+              </p>
+              <p class="testimonial__attribution"><strong>Alex Rivera</strong>, Engineering Manager</p>
+            </div>
+            <div class="testimonial__panel" id="testimonial-panel-1" role="tabpanel" aria-labelledby="testimonial-tab-1" data-testimonial-panel="1" hidden>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Suspendisse porta felis risus, non placerat lacus rutrum
+                congue. Vivamus porttitor odio mi, sed convallis enim cursus
+                non. Nulla sed arcu velit. Aenean cursus eu velit ac laoreet.
+              </p>
+              <p>
+                Phasellus in massa vitae urna dignissim dictum. Nam rutrum
+                vestibulum augue, vel varius leo mattis non. Morbi vitae
+                nunc porttitor nunc fermentum feugiat lobortis in tortor.
+              </p>
+              <p class="testimonial__attribution"><strong>Jordan Lee</strong>, Senior Developer</p>
+            </div>
+            <div class="testimonial__panel" id="testimonial-panel-2" role="tabpanel" aria-labelledby="testimonial-tab-2" data-testimonial-panel="2" hidden>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Suspendisse porta felis risus, non placerat lacus rutrum
+                congue. Vivamus porttitor odio mi, sed convallis enim cursus
+                non. Nulla sed arcu velit. Aenean cursus eu velit ac laoreet.
+              </p>
+              <p>
+                Phasellus in massa vitae urna dignissim dictum. Nam rutrum
+                vestibulum augue, vel varius leo mattis non. Morbi vitae
+                nunc porttitor nunc fermentum feugiat lobortis in tortor.
+              </p>
+              <p class="testimonial__attribution"><strong>Sam Okafor</strong>, Director of Product</p>
+            </div>
+            <div class="testimonial__panel" id="testimonial-panel-3" role="tabpanel" aria-labelledby="testimonial-tab-3" data-testimonial-panel="3" hidden>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Suspendisse porta felis risus, non placerat lacus rutrum
+                congue. Vivamus porttitor odio mi, sed convallis enim cursus
+                non. Nulla sed arcu velit. Aenean cursus eu velit ac laoreet.
+              </p>
+              <p>
+                Phasellus in massa vitae urna dignissim dictum. Nam rutrum
+                vestibulum augue, vel varius leo mattis non. Morbi vitae
+                nunc porttitor nunc fermentum feugiat lobortis in tortor.
+              </p>
+              <p class="testimonial__attribution"><strong>Priya Nandan</strong>, VP of Operations, Client Co.</p>
+            </div>
+            <div class="testimonial__panel" id="testimonial-panel-4" role="tabpanel" aria-labelledby="testimonial-tab-4" data-testimonial-panel="4" hidden>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Suspendisse porta felis risus, non placerat lacus rutrum
+                congue. Vivamus porttitor odio mi, sed convallis enim cursus
+                non. Nulla sed arcu velit. Aenean cursus eu velit ac laoreet.
+              </p>
+              <p>
+                Phasellus in massa vitae urna dignissim dictum. Nam rutrum
+                vestibulum augue, vel varius leo mattis non. Morbi vitae
+                nunc porttitor nunc fermentum feugiat lobortis in tortor.
+              </p>
+              <p class="testimonial__attribution"><strong>Morgan Blake</strong>, VP of Design</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+
+  <script src="js/include.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

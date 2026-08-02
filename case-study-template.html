@@ -11,6 +11,13 @@
   <link rel="stylesheet" href="css/layout.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/utilities.css" />
+  <script>
+    (function () {
+      var stored = localStorage.getItem("theme");
+      var dark = stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      if (dark) document.documentElement.classList.add("theme-dark");
+    })();
+  </script>
 </head>
 <body>
   <!--
@@ -29,6 +36,16 @@
 
   <main id="main">
     <section class="hero container">
+      <!-- href/label here are the fallback for a direct visit; if the
+           visitor arrived from the home page instead, js/main.js
+           repoints this at the Selected work section. -->
+      <a class="back-link" href="projects.html" data-back-link>
+        <svg class="back-link__icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        <span data-back-link-label>Back to all projects</span>
+      </a>
+
       <div class="cluster mb-lg">
         <span class="tag">UX Research</span>
         <span class="tag tag--neutral">Mobile</span>
@@ -111,9 +128,65 @@
               <span>Figma, Maze, UserTesting</span>
             </li>
           </ul>
-
-          <a class="btn btn--secondary" href="projects.html">&larr; Back to projects</a>
         </aside>
+      </div>
+    </section>
+
+    <section class="container section--tight">
+      <h2>How I would improve this</h2>
+      <p>
+        Reflect honestly on the work: what you'd revisit with more time or
+        data, tradeoffs you'd reconsider, or follow-up research you'd
+        prioritize next.
+      </p>
+    </section>
+
+    <section class="container section">
+      <div class="section-heading">
+        <h2 class="section-heading__title">Other projects</h2>
+      </div>
+      <div class="grid grid--3up">
+        <article class="card card--project">
+          <div class="card__media">
+            <img src="https://placehold.co/640x400?text=Project+Two" alt="" />
+          </div>
+          <div class="card__body">
+            <div class="card__tags">
+              <span class="tag">Interaction Design</span>
+              <span class="tag tag--neutral">Web App</span>
+            </div>
+            <h3 class="card__title"><a href="case-study-template.html">Simplifying a B2B checkout flow</a></h3>
+            <p class="card__excerpt">Reduced checkout abandonment by streamlining a 7-step flow into 3.</p>
+          </div>
+        </article>
+
+        <article class="card card--project">
+          <div class="card__media">
+            <img src="https://placehold.co/640x400?text=Project+Three" alt="" />
+          </div>
+          <div class="card__body">
+            <div class="card__tags">
+              <span class="tag">Design Systems</span>
+              <span class="tag tag--neutral">Web App</span>
+            </div>
+            <h3 class="card__title"><a href="case-study-template.html">Building a shared design system</a></h3>
+            <p class="card__excerpt">Unified 4 product teams around one component library, cutting design debt.</p>
+          </div>
+        </article>
+
+        <article class="card card--project">
+          <div class="card__media">
+            <img src="https://placehold.co/640x400?text=Project+Four" alt="" />
+          </div>
+          <div class="card__body">
+            <div class="card__tags">
+              <span class="tag">UX Research</span>
+              <span class="tag tag--neutral">Web App</span>
+            </div>
+            <h3 class="card__title"><a href="case-study-template.html">Improving dashboard information architecture</a></h3>
+            <p class="card__excerpt">Reorganized a data-dense dashboard around 3 core user jobs-to-be-done.</p>
+          </div>
+        </article>
       </div>
     </section>
   </main>

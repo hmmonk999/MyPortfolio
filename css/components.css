@@ -63,6 +63,38 @@
   padding: 0.45em 0.9em;
 }
 
+/* ---------- Back link ----------
+   "Up one level" affordance that sits above a page's title. Kept
+   visually quieter than .btn on purpose: it's wayfinding chrome, not a
+   call to action competing with the page's own content. */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  margin-bottom: var(--space-md);
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.back-link:hover {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.back-link__icon {
+  flex: none;
+  transition: transform var(--transition-fast);
+}
+
+/* Nudges the arrow in the direction it points on hover, reinforcing
+   that this goes back rather than forward. */
+.back-link:hover .back-link__icon {
+  transform: translateX(-3px);
+}
+
 /* ---------- Tags / badges ---------- */
 .tag {
   display: inline-flex;
@@ -221,6 +253,92 @@
   color: var(--color-text-muted);
 }
 
+/* ---------- Experience timeline (About me) ---------- */
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.timeline__company {
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.timeline__company:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.timeline__company-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.timeline__company-name {
+  margin: 0;
+  font-size: var(--fs-base);
+}
+
+.timeline__company-range {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.timeline__roles {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.timeline__role {
+  position: relative;
+  display: flex;
+  gap: var(--space-sm);
+  padding: 0 0 var(--space-sm) var(--space-md);
+  border-left: 2px solid var(--color-border);
+  margin-left: var(--space-2xs);
+}
+
+.timeline__role:last-child {
+  padding-bottom: 0;
+  border-left-color: transparent;
+}
+
+.timeline__dot {
+  position: absolute;
+  left: -7px;
+  top: 0.2em;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  border: 2px solid var(--color-bg);
+}
+
+.timeline__role-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+
+.timeline__role-title {
+  font-weight: 600;
+}
+
+.timeline__role-range {
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+}
+
 /* ---------- Filter bar (Projects page) ---------- */
 .filter-bar {
   display: flex;
@@ -247,6 +365,261 @@
   background: var(--color-accent);
   border-color: var(--color-accent);
   color: var(--color-accent-text);
+}
+
+/* ---------- Theme toggle (light/dark, lives in the side nav) ----------
+   Expanded: a two-option segmented control that stretches to fill the
+   width of the bottom section, with both options sharing that width
+   equally. Collapsed-rail overrides that reduce it to a single
+   active-mode icon live in layout.css next to the rest of the
+   .nav-collapsed rules. */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  padding: var(--space-3xs);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.theme-toggle__option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3xs);
+  flex: 1;
+  padding: var(--space-3xs) var(--space-2xs);
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast),
+    box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.theme-toggle__option:hover {
+  color: var(--color-text);
+}
+
+.theme-toggle__option:active {
+  transform: scale(0.94);
+}
+
+.theme-toggle__option[aria-pressed="true"] {
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+}
+
+.theme-toggle__icon {
+  flex: none;
+  transition: transform var(--transition-base);
+}
+
+.theme-toggle__option[aria-pressed="true"] .theme-toggle__icon {
+  transform: rotate(-10deg) scale(1.08);
+}
+
+/* ---------- Testimonial / quote switcher (About Me section) ----------
+   Mobile: avatars in a row, rail horizontal, quote below.
+   Tablet/desktop (>=700px): avatars in a column, rail vertical, quote
+   to the right. Avatars and rail segments both use flex: 1 on matching
+   item counts, so the Nth segment roughly lines up with the Nth avatar
+   in either direction — including when the row stretches taller/wider
+   than the avatars' natural size. The rail segments have no gap between
+   them (unlike the avatars) so the line reads as one continuous track;
+   the active segment is just rendered thicker than its neighbors. */
+.testimonial {
+  --testimonial-avatar: 56px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.testimonial__avatars,
+.testimonial__rail {
+  display: flex;
+  flex-direction: row;
+}
+
+.testimonial__avatars {
+  gap: var(--space-sm);
+}
+
+/* Segments sit flush against each other (no gap) so the rail reads as
+   one continuous line rather than a row of dashes; align-items: center
+   keeps them centered on the cross axis so the thicker active segment
+   doesn't resize the whole track. */
+.testimonial__rail {
+  align-items: center;
+}
+
+.testimonial__avatar {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.testimonial__avatar-inner {
+  position: relative;
+  width: var(--testimonial-avatar);
+  flex: none;
+}
+
+.testimonial__avatar-media {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  /* Squircle: rounder than a card, short of a full circle. */
+  border-radius: 32%;
+  background: var(--avatar-color);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.testimonial__avatar:hover .testimonial__avatar-media {
+  transform: scale(1.05);
+}
+
+.testimonial__avatar.is-active .testimonial__avatar-media {
+  box-shadow: 0 0 0 3px var(--color-bg), 0 0 0 5px var(--avatar-color);
+}
+
+.testimonial__badge {
+  position: absolute;
+  bottom: -0.4em;
+  right: -0.6em;
+  background: rgba(26, 26, 30, 0.85);
+  color: #fff;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  padding: 0.25em 0.7em;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.testimonial__rail-segment {
+  position: relative;
+  flex: 1;
+  height: 3px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: var(--color-border);
+  cursor: pointer;
+  transition: background var(--transition-fast), opacity var(--transition-fast),
+    height var(--transition-fast), width var(--transition-fast);
+}
+
+/* Expands the clickable/hoverable area into the gap between the
+   avatars and the rail (the visible line stays thin; only the hit
+   target grows) so the sliver of a line is easier to hit precisely. */
+.testimonial__rail-segment::before {
+  content: "";
+  position: absolute;
+  top: calc(-1 * var(--space-md));
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.testimonial__rail-segment:first-child {
+  border-top-left-radius: var(--radius-full);
+  border-bottom-left-radius: var(--radius-full);
+}
+
+.testimonial__rail-segment:last-child {
+  border-top-right-radius: var(--radius-full);
+  border-bottom-right-radius: var(--radius-full);
+}
+
+/* Dimmed preview of a segment's own color on hover; excluded from the
+   active segment since that already shows its color at full strength. */
+.testimonial__rail-segment:not(.is-active):hover {
+  background: var(--avatar-color);
+  opacity: 0.4;
+}
+
+.testimonial__rail-segment.is-active {
+  height: 5px;
+  background: var(--avatar-color);
+}
+
+.testimonial__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.testimonial__heading {
+  margin: 0;
+}
+
+.testimonial__panel[hidden] {
+  display: none;
+}
+
+.testimonial__panel p:not(.testimonial__attribution) {
+  color: var(--color-text-muted);
+}
+
+.testimonial__attribution {
+  margin-top: var(--space-sm);
+}
+
+@media (min-width: 700px) {
+  .testimonial {
+    --testimonial-avatar: 88px;
+    flex-direction: row;
+    align-items: stretch;
+    gap: var(--space-lg);
+  }
+
+  .testimonial__avatars,
+  .testimonial__rail {
+    flex-direction: column;
+  }
+
+  .testimonial__avatars {
+    gap: var(--space-lg);
+  }
+
+  .testimonial__rail-segment {
+    width: 3px;
+    height: auto;
+  }
+
+  .testimonial__rail-segment::before {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: calc(-1 * var(--space-lg));
+  }
+
+  .testimonial__rail-segment:first-child {
+    border-radius: var(--radius-full) var(--radius-full) 0 0;
+  }
+
+  .testimonial__rail-segment:last-child {
+    border-radius: 0 0 var(--radius-full) var(--radius-full);
+  }
+
+  .testimonial__rail-segment.is-active {
+    width: 5px;
+    height: auto;
+  }
+
+  .testimonial__content {
+    flex: 1;
+  }
 }
 
 /* ---------- Swatch (used only on the styleguide page) ---------- */

@@ -73,7 +73,21 @@
   padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
+/* Collapse toggle and bottom section (theme switcher, etc.) are part of
+   the side rail only — hidden in the mobile bottom tab bar. */
+.site-nav__toggle,
+.site-nav__bottom {
+  display: none;
+}
+
+/* Mobile: brand shows as an icon-only mark at the left of the tab bar. */
 .site-nav__brand {
+  display: flex;
+  align-items: center;
+  padding-inline: var(--space-sm);
+}
+
+.site-nav__brand-name {
   display: none;
 }
 
@@ -95,6 +109,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: var(--space-3xs);
+  border-radius: var(--radius-md);
   color: var(--color-text-muted);
   font-size: var(--fs-xs);
   font-weight: var(--fw-medium);
@@ -102,6 +118,7 @@
 
 .site-nav__link[aria-current="page"] {
   color: var(--color-accent);
+  background: var(--color-accent-soft);
 }
 
 @media (min-width: 700px) {
@@ -113,17 +130,73 @@
     height: 100vh;
     flex-direction: column;
     align-items: stretch;
-    gap: var(--space-xl);
+    gap: var(--space-md);
     border-top: none;
     border-right: 1px solid var(--color-border);
     padding: var(--space-lg) var(--space-md);
+    transition: width var(--transition-base);
   }
 
   .site-nav__brand {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2xs);
     font-weight: var(--fw-semibold);
     font-size: var(--fs-md);
     color: var(--color-text);
+  }
+
+  .site-nav__brand-icon {
+    display: inline-flex;
+    color: var(--color-accent);
+    flex: none;
+  }
+
+  .site-nav__brand-name {
+    display: inline;
+    white-space: nowrap;
+  }
+
+  /* Bottom section of the side rail. More controls may join the theme
+     toggle here later; margin-top: auto pins the whole group to the
+     bottom of the rail regardless of how many nav links are above it. */
+  .site-nav__bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2xs);
+    margin-top: auto;
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-border);
+  }
+
+  /* Collapse toggle: sits at the top-right of the rail */
+  .site-nav__toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: var(--space-md);
+    right: calc(-1 * var(--space-sm));
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+  }
+
+  .site-nav__toggle:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .site-nav__toggle-icon {
+    transition: transform var(--transition-base);
   }
 
   .site-nav__list {
@@ -137,6 +210,7 @@
 
   .site-nav__link {
     justify-content: flex-start;
+    margin: 0;
     padding: var(--space-2xs) var(--space-sm);
     border-radius: var(--radius-md);
     font-size: var(--fs-base);
@@ -144,6 +218,144 @@
 
   .site-nav__link[aria-current="page"] {
     background: var(--color-accent-soft);
+  }
+
+  .site-nav__link-label {
+    display: inline-block;
+    white-space: nowrap;
+    transition: opacity 140ms ease;
+  }
+
+  /* The label's rotation and its layout box (width, display) change
+     in the very same instant the rail collapses/expands — animating
+     that resize directly just looks like the text snapping mid-turn.
+     js/main.js briefly adds this class to fade the labels out, swaps
+     the collapsed state while they're invisible, then fades them back
+     in, so the turn happens off-screen and reads as a soft crossfade
+     instead of a jarring flip. */
+  .site-nav__list.is-toggling-nav .site-nav__link-label {
+    opacity: 0;
+  }
+
+  /* ---- Collapsed side rail ---- */
+  .nav-collapsed .site-nav {
+    width: var(--nav-width-collapsed);
+    align-items: center;
+  }
+
+  /* Icon-only brand when collapsed */
+  .nav-collapsed .site-nav__brand-name {
+    display: none;
+  }
+
+  .nav-collapsed .site-nav__brand {
+    padding-inline: 0;
+  }
+
+  .nav-collapsed .site-nav__toggle-icon {
+    transform: rotate(180deg);
+  }
+
+  /* padding-inline is zeroed here: the desktop padding above is sized
+     for the expanded icon+text row and is far too wide for this
+     narrow collapsed column, which was forcing the link box (and its
+     background) wider than the rail and out of step with the
+     centered label. Dropping it lets the link's box match the rail's
+     content width exactly. */
+  .nav-collapsed .site-nav__link {
+    position: relative;
+    justify-content: center;
+    padding-block: var(--space-md);
+    padding-inline: 0;
+  }
+
+  /* Turn the labels on their side for the collapsed rail.
+     writing-mode does this rather than transform: rotate(-90deg),
+     because a transform is painted after layout — the box keeps its
+     original horizontal dimensions, so the browser has no idea the
+     text now runs vertically. That mismatch caused a chain of
+     problems: boxes sized by (horizontal) text length made longer
+     labels wider than shorter ones, and once the width was pinned to
+     work around that, long labels overflowed their too-short box and
+     nearly collided with the next item.
+     writing-mode is a real layout mode, so the box genuinely becomes
+     tall-and-narrow: its width is one line-height (identical for
+     every item, whatever the wording) and its height tracks the
+     actual text length. Padding, the list's gap, and the active
+     highlight then all size themselves correctly with no hand-tuned
+     values to drift out of sync when labels are renamed.
+     vertical-rl alone would read top-to-bottom; the 180° turn flips
+     it to bottom-to-top, matching the original rotate(-90deg). */
+  .nav-collapsed .site-nav__link-label {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+  }
+
+  /* Active highlight for the collapsed rail is a separate layer
+     rather than the link's own background, so it can spill past the
+     rail's right edge onto the page content (the effect this had
+     before the link box above was tightened to match the rail width)
+     without dragging the centered label along with it. */
+  .nav-collapsed .site-nav__link[aria-current="page"] {
+    background: none;
+  }
+
+  .nav-collapsed .site-nav__link[aria-current="page"]::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    right: calc(-1 * var(--space-md) - 10px);
+    background: var(--color-accent-soft);
+    border-radius: var(--radius-md);
+  }
+
+  /* Collapsed theme toggle: only the active mode's icon shows, centered
+     under the collapsed rail. Clicking it flips to the other mode
+     (handled in js/main.js). */
+  .nav-collapsed .site-nav__bottom {
+    align-items: center;
+  }
+
+  .nav-collapsed .theme-toggle {
+    padding: 0;
+    background: transparent;
+    border-color: transparent;
+  }
+
+  .nav-collapsed .theme-toggle__option[aria-pressed="false"] {
+    display: none;
+  }
+
+  /* Morphs from a segmented pill into a single circular icon button as
+     the rail collapses; width/height/padding pick up the transition
+     already declared on .theme-toggle__option in components.css. */
+  .nav-collapsed .theme-toggle__option[aria-pressed="true"] {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    box-shadow: none;
+    animation: theme-toggle-pop-in var(--transition-base);
+  }
+
+  .nav-collapsed .theme-toggle__label {
+    display: none;
+  }
+}
+
+/* Plays whenever the collapsed toggle's single visible icon appears —
+   either from expanding/collapsing the rail or switching modes, since
+   the element goes from display: none to visible each time. */
+@keyframes theme-toggle-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -156,6 +368,11 @@ body {
   body {
     padding-bottom: 0;
     padding-left: var(--nav-width);
+    transition: padding-left var(--transition-base);
+  }
+
+  .nav-collapsed body {
+    padding-left: var(--nav-width-collapsed);
   }
 }
 

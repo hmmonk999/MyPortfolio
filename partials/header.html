@@ -1,15 +1,48 @@
 <nav class="site-nav" aria-label="Primary">
-  <a href="index.html" class="site-nav__brand">Your Name</a>
+  <a href="index.html" class="site-nav__brand">
+    <span class="site-nav__brand-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" focusable="false">
+        <rect width="24" height="24" rx="7" fill="currentColor" />
+        <path d="M12 6l1.8 4.2L18 12l-4.2 1.8L12 18l-1.8-4.2L6 12l4.2-1.8z" fill="var(--color-bg)" />
+      </svg>
+    </span>
+    <span class="site-nav__brand-name">Your Name</span>
+  </a>
+
+  <button type="button" class="site-nav__toggle" aria-expanded="true" aria-label="Collapse navigation">
+    <svg class="site-nav__toggle-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
+      <path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </button>
 
   <ul class="site-nav__list">
     <li>
-      <a href="index.html" data-nav="index" class="site-nav__link">Home</a>
+      <a href="projects.html" data-nav="projects" class="site-nav__link">
+        <span class="site-nav__link-label">All Projects</span>
+      </a>
     </li>
     <li>
-      <a href="projects.html" data-nav="projects" class="site-nav__link">Projects</a>
-    </li>
-    <li>
-      <a href="index.html#about-me" data-nav="about" class="site-nav__link">About Me</a>
+      <a href="about.html" data-nav="about" class="site-nav__link">
+        <span class="site-nav__link-label">All About Me</span>
+      </a>
     </li>
   </ul>
+
+  <div class="site-nav__bottom">
+    <div class="theme-toggle" data-theme-toggle role="group" aria-label="Color theme">
+      <button type="button" class="theme-toggle__option" data-theme-option="light" aria-pressed="true" aria-label="Light mode">
+        <svg class="theme-toggle__icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 3v2M12 19v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M3 12h2M19 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+        </svg>
+        <span class="theme-toggle__label">Light</span>
+      </button>
+      <button type="button" class="theme-toggle__option" data-theme-option="dark" aria-pressed="false" aria-label="Dark mode">
+        <svg class="theme-toggle__icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" />
+        </svg>
+        <span class="theme-toggle__label">Dark</span>
+      </button>
+    </div>
+  </div>
 </nav>
