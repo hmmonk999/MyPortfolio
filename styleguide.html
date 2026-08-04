@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Component Library — Your Name</title>
+  <title>Component Library — Hannah Monk</title>
   <meta name="description" content="Internal reference: every component and design token used on this site." />
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400..700&display=swap" />
   <link rel="stylesheet" href="css/tokens.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/layout.css" />
@@ -16,6 +19,17 @@
       var stored = localStorage.getItem("theme");
       var dark = stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
       if (dark) document.documentElement.classList.add("theme-dark");
+
+      // Same reasoning as the theme above. setupNavToggle() in main.js
+      // can't run until the header partial has been fetched, and by
+      // then the expanded rail has already painted — so applying the
+      // collapsed state there animates the rail shut on every load.
+      // Setting the class here means it is never expanded to begin
+      // with. Case studies always start collapsed (see setupNavToggle).
+      var page = document.location.pathname.split("/").pop();
+      if (page.indexOf("case-study") === 0 || localStorage.getItem("nav-collapsed") === "true") {
+        document.documentElement.classList.add("nav-collapsed");
+      }
     })();
   </script>
 </head>
@@ -131,6 +145,24 @@
           <span>Value</span>
         </li>
       </ul>
+
+      <h2>Fact grid</h2>
+      <dl class="fact-grid mb-lg">
+        <div class="fact">
+          <dt class="fact__label">Label</dt>
+          <dd class="fact__value">
+            A sentence or two of supporting detail — a goal, a timeline,
+            who was on the team.
+          </dd>
+        </div>
+        <div class="fact">
+          <dt class="fact__label">Label</dt>
+          <dd class="fact__value">
+            Columns are set by the available width, so this drops to one
+            column in a narrow container.
+          </dd>
+        </div>
+      </dl>
 
       <h2>Spacing scale</h2>
       <div class="stack" style="--gap: var(--space-2xs);">

@@ -183,6 +183,86 @@
   transform: translateY(-2px);
 }
 
+/* ---------- Featured card ----------
+   A uniform grid of identically-sized cards says every project is
+   equally important, which is never true. This is the one card that
+   gets to be bigger: full width, media beside the copy instead of above
+   it, and a larger title. Everything else stays in the grid below.
+   Apply it to your strongest case study only — the hierarchy stops
+   meaning anything the moment there are two. */
+.card--feature .card__body {
+  gap: var(--space-xs);
+  padding: var(--space-lg);
+  justify-content: center;
+}
+
+.card--feature .card__title {
+  font-size: var(--fs-2xl);
+}
+
+.card--feature .card__excerpt {
+  font-size: var(--fs-md);
+  max-width: 48ch;
+}
+
+.card--feature .card__media {
+  aspect-ratio: 16 / 10;
+}
+
+/* Small caps label marking this out as the lead item. */
+.card__flag {
+  margin: 0;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-accent);
+}
+
+/* Explicit "this is a link" affordance. The whole card is already
+   clickable via .card__title a::after, but at this size that isn't
+   self-evident the way it is on a small card. */
+.card__cue {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  margin-top: var(--space-2xs);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--color-accent);
+}
+
+.card__cue::after {
+  content: "\2192";
+  transition: transform var(--transition-fast);
+}
+
+.card--project:hover .card__cue::after {
+  transform: translateX(4px);
+}
+
+@media (min-width: 900px) {
+  .card--feature {
+    display: grid;
+    /* Media takes the larger share — it's the part that actually sells
+       the work; the copy only needs enough room not to feel cramped. */
+    grid-template-columns: 1.15fr 1fr;
+    align-items: stretch;
+  }
+
+  /* aspect-ratio would fight the grid row height here, so the media
+     just fills whichever column height the copy settles on. */
+  .card--feature .card__media {
+    aspect-ratio: auto;
+    height: 100%;
+    min-height: 22rem;
+  }
+
+  .card--feature .card__body {
+    padding: var(--space-xl);
+  }
+}
+
 /* ---------- Section heading ---------- */
 .section-heading {
   display: flex;
@@ -250,6 +330,65 @@
   font-size: var(--fs-xs);
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Fact grid (case-study hero) ----------
+   The at-a-glance framing of a project — goals, timeline, team — as a
+   short grid of labelled cards next to the intro, rather than the
+   .meta-list sidebar it replaced. Same information, but read before
+   the case study instead of alongside it, which is the order someone
+   skimming actually wants it in.
+
+   Markup is a <dl> of div-wrapped dt/dd pairs — a wrapper element is
+   the only grouping a definition list allows, and it's also what gives
+   each fact a single grid cell to fill. */
+/* Exactly two columns — a 2x2 block, not an auto-fitting row. auto-fit
+   would pack a third column in wherever the hero's left column happens
+   to be wide enough, which breaks the square arrangement and leaves a
+   stray card alone on the second row. Two fixed columns also keep each
+   card wider than it is tall, which is the shape these want. */
+.fact-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-sm);
+  /* dl's default block margin — the hero grid's own gap sets the space
+     around this. */
+  margin: 0;
+}
+
+/* Below this the pair would be too narrow to read; phones get one
+   column. */
+@media (min-width: 600px) {
+  .fact-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* --color-bg on --color-surface: the cards are the raised thing here,
+   the inverse of .card elsewhere on the site (which sits on the page
+   ground). The hero is inside #main, which is the surface. */
+.fact {
+  padding: var(--space-sm);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.fact__label {
+  margin-bottom: var(--space-3xs);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.fact__value {
+  /* dd carries a browser default indent that would knock the value out
+     of line with its own label. */
+  margin: 0;
+  font-size: var(--fs-sm);
   color: var(--color-text-muted);
 }
 
@@ -425,6 +564,45 @@
   transform: rotate(-10deg) scale(1.08);
 }
 
+/* Mobile bottom tab bar: the toggle shrinks to a single icon button at
+   the right of the bar, next to the logo mark on the left — same
+   circular treatment as the collapsed side-rail version below. Only
+   the active mode's button is shown; tapping it flips straight to the
+   other mode (js/main.js). */
+@media (max-width: 699px) {
+  .theme-toggle {
+    flex: none;
+    padding: 0;
+    background: transparent;
+    border-color: transparent;
+  }
+
+  .theme-toggle__option[aria-pressed="false"] {
+    display: none;
+  }
+
+  /* Left bare on the glass rather than given a filled chip — an opaque
+     --color-surface disc would read as a solid blob sitting on the
+     translucent pane and break the illusion. */
+  .theme-toggle__option[aria-pressed="true"] {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: var(--radius-full);
+    background: transparent;
+    box-shadow: none;
+    color: var(--color-text);
+  }
+
+  .theme-toggle__option[aria-pressed="true"]:active {
+    transform: scale(0.94);
+  }
+
+  .theme-toggle__label {
+    display: none;
+  }
+}
+
 /* ---------- Testimonial / quote switcher (About Me section) ----------
    Mobile: avatars in a row, rail horizontal, quote below.
    Tablet/desktop (>=700px): avatars in a column, rail vertical, quote
@@ -539,6 +717,52 @@
 .testimonial__rail-segment:last-child {
   border-top-right-radius: var(--radius-full);
   border-bottom-right-radius: var(--radius-full);
+}
+
+/* ---------- Toast (brief confirmation, e.g. "Email copied") ----------
+   One shared element in partials/header.html (data-toast), reused for
+   every message rather than creating a new node per call — js/main.js
+   just swaps its text and toggles .is-visible. Inverted colors (bg on
+   --color-text, text on --color-bg) so it reads as a distinct surface
+   floating above the page in both themes without needing its own pair
+   of light/dark overrides.
+   Centered above the mobile tab bar by default since that's the
+   crowded edge of the screen; the desktop override just needs a
+   simpler bottom offset since the side rail doesn't compete for that
+   space. */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(
+    var(--tabbar-height) + 2 * var(--space-sm) + env(safe-area-inset-bottom, 0px) +
+      var(--space-sm)
+  );
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: var(--space-2xs) var(--space-md);
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  transform: translate(-50%, 8px);
+  pointer-events: none;
+  transition: opacity var(--transition-base), transform var(--transition-base);
+}
+
+.toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@media (min-width: 700px) {
+  .toast {
+    bottom: var(--space-lg);
+  }
 }
 
 /* Dimmed preview of a segment's own color on hover; excluded from the
