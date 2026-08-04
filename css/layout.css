@@ -116,6 +116,47 @@
   }
 }
 
+/* Utility controls (Connect + theme toggle) vs. page navigation
+   (Projects/About): the tabs stay the full pill shape, but tone down
+   to a slightly less rounded corner so they read as "tabs" rather
+   than matching the outlined, ghost-styled utility controls beyond
+   the divider — see .site-nav__contact-trigger and the theme toggle's
+   mobile rules (components.css) for the other half of that split. */
+@media (max-width: 699px) {
+  .site-nav__list .site-nav__link {
+    border-radius: var(--radius-lg);
+  }
+
+  .site-nav__contact {
+    flex: none;
+    align-items: center;
+    border-left: 1px solid var(--color-border);
+    margin-left: var(--space-2xs);
+    padding-left: var(--space-2xs);
+  }
+
+  /* Same 40px outlined circle as the theme toggle's mobile button
+     (components.css) — icon only, no label, so the two utility
+     controls read as a matched pair. */
+  .site-nav__contact-trigger {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--color-border);
+  }
+
+  .site-nav__contact-trigger .site-nav__link-label {
+    display: none;
+  }
+
+  .site-nav__contact-trigger[aria-expanded="true"] {
+    background: transparent;
+    border-color: var(--color-accent);
+  }
+}
+
 /* Collapse toggle is part of the side rail only — hidden in the mobile
    bottom tab bar. */
 .site-nav__toggle {
@@ -175,6 +216,7 @@
   color: var(--color-text-muted);
   font-size: var(--fs-xs);
   font-weight: var(--fw-medium);
+  text-decoration: none;
   transition: background var(--transition-fast), color var(--transition-fast),
     transform var(--transition-fast);
 }
@@ -186,6 +228,16 @@
 .site-nav__link-icon {
   display: inline-flex;
   transition: transform var(--transition-base);
+}
+
+/* All Projects/All About Me carry a shorter mobile-only wording —
+   the bottom tab bar gives each tab only ~50px, nowhere near enough
+   for the full phrase on one line, so it was breaking mid-phrase
+   ("All" / "Projects"). The desktop rail has room to spare, so it
+   swaps back to the full label at the same 700px breakpoint the rest
+   of the nav uses (see .site-nav__link-label-full below). */
+.site-nav__link-label-full {
+  display: none;
 }
 
 .site-nav__link[aria-current="page"] {
@@ -218,7 +270,6 @@
 .site-nav__contact {
   position: relative;
   display: flex;
-  flex: 1;
 }
 
 /* Mirrors .site-nav__link[aria-current="page"] visually (accent fill
@@ -449,6 +500,7 @@
      margin-left: auto on that icon has no effect without spare row
      width to push into. */
   .site-nav__social-link {
+    position: relative;
     display: flex;
     align-items: center;
     width: 100%;
@@ -476,7 +528,26 @@
   }
 
   .site-nav__social-label {
+    overflow: hidden;
+    min-width: 0;
     white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  /* Rail rows sit in a vertical stack, so their tooltip (see the
+     generic [data-tooltip] rule near .site-footer below) opens to the
+     side instead of the default above-the-trigger placement — opening
+     upward here would just cover the row above it. */
+  .site-nav__social-link[data-tooltip]::after {
+    top: 50%;
+    left: calc(100% + var(--space-xs));
+    bottom: auto;
+    transform: translateY(-50%) translateX(-4px);
+  }
+
+  .site-nav__social-link[data-tooltip]:hover::after,
+  .site-nav__social-link[data-tooltip]:focus-visible::after {
+    transform: translateY(-50%) translateX(0);
   }
 
   /* Bottom section of the side rail: just the theme toggle, sitting
@@ -582,6 +653,14 @@
     display: inline-block;
     white-space: nowrap;
     transition: opacity 140ms ease;
+  }
+
+  .site-nav__link-label-short {
+    display: none;
+  }
+
+  .site-nav__link-label-full {
+    display: inline;
   }
 
   /* The label's rotation and its layout box (width, display) change
@@ -889,6 +968,45 @@ main > section:first-of-type > :nth-child(n + 3) {
   animation-delay: 120ms;
 }
 
+/* Generic tooltip: a small bubble carrying the fuller copy for an
+   item whose visible label is shorter or truncated (nav rail rows,
+   the footer email link below). Opens above the trigger by default;
+   .site-nav__social-link overrides the direction to the side since
+   its rows are stacked vertically. (hover: hover) keeps it from
+   popping up on tap with no pointer around to move away and dismiss
+   it. */
+[data-tooltip] {
+  position: relative;
+}
+
+@media (hover: hover) {
+  [data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + var(--space-2xs));
+    left: 50%;
+    z-index: 80;
+    transform: translateX(-50%) translateY(2px);
+    padding: var(--space-3xs) var(--space-2xs);
+    border-radius: var(--radius-sm);
+    background: var(--color-text);
+    color: var(--color-bg);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    white-space: nowrap;
+    box-shadow: var(--shadow-md);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+  }
+
+  [data-tooltip]:hover::after,
+  [data-tooltip]:focus-visible::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
 /* Site footer */
 .site-footer {
   border-top: 1px solid var(--color-border);
@@ -908,6 +1026,50 @@ main > section:first-of-type > :nth-child(n + 3) {
     justify-content: space-between;
     align-items: center;
   }
+}
+
+.site-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-footer__links li {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.site-footer__link {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  gap: var(--space-3xs);
+  color: var(--color-text-muted);
+  transition: color var(--transition-fast);
+}
+
+.site-footer__link:hover {
+  color: var(--color-text);
+}
+
+/* Only the email address is long enough to need this — LinkedIn/GitHub
+   never approach the container width — but it's kept generic so any
+   link that does run long truncates the same way instead of wrapping
+   mid-word onto a second line. */
+.site-footer__link-text {
+  overflow: hidden;
+  min-width: 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.site-footer__link svg {
+  flex: none;
 }
 
 /* Case-study hero
