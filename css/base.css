@@ -19,6 +19,8 @@ body {
   line-height: var(--lh-normal);
   color: var(--color-text);
   background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 img,
@@ -40,6 +42,13 @@ h6 {
   font-family: var(--font-display);
   font-weight: var(--fw-semibold);
   line-height: var(--lh-tight);
+  /* Fraunces sets loose by default at display sizes; pulling the
+     tracking in keeps large headings from looking gappy. */
+  letter-spacing: -0.015em;
+  /* Fraunces is an optical-size variable font — letting it track the
+     rendered size means large headings get the high-contrast display
+     cut and small ones get the sturdier text cut, automatically. */
+  font-optical-sizing: auto;
 }
 
 h1 {
@@ -93,10 +102,29 @@ select {
   color: var(--color-text);
 }
 
-/* Mobile-first: base sizes above target small screens.
-   Bump up display type slightly on larger viewports. */
-@media (min-width: 900px) {
-  h1 {
-    font-size: calc(var(--fs-3xl) * 1.15);
+/* Heading sizes used to step up at 900px. They don't need to any more:
+   --fs-2xl and up are clamp()-based in tokens.css, so they scale
+   continuously with the viewport rather than jumping at a breakpoint. */
+
+/* Every transition and animation in this project is decorative. Honor
+   the OS-level "reduce motion" setting globally rather than remembering
+   to guard each one individually. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    /* Staggered entrances hold their first keyframe through the delay
+       (animation-fill-mode: backwards), so zeroing only the duration
+       would leave content invisible for the length of the stagger.
+       Zero the delay too and it's simply there on load. */
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

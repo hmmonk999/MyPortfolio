@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Name — Senior UX Designer</title>
-  <meta name="description" content="Portfolio of Your Name, Senior UX Designer. Selected case studies in product design, research, and interaction design." />
+  <title>Hannah Monk — Senior UX Designer</title>
+  <meta name="description" content="Portfolio of Hannah Monk, Senior UX Designer. Selected case studies in product design, research, and interaction design." />
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400..700&display=swap" />
   <link rel="stylesheet" href="css/tokens.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/layout.css" />
@@ -16,6 +19,17 @@
       var stored = localStorage.getItem("theme");
       var dark = stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
       if (dark) document.documentElement.classList.add("theme-dark");
+
+      // Same reasoning as the theme above. setupNavToggle() in main.js
+      // can't run until the header partial has been fetched, and by
+      // then the expanded rail has already painted — so applying the
+      // collapsed state there animates the rail shut on every load.
+      // Setting the class here means it is never expanded to begin
+      // with. Case studies always start collapsed (see setupNavToggle).
+      var page = document.location.pathname.split("/").pop();
+      if (page.indexOf("case-study") === 0 || localStorage.getItem("nav-collapsed") === "true") {
+        document.documentElement.classList.add("nav-collapsed");
+      }
     })();
   </script>
 </head>
@@ -26,39 +40,48 @@
 
   <main id="main">
     <section class="hero container">
-      <p class="hero__eyebrow">Senior UX Designer</p>
-      <h1>I design products people actually enjoy using.</h1>
-      <p class="hero__lead">
-        I'm Your Name, a senior UX designer focused on complex B2B and SaaS
-        products. I lead research, wireframing, and interaction design from
-        early discovery through shipped, measurable outcomes.
-      </p>
-      <div class="cluster mt-lg">
-        <a class="btn btn--primary" href="projects.html">View my work</a>
+      <p class="hero__eyebrow">Hannah Monk</p>
+      <h1 class="hero__title">Senior Product <em>Designer</em></h1>
+      <div class="hero__meta">
+        <p class="hero__lead">
+          I'm Hannah Monk, a senior UX designer focused on complex B2B and SaaS
+          products. I lead research, wireframing, and interaction design from
+          early discovery through shipped, measurable outcomes.
+        </p>
+        <div class="hero__aside">
+          <a class="btn btn--primary" href="projects.html">View my work</a>
+          <p class="hero__note">Currently at Company Name</p>
+        </div>
       </div>
     </section>
 
+    <!-- Selected work: one featured case study, then the rest 2-up.
+         To feature a different project, move the card--feature class
+         (and its .card__flag / .card__cue) onto that article and drop
+         this one back into the grid below. -->
     <section id="projects" class="section container">
       <div class="section-heading">
         <h2 class="section-heading__title">Selected work</h2>
         <a class="btn btn--ghost" href="projects.html">See all projects &rarr;</a>
       </div>
 
-      <div class="grid grid--3up">
-        <article class="card card--project" data-project-card data-tags="research,mobile">
-          <div class="card__media">
-            <img src="https://placehold.co/640x400?text=Project+One" alt="" />
+      <article class="card card--project card--feature" data-project-card data-tags="research,mobile">
+        <div class="card__media">
+          <img src="https://placehold.co/960x600?text=Project+One" alt="" />
+        </div>
+        <div class="card__body">
+          <p class="card__flag">Featured case study</p>
+          <div class="card__tags">
+            <span class="tag">UX Research</span>
+            <span class="tag tag--neutral">Mobile</span>
           </div>
-          <div class="card__body">
-            <div class="card__tags">
-              <span class="tag">UX Research</span>
-              <span class="tag tag--neutral">Mobile</span>
-            </div>
-            <h3 class="card__title"><a href="case-study-template.html">Redesigning onboarding for a fintech app</a></h3>
-            <p class="card__excerpt">Cut time-to-first-value by 40% through a research-led onboarding redesign.</p>
-          </div>
-        </article>
+          <h3 class="card__title"><a href="case-study-template.html">Redesigning onboarding for a fintech app</a></h3>
+          <p class="card__excerpt">Cut time-to-first-value by 40% through a research-led onboarding redesign.</p>
+          <span class="card__cue">Read the case study</span>
+        </div>
+      </article>
 
+      <div class="grid grid--2up mt-lg">
         <article class="card card--project" data-project-card data-tags="ixd,web">
           <div class="card__media">
             <img src="https://placehold.co/640x400?text=Project+Two" alt="" />
@@ -98,7 +121,7 @@
       <div class="detail-layout">
         <div class="stack" style="--gap: var(--space-lg);">
           <p>
-            I'm Your Name, a senior UX designer with N years of experience
+            I'm Hannah Monk, a senior UX designer with N years of experience
             designing complex B2B and consumer products. I care about
             grounding design decisions in research, and about leaving
             behind systems — not just screens — that teams can build on.
@@ -112,7 +135,7 @@
 
         <aside class="stack" style="--gap: var(--space-lg);">
           <div class="card__media" style="border-radius: var(--radius-lg); aspect-ratio: 1;">
-            <img src="https://placehold.co/480x480?text=Headshot" alt="Portrait of Your Name" />
+            <img src="https://placehold.co/480x480?text=Headshot" alt="Portrait of Hannah Monk" />
           </div>
         </aside>
       </div>

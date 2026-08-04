@@ -10,6 +10,17 @@
   padding-inline: var(--container-padding);
 }
 
+/* Tablet range: the side rail (from 700px, see .site-nav below) already
+   eats into the available width, so the mobile container padding reads
+   as cramped against both the rail and the outer edge. Give it more
+   room until the desktop breakpoint, where the wider viewport already
+   provides enough natural whitespace. */
+@media (min-width: 700px) and (max-width: 899px) {
+  .container {
+    padding-inline: var(--space-lg);
+  }
+}
+
 .section {
   padding-block: var(--space-2xl);
 }
@@ -68,15 +79,46 @@
   display: flex;
   align-items: stretch;
   background: var(--color-bg);
-  border-top: 1px solid var(--color-border);
   height: var(--tabbar-height);
-  padding-bottom: env(safe-area-inset-bottom, 0);
+  padding-inline: var(--space-3xs);
 }
 
-/* Collapse toggle and bottom section (theme switcher, etc.) are part of
-   the side rail only — hidden in the mobile bottom tab bar. */
-.site-nav__toggle,
-.site-nav__bottom {
+/* Floating glass pill — mobile bottom tab bar only. The desktop side
+   rail is a flush, opaque edge of the page and wants none of this.
+
+   The bar detaches from all three edges so page content scrolls
+   through the gap underneath it, which is what makes the blur read as
+   glass rather than as a flat translucent strip. It sits above the
+   home-indicator inset rather than padding itself out to cover it, so
+   the pill keeps its full stadium shape on notched devices.
+
+   backdrop-filter is the whole effect; where it isn't supported the
+   @supports below swaps in an opaque background so the bar stays
+   legible instead of showing content straight through it. */
+@media (max-width: 699px) {
+  .site-nav {
+    left: var(--space-sm);
+    right: var(--space-sm);
+    bottom: calc(var(--space-sm) + env(safe-area-inset-bottom, 0px));
+    padding-inline: var(--space-2xs);
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-full);
+    box-shadow: var(--glass-shadow);
+  }
+
+  @supports not (backdrop-filter: blur(1px)) {
+    .site-nav {
+      background: var(--color-bg);
+    }
+  }
+}
+
+/* Collapse toggle is part of the side rail only — hidden in the mobile
+   bottom tab bar. */
+.site-nav__toggle {
   display: none;
 }
 
@@ -91,9 +133,16 @@
   display: none;
 }
 
+/* flex: 2 rather than 1 is deliberate: .site-nav__contact (the Connect
+   tab, below) is a flex: 1 sibling of this list, and the two li's in
+   here split whatever width this list is given evenly between them.
+   Giving the list twice the contact tab's share means each li ends up
+   exactly the same width as the contact tab — three equal tabs — while
+   still living in its own <ul> rather than flattening the list with
+   display: contents, which would drop its list semantics. */
 .site-nav__list {
   display: flex;
-  width: 100%;
+  flex: 2;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -104,21 +153,166 @@
   display: flex;
 }
 
+/* Bottom section holds just the theme switcher on mobile, shrunk to an
+   icon-sized button at the right of the bar rather than a full tab. */
+.site-nav__bottom {
+  display: flex;
+  flex: none;
+  align-items: center;
+  padding-inline: var(--space-sm);
+}
+
 .site-nav__link {
   flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 3px;
   margin: var(--space-3xs);
-  border-radius: var(--radius-md);
+  /* Stadium, to nest cleanly inside the fully-rounded glass pill. */
+  border-radius: var(--radius-full);
   color: var(--color-text-muted);
   font-size: var(--fs-xs);
   font-weight: var(--fw-medium);
+  transition: background var(--transition-fast), color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.site-nav__link:active {
+  transform: scale(0.94);
+}
+
+.site-nav__link-icon {
+  display: inline-flex;
+  transition: transform var(--transition-base);
 }
 
 .site-nav__link[aria-current="page"] {
   color: var(--color-accent);
   background: var(--color-accent-soft);
+}
+
+.site-nav__link[aria-current="page"] .site-nav__link-icon {
+  transform: translateY(-1px) scale(1.08);
+}
+
+/* Email/LinkedIn/GitHub: the desktop rail's own list of these lives
+   below, styled for icon+label. On the mobile tab bar there isn't room
+   for three more tabs, so it's hidden here in favor of the single
+   .site-nav__contact trigger just below. */
+.site-nav__social {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Mobile-only "Connect" tab: same width and visual weight as the two
+   .site-nav__link tabs beside it (flex: 1, see the note on
+   .site-nav__list above for how the three end up equal), but opens a
+   popover instead of navigating. The trigger reuses .site-nav__link
+   itself — same icon+label layout, same hover/active/tap treatment —
+   so it reads as a third tab rather than a bolted-on control; only
+   this wrapper's own rules are new. */
+.site-nav__contact {
+  position: relative;
+  display: flex;
+  flex: 1;
+}
+
+/* Mirrors .site-nav__link[aria-current="page"] visually (accent fill
+   while "on"), but keyed off aria-expanded rather than aria-current —
+   this tab never represents the current page, only whether its own
+   popover is open. */
+.site-nav__contact-trigger[aria-expanded="true"] {
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+/* Opens upward from a bar pinned to the bottom of the screen, right-
+   aligned so it doesn't overhang the viewport edge on narrow phones. */
+/* [hidden] here beats the plain class selector below on specificity
+   (0,2,0 vs 0,1,0) — needed because this element also sets its own
+   `display: flex`, which at equal specificity would otherwise win over
+   the browser's built-in `[hidden] { display: none }` and leave the
+   menu visibly rendered (with the hidden attribute a no-op) whenever
+   it isn't explicitly toggled closed via JS. */
+.site-nav__contact-menu[hidden] {
+  display: none;
+}
+
+.site-nav__contact-menu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + var(--space-sm));
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  width: max-content;
+  min-width: 180px;
+  padding: var(--space-2xs);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  transform-origin: bottom right;
+  animation: contact-menu-in var(--transition-fast) ease backwards;
+}
+
+.site-nav__contact-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: var(--space-2xs) var(--space-sm);
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.site-nav__contact-item:hover {
+  background: var(--color-surface);
+}
+
+.site-nav__contact-item svg {
+  flex: none;
+  color: var(--color-text-muted);
+}
+
+/* The small outlink (LinkedIn/GitHub) or copy (Email) glyph at the end
+   of a row — margin-left: auto pushes it to the row's far edge
+   regardless of how short the label is. One rule shared by both
+   places these rows appear: this popover's .site-nav__contact-item
+   and the desktop rail's .site-nav__social-link below. */
+.site-nav__social-trailing {
+  margin-left: auto;
+  flex: none;
+  display: inline-flex;
+  color: var(--color-text-muted);
+}
+
+@keyframes contact-menu-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@media (min-width: 700px) {
+  .site-nav__contact {
+    display: none;
+  }
 }
 
 @media (min-width: 700px) {
@@ -131,19 +325,94 @@
     flex-direction: column;
     align-items: stretch;
     gap: var(--space-md);
-    border-top: none;
-    border-right: 1px solid var(--color-border);
     padding: var(--space-lg) var(--space-md);
-    transition: width var(--transition-base);
+    transition: width var(--transition-nav);
   }
 
+  /* The brand plate: a fixed slab carrying the mark, the name and the
+     collapse toggle, sitting above both the rail and the content card.
+
+     It is the same size and position in both nav states — only its
+     clip-path changes (see below). That is deliberate: the name and
+     toggle never move when the rail expands or collapses, so the rail
+     can slide underneath them without anything reflowing.
+
+     Its silhouette is a single clip-path rather than a border-radius
+     plus extra elements patching each corner, so the outline is one
+     continuous thing by construction instead of separate curves that
+     have to be kept in sync (and collide when they aren't).
+
+     Numbers below are in the element's own px coordinates. The key
+     ones: 12 = --space-xs, #main's top margin; 256 = the plate's
+     visual right edge (--nav-plate-edge); 272 = 256 + the 16px corner
+     radius, the extra sliver the top-right arc needs to curve into;
+     96 = --nav-plate-height. */
   .site-nav__brand {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 60;
     display: flex;
     align-items: center;
     gap: var(--space-2xs);
+    width: var(--nav-plate-width);
+    height: var(--nav-plate-height);
+    padding-inline: var(--space-md);
+    /* Centers the row within the top 72px — the part of the plate above
+       the bottom sweep — rather than the full clipped height. */
+    padding-bottom: 24px;
+    white-space: nowrap;
+    background: var(--color-bg);
     font-weight: var(--fw-semibold);
     font-size: var(--fs-md);
     color: var(--color-text);
+    transition: clip-path var(--transition-nav);
+    /* Expanded: the rail is 220 wide and the plate 256, so the drop to
+       the rail is only 36px — just enough for a 20px convex arc and a
+       16px concave one to meet nose-to-tail. The `H 236` between them
+       is zero-length (the previous arc already ends there); see the
+       note on the collapsed path below for why it's spelled out. */
+    clip-path: path(
+      "M 0 0 H 272 V 12 A 16 16 0 0 0 256 28 V 52 A 20 20 0 0 1 236 72 H 236 A 16 16 0 0 0 220 88 V 96 H 0 Z"
+    );
+  }
+
+  /* Collapsed: same plate, but now the rail is only 76 wide, so the
+     same journey has 180px to cover. The arcs grow (32 convex, 24
+     concave) and the run between them opens up into a real length at
+     y=72 — the long shelf the name appears to rest on. Both paths land
+     their final arc exactly on the rail's own width, so the curve's
+     foot meets the rail edge dead-on in either state.
+
+     Both paths are written with an identical run of commands —
+     M H V A V A H A V H Z — because clip-path only animates between
+     two path() values when their structure matches exactly;
+     mismatched commands make the browser jump straight to the end
+     value instead of interpolating. Each path therefore carries one
+     segment it doesn't strictly need (the `H 236` above, the `V 96`
+     here), collapsed to zero length so it costs nothing visually but
+     keeps the two in step. Editing either path means adding or
+     removing the matching segment in the other. */
+  .nav-collapsed .site-nav__brand {
+    clip-path: path(
+      "M 0 0 H 272 V 12 A 16 16 0 0 0 256 28 V 40 A 32 32 0 0 1 224 72 H 100 A 24 24 0 0 0 76 96 V 96 H 0 Z"
+    );
+  }
+
+  /* The 12px of page background above the content card. Fixed rather
+     than relying on #main's own margin, so the card scrolls underneath
+     it and the plate's top-right corner always has that strip to curve
+     against — without it the shape would run straight into the cream
+     the moment the page scrolled. Lives on the nav because the nav's
+     stacking context already sits above #main and below the plate. */
+  .site-nav::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--space-xs);
+    background: var(--color-bg);
   }
 
   .site-nav__brand-icon {
@@ -157,27 +426,86 @@
     white-space: nowrap;
   }
 
-  /* Bottom section of the side rail. More controls may join the theme
-     toggle here later; margin-top: auto pins the whole group to the
-     bottom of the rail regardless of how many nav links are above it. */
+  /* Email/LinkedIn/GitHub: hidden on mobile (see .site-nav__contact's
+     trigger+menu instead), shown here as a third icon+label list —
+     same visual language as .site-nav__link above it, but its own
+     class since these aren't page links (no aria-current highlight,
+     and the icon stays visible when collapsed instead of disappearing
+     the way .site-nav__link-icon does).
+
+     margin-top: auto is what pins this list — and .site-nav__bottom
+     right after it — to the bottom of the rail. Moving that margin
+     here instead of leaving it on .site-nav__bottom means this list
+     lands above the divider line and the theme toggle stays below it. */
+  .site-nav__social {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xs);
+    margin-top: auto;
+  }
+
+  /* width: 100% (rather than leaving it to shrink-to-fit) is what
+     gives the trailing outlink/copy icon somewhere to be pushed to —
+     margin-left: auto on that icon has no effect without spare row
+     width to push into. */
+  .site-nav__social-link {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: var(--space-2xs);
+    padding: var(--space-2xs) var(--space-sm);
+    border: none;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-text-muted);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    text-align: left;
+    cursor: pointer;
+    transition: background var(--transition-fast), color var(--transition-fast);
+  }
+
+  .site-nav__social-link:hover {
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+
+  .site-nav__social-icon {
+    flex: none;
+    display: inline-flex;
+  }
+
+  .site-nav__social-label {
+    white-space: nowrap;
+  }
+
+  /* Bottom section of the side rail: just the theme toggle, sitting
+     below the divider that separates it from .site-nav__social above. */
   .site-nav__bottom {
     display: flex;
+    flex: none;
     flex-direction: column;
     align-items: stretch;
     gap: var(--space-2xs);
-    margin-top: auto;
     padding-top: var(--space-md);
     border-top: 1px solid var(--color-border);
   }
 
-  /* Collapse toggle: sits at the top-right of the rail */
+  /* Collapse toggle: rides inside the brand plate, just right of the
+     name, in both nav states. Fixed and positioned off the same
+     coordinates as the plate's clip-path (rather than sitting in the
+     rail's flow) so it stays put while the rail resizes underneath it,
+     and lands inside the bump the path leaves for it: 204 = the
+     plate's 256 edge less its 24px padding and the button's own 28px;
+     22 centers it in the plate's 72px-tall visible band. */
   .site-nav__toggle {
+    z-index: 70;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    position: absolute;
-    top: var(--space-md);
-    right: calc(-1 * var(--space-sm));
+    position: fixed;
+    top: 22px;
+    left: 204px;
     width: 28px;
     height: 28px;
     padding: 0;
@@ -199,16 +527,29 @@
     transition: transform var(--transition-base);
   }
 
+  /* The brand is fixed (out of flow) in both states now, so the column
+     no longer reserves room for it — push the links down past the
+     plate instead. --space-lg is the rail's own top padding. */
   .site-nav__list {
+    flex: none;
     flex-direction: column;
     gap: var(--space-2xs);
+    margin-top: calc(var(--nav-plate-height) - var(--space-lg));
   }
 
   .site-nav__list li {
     flex: none;
   }
 
+  /* The plate covers this corner in both nav states and draws the
+     curve there itself; #main's own radius underneath would read as a
+     second, competing curve. */
+  #main {
+    border-top-left-radius: 0;
+  }
+
   .site-nav__link {
+    flex-direction: row;
     justify-content: flex-start;
     margin: 0;
     padding: var(--space-2xs) var(--space-sm);
@@ -216,7 +557,24 @@
     font-size: var(--fs-base);
   }
 
+  /* Same treatment as .site-nav__social-link below it, so hovering
+     either group of items in the rail reads as one consistent
+     surface — not defined on the shared (mobile-included) base rule
+     above, since a touch device has no real hover to match. */
+  .site-nav__link:hover {
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+
+  .site-nav__link-icon {
+    display: none;
+  }
+
   .site-nav__link[aria-current="page"] {
+    background: var(--color-accent-soft);
+  }
+
+  .site-nav__link[aria-current="page"]:hover {
     background: var(--color-accent-soft);
   }
 
@@ -241,15 +599,6 @@
   .nav-collapsed .site-nav {
     width: var(--nav-width-collapsed);
     align-items: center;
-  }
-
-  /* Icon-only brand when collapsed */
-  .nav-collapsed .site-nav__brand-name {
-    display: none;
-  }
-
-  .nav-collapsed .site-nav__brand {
-    padding-inline: 0;
   }
 
   .nav-collapsed .site-nav__toggle-icon {
@@ -309,6 +658,24 @@
     border-radius: var(--radius-md);
   }
 
+  /* Collapsed rail: icon only, centered, no rotated label — unlike
+     .site-nav__link above, these don't get the writing-mode treatment.
+     A universally recognized mark (envelope, "in", octocat) reads fine
+     on its own; sideways text next to it would only add noise. */
+  .nav-collapsed .site-nav__social {
+    align-items: center;
+  }
+
+  .nav-collapsed .site-nav__social-link {
+    justify-content: center;
+    padding: var(--space-2xs);
+  }
+
+  .nav-collapsed .site-nav__social-label,
+  .nav-collapsed .site-nav__social-trailing {
+    display: none;
+  }
+
   /* Collapsed theme toggle: only the active mode's icon shows, centered
      under the collapsed rail. Clicking it flips to the other mode
      (handled in js/main.js). */
@@ -359,16 +726,20 @@
   }
 }
 
-/* Offset page content so it clears the fixed nav */
+/* Offset page content so it clears the fixed nav. The floating bar
+   needs its detach gap counted twice — once above the pill, once below
+   it — plus the home-indicator inset it sits on top of. */
 body {
-  padding-bottom: var(--tabbar-height);
+  padding-bottom: calc(
+    var(--tabbar-height) + 2 * var(--space-sm) + env(safe-area-inset-bottom, 0px)
+  );
 }
 
 @media (min-width: 700px) {
   body {
     padding-bottom: 0;
     padding-left: var(--nav-width);
-    transition: padding-left var(--transition-base);
+    transition: padding-left var(--transition-nav);
   }
 
   .nav-collapsed body {
@@ -376,29 +747,152 @@ body {
   }
 }
 
-/* Hero */
+/* Main content frame. #main carries its own surface color and sits
+   inset from the page background — the inset reads as a border, and
+   since the nav rail shares the page background color, the nav
+   visually reads as part of that border rather than a separate panel. */
+#main {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  margin: var(--space-xs);
+}
+
+@media (min-width: 700px) {
+  #main {
+    margin-left: 0;
+  }
+}
+
+/* Hero
+   Two tiers rather than a single centered stack: an oversized statement
+   that gets the full measure to itself, then a supporting row beneath it
+   carrying the intro and the call to action. The headline is the only
+   thing at --fs-display anywhere on the site, so it reads as the entry
+   point without needing a graphic to prop it up. */
 .hero {
   padding-block: var(--space-3xl) var(--space-2xl);
 }
 
 .hero__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  margin-bottom: var(--space-md);
   color: var(--color-accent);
   font-weight: var(--fw-semibold);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   font-size: var(--fs-sm);
 }
 
+/* Short rule leading into the eyebrow — anchors the text block to the
+   left edge and gives the top of the page a horizon line. */
+.hero__eyebrow::before {
+  content: "";
+  width: var(--space-lg);
+  height: 2px;
+  background: currentColor;
+  flex: none;
+}
+
+.hero__title {
+  max-width: 18ch;
+  margin-bottom: var(--space-xl);
+  font-size: var(--fs-display);
+  font-weight: var(--fw-semibold);
+  /* Display sizes need a tighter leading than the --lh-tight used for
+     ordinary headings, or the lines drift apart. */
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+}
+
+/* The one word carrying the argument. Fraunces' italic is a genuinely
+   different cut rather than a slant, so this reads as emphasis in the
+   typeface's own voice instead of an effect applied on top of it. */
+.hero__title em {
+  font-style: italic;
+  color: var(--color-accent);
+}
+
+.hero__meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--color-border);
+}
+
 .hero__lead {
-  max-width: 60ch;
+  max-width: 52ch;
+  margin: 0;
   font-size: var(--fs-md);
+  line-height: var(--lh-loose);
   color: var(--color-text-muted);
+}
+
+.hero__aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  flex: none;
+}
+
+.hero__note {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 900px) {
+  .hero__meta {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-2xl);
+  }
+
+  .hero__aside {
+    align-items: flex-end;
+    text-align: right;
+  }
+}
+
+/* Entrance. Content resolves where it already sits — fading up from a
+   slight blur, as if pulling into focus — rather than sliding in from
+   an offset. Nothing changes position, so moving between pages reads
+   as the page sharpening rather than the layout rearranging itself.
+
+   Scoped to the top-level blocks of the first section in <main>, which
+   is the part actually on screen at load, and staggered just enough to
+   feel sequenced. The whole sequence is under half a second. Suppressed
+   wholesale by the prefers-reduced-motion block in base.css. */
+@keyframes settle-in {
+  from {
+    opacity: 0;
+    filter: blur(4px);
+  }
+}
+
+main > section:first-of-type > * {
+  animation: settle-in var(--transition-enter) backwards;
+}
+
+main > section:first-of-type > :nth-child(2) {
+  animation-delay: 60ms;
+}
+
+/* Past the second block the stagger stops: on most pages that's the
+   body content, usually below the fold, and holding it back any longer
+   only makes the page feel slower to arrive. */
+main > section:first-of-type > :nth-child(n + 3) {
+  animation-delay: 120ms;
 }
 
 /* Site footer */
 .site-footer {
   border-top: 1px solid var(--color-border);
-  padding-block: var(--space-xl);
+  padding-block: 33px;
   color: var(--color-text-muted);
 }
 
@@ -416,7 +910,146 @@ body {
   }
 }
 
-/* Two-column layout used on case-study pages (content + meta sidebar) */
+/* Case-study hero
+   Intro copy on the left, project image on the right running off the
+   edge of the content card. The bleed is the point: an image framed
+   inside a column reads as one more figure in the page, where an image
+   escaping it reads as the header of the whole piece.
+
+   padding-inline reproduces .container's own content edge rather than
+   using .container itself, since a centered max-width box can't also
+   bleed. .container is centered inside #main, so its left edge sits
+   half the leftover width (zero until the viewport passes
+   --container-width) plus --container-padding from #main's edge —
+   which is what the max() below computes. That keeps the intro column
+   in line with every .container section further down the page. */
+.case-hero {
+  display: grid;
+  gap: var(--space-lg);
+  padding-block: var(--space-xl);
+  padding-inline: calc(
+    max(0px, (100% - var(--container-width)) / 2) + var(--container-padding)
+  );
+}
+
+/* Matches the tablet-range .container exception at the top of this
+   file — same reasoning: the side rail already eats the width here. */
+@media (min-width: 700px) and (max-width: 899px) {
+  .case-hero {
+    padding-inline: var(--space-lg);
+  }
+}
+
+/* Source order is intro → media → facts, which is the reading order on
+   a phone: the image arrives right after the summary instead of behind
+   four fact cards. On desktop the areas stack intro and facts into the
+   left column and give the media the right one to itself, spanning
+   both rows.
+
+   This splits at --bp-lg rather than the --bp-md most of the site uses,
+   because half of a --bp-md page is not enough width for what goes in
+   the left column: the fact cards end up two narrow squares instead of
+   the wide 2x2 they're meant to be, and the summary loses its measure.
+   Below this the hero simply stacks, which that width handles well —
+   full-bleed image, facts two-up across the whole page. */
+@media (min-width: 1200px) {
+  .case-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "intro media"
+      "facts media";
+    /* Rows size to the intro and facts; the media stretches across
+       whatever total they come to, so the two columns read as one band
+       rather than a small picture floating beside a column of text. */
+    align-items: stretch;
+    gap: var(--space-lg) var(--space-2xl);
+    padding-block: var(--space-2xl);
+    /* The right column runs to the card edge. */
+    padding-right: 0;
+  }
+
+  .case-hero__intro {
+    grid-area: intro;
+  }
+
+  .case-hero__media {
+    grid-area: media;
+  }
+
+  .case-hero .fact-grid {
+    grid-area: facts;
+  }
+}
+
+.case-hero__title {
+  margin-bottom: var(--space-2xs);
+}
+
+/* The one-line "what this project actually was" under the title —
+   set in the body face, not Fraunces, so it reads as a caption on the
+   heading rather than a second heading competing with it. */
+.case-hero__tagline {
+  margin: 0 0 var(--space-3xs);
+  font-family: var(--font-body);
+  font-weight: var(--fw-semibold);
+}
+
+.case-hero__client {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+}
+
+/* The rule above the summary separates the title block from the body
+   copy — the same job .hero__meta's border does on the home page. */
+.case-hero__summary {
+  max-width: 46ch;
+  margin: var(--space-md) 0 0;
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  line-height: var(--lh-loose);
+}
+
+.case-hero__media {
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+}
+
+.case-hero__media img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+@media (min-width: 1200px) {
+  /* Only the left corners curve — the right edge is flush with the
+     card it's bleeding off. */
+  .case-hero__media {
+    border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  }
+
+  /* aspect-ratio would fight the stretched grid row, so the image just
+     fills the height the intro column sets — with a floor for the case
+     where the intro is unusually short. */
+  .case-hero__media img {
+    aspect-ratio: auto;
+    min-height: 24rem;
+  }
+}
+
+/* Case-study body copy. The hero runs the full width of the card, so
+   the prose under it needs its own measure or it inherits the
+   container's 1120px and gets unreadably wide. */
+.case-body {
+  max-width: 68ch;
+}
+
+/* Two-column layout: main content beside a narrower meta column
+   (home page intro, about page). */
 .detail-layout {
   display: grid;
   gap: var(--space-lg);

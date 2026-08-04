@@ -7,6 +7,8 @@ document.addEventListener("includes:loaded", () => {
   setupThemeToggle();
   setupBackLinks();
   setFooterYear();
+  setupCopyEmail();
+  setupContactMenu();
 });
 
 function getCurrentPage() {
@@ -91,9 +93,15 @@ function setupNavToggle() {
     );
   };
 
-  // First load: apply the stored state immediately, no fade — the
-  // crossfade below is only for the user-triggered toggle. Case
-  // studies always start collapsed regardless of the stored preference.
+  // First load: no fade — the crossfade below is only for the
+  // user-triggered toggle. The `nav-collapsed` class is in fact already
+  // on <html> by now, applied before first paint by the inline script
+  // in each page's <head>; doing it here for the first time would mean
+  // the rail paints expanded and then animates shut on every load. This
+  // call re-asserts the same state to sync the toggle button's ARIA,
+  // which the head script can't do because the button doesn't exist
+  // yet. It reads the same two inputs in the same order so the two
+  // stay in agreement — keep them that way if either changes.
   setCollapsed(isCaseStudy || localStorage.getItem(STORAGE_KEY) === "true");
 
   toggle.addEventListener("click", () => {
@@ -151,8 +159,14 @@ function setupThemeToggle() {
   apply(localStorage.getItem(STORAGE_KEY) || currentTheme());
 
   toggle.addEventListener("click", (event) => {
-    const collapsed = document.documentElement.classList.contains("nav-collapsed");
-    const theme = collapsed
+    // Only one mode's button is visible/tappable here — on the collapsed
+    // desktop rail, or on the mobile tab bar where the toggle is a
+    // single tab rather than a two-option control — so a tap just flips
+    // to the other mode instead of re-selecting the one shown.
+    const singleOption =
+      document.documentElement.classList.contains("nav-collapsed") ||
+      window.matchMedia("(max-width: 699px)").matches;
+    const theme = singleOption
       ? currentTheme() === "dark" ? "light" : "dark"
       : event.target.closest("[data-theme-option]")?.getAttribute("data-theme-option");
 
@@ -160,6 +174,110 @@ function setupThemeToggle() {
 
     localStorage.setItem(STORAGE_KEY, theme);
     apply(theme);
+  });
+}
+
+/* Email item (desktop rail + mobile contact menu): copies the address
+   instead of navigating, so it's a <button data-copy-email="…">
+   rather than a mailto: link. One handler covers both copies via
+   event delegation on the document, since the two live in different
+   parts of the header markup and either (or neither) may be present
+   depending on viewport. */
+function setupCopyEmail() {
+  document.addEventListener("click", (event) => {
+    const trigger = event.target.closest("[data-copy-email]");
+    if (!trigger) return;
+
+    const email = trigger.getAttribute("data-copy-email");
+    copyText(email).then((copied) => {
+      showToast(copied ? "Email copied" : email);
+    });
+  });
+}
+
+/* navigator.clipboard requires a secure context (https, or localhost);
+   document.execCommand('copy') is deprecated but still works as a
+   fallback everywhere else. If both fail, the toast falls back to
+   just displaying the address so the visitor can copy it by hand. */
+async function copyText(text) {
+  if (navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (err) {
+      // falls through to the legacy path below
+    }
+  }
+
+  const scratch = document.createElement("textarea");
+  scratch.value = text;
+  scratch.setAttribute("readonly", "");
+  scratch.style.position = "fixed";
+  scratch.style.opacity = "0";
+  document.body.appendChild(scratch);
+  scratch.select();
+
+  let copied = false;
+  try {
+    copied = document.execCommand("copy");
+  } catch (err) {
+    copied = false;
+  }
+  scratch.remove();
+  return copied;
+}
+
+/* Single shared toast element (see partials/header.html), reused for
+   every message. The timeout is tracked on the element itself so a
+   second call — e.g. clicking Email again before the first toast has
+   finished — restarts the hide timer instead of the two racing. */
+function showToast(message) {
+  const toast = document.querySelector("[data-toast]");
+  if (!toast) return;
+
+  window.clearTimeout(toast._hideTimer);
+  toast.textContent = message;
+  toast.classList.add("is-visible");
+  toast._hideTimer = window.setTimeout(() => {
+    toast.classList.remove("is-visible");
+  }, 2200);
+}
+
+/* Mobile contact menu: the tab bar's trigger button opens a small menu
+   with the same Email/LinkedIn/GitHub items the desktop rail shows
+   inline. Only relevant below the 700px breakpoint, but the elements
+   are simply hidden (not removed) above it by CSS, so this doesn't
+   need to care which viewport it's running in. */
+function setupContactMenu() {
+  const wrapper = document.querySelector(".site-nav__contact");
+  const trigger = document.querySelector("[data-contact-trigger]");
+  const menu = document.querySelector("[data-contact-menu]");
+  if (!wrapper || !trigger || !menu) return;
+
+  const setOpen = (open) => {
+    trigger.setAttribute("aria-expanded", String(open));
+    menu.hidden = !open;
+  };
+
+  trigger.addEventListener("click", () => {
+    setOpen(menu.hidden);
+  });
+
+  // Selecting a link item closes the menu too — the link's own
+  // target="_blank" handles the navigation, this just tidies up.
+  menu.addEventListener("click", (event) => {
+    if (event.target.closest("a, [data-copy-email]")) setOpen(false);
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!menu.hidden && !wrapper.contains(event.target)) setOpen(false);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !menu.hidden) {
+      setOpen(false);
+      trigger.focus();
+    }
   });
 }
 
