@@ -999,13 +999,18 @@
     display: none;
   }
 
-  /* Left bare on the glass rather than given a filled chip — an opaque
+  /* Left unfilled rather than given a filled chip — an opaque
      --color-surface disc would read as a solid blob sitting on the
-     translucent pane and break the illusion. */
+     translucent pane and break the illusion. A thin outline stands in
+     for that fill instead, matching the Connect trigger's outlined
+     treatment (see .site-nav__contact-trigger in layout.css) so the
+     two utility controls at this end of the bar read as a pair,
+     distinct from the filled-pill Projects/About tabs. */
   .theme-toggle__option[aria-pressed="true"] {
     width: 40px;
     height: 40px;
     padding: 0;
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-full);
     background: transparent;
     box-shadow: none;
