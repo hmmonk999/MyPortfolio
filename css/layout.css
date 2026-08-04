@@ -940,6 +940,18 @@ main > section:first-of-type > :nth-child(n + 3) {
   }
 }
 
+/* Side rail is present from 700px up to the 1200px breakpoint below,
+   where the fixed brand plate (96px tall, see .site-nav__brand in this
+   file) sits above #main's own 12px top margin. The hero's default
+   --space-xl top padding isn't enough to clear it at this range, so
+   the back-link ends up underneath the plate; 1200px+ already gets
+   more breathing room from its own padding-block override below. */
+@media (min-width: 700px) and (max-width: 1199px) {
+  .case-hero {
+    padding-top: calc(var(--nav-plate-height) - var(--space-xs) + var(--space-sm));
+  }
+}
+
 /* Source order is intro → media → facts, which is the reading order on
    a phone: the image arrives right after the summary instead of behind
    four fact cards. On desktop the areas stack intro and facts into the

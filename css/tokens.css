@@ -78,7 +78,7 @@
 
   /* ---- Layout ---- */
   --container-width: 1120px;
-  --container-padding: var(--space-sm);
+  --container-padding: var(--space-xl);
   --nav-width: 220px;
   --nav-width-collapsed: 76px;
   --tabbar-height: 64px;

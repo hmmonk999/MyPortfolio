@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI-Powered Command Bar — Hannah Monk</title>
+  <meta name="description" content="Case study: how a one-week skunkworks bet became a shipped AI command bar, and eight months of quietly watching how people actually used it." />
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400..700&display=swap" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/utilities.css" />
+  <script>
+    (function () {
+      var stored = localStorage.getItem("theme");
+      var dark = stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      if (dark) document.documentElement.classList.add("theme-dark");
+      var page = document.location.pathname.split("/").pop();
+      if (page.indexOf("case-study") === 0 || localStorage.getItem("nav-collapsed") === "true") {
+        document.documentElement.classList.add("nav-collapsed");
+      }
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div data-include="partials/header.html"></div>
+
+  <main id="main">
+    <section class="case-hero">
+      <div class="case-hero__intro">
+        <a class="back-link" href="projects.html" data-back-link>
+          <svg class="back-link__icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+          <span data-back-link-label>Back to all projects</span>
+        </a>
+
+        <h1 class="case-hero__title">Built in a week, still growing</h1>
+        <p class="case-hero__tagline">A skunkworks bet on AI search that turned into a real, shipped tool</p>
+        <p class="case-hero__client">Hudl &mdash; AI-Powered Command Bar</p>
+
+        <p class="case-hero__summary">
+          During Hudl's annual one-week skunkworks event, my coworker Gabby wanted to build an AI-powered
+          search bar just to learn how to build with AI. I already suspected we'd need real filter-search for
+          our upcoming Volleyball Consolidation work, so we built toward that instead of a demo. A week later
+          we convinced our PM to ship the V1 straight to production. I've spent the eight months since watching
+          real search queries come in to learn what people actually want from it.
+        </p>
+      </div>
+
+      <div class="case-hero__media">
+        <img src="https://placehold.co/1200x900?text=AI+Command+Bar+%E2%80%94+V1+UI" alt="AI-powered command bar interface" />
+      </div>
+
+      <dl class="fact-grid">
+        <div class="fact">
+          <dt class="fact__label">Origin</dt>
+          <dd class="fact__value">
+            Hudl's annual skunkworks week &mdash; one week to build anything.
+          </dd>
+        </div>
+        <div class="fact">
+          <dt class="fact__label">Early bet</dt>
+          <dd class="fact__value">
+            Filter-search we knew <a href="case-study-volleyball-consolidation.html">Volleyball Consolidation</a> would need soon anyway.
+          </dd>
+        </div>
+        <div class="fact">
+          <dt class="fact__label">Timeline</dt>
+          <dd class="fact__value">
+            1 week to build V1<br />
+            8 months of ongoing research since
+          </dd>
+        </div>
+        <div class="fact">
+          <dt class="fact__label">Team</dt>
+          <dd class="fact__value">
+            Me (design), 7 engineers, 2 QA
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="container section">
+      <div class="case-body stack" style="--gap: var(--space-xl);">
+
+        <div>
+          <h2>Where it started</h2>
+          <p>
+            Every year, Hudl runs a skunkworks week: everyone on the product team gets a week to build whatever
+            they want, no roadmap required. This one landed right at the start of AI tools becoming genuinely
+            useful &mdash; just before most of us started reaching for them at work every day.
+          </p>
+          <p>
+            My coworker Gabby wanted to build an AI-powered search bar, mostly to learn how AI tools actually
+            get built. I had a more specific reason to say yes: I already knew, from our upcoming
+            <a href="case-study-volleyball-consolidation.html">Volleyball Consolidation</a> effort, that we were
+            going to need a search bar that could search <em>and</em> filter. Skunkworks gave us a week to find
+            out if AI could do that well before we had to commit to it on a real roadmap.
+          </p>
+        </div>
+
+        <div class="moment">
+          <p class="moment__kicker">Shipping out of a hackathon</p>
+          <p class="moment__lead">
+            We didn't just want a good demo for the skunkworks showcase &mdash; we wanted it <em>live</em>.
+          </p>
+          <div class="moment__body">
+            <p>
+              In one week, with seven engineers and two QA on the project, we built a working V1 of the
+              command bar. That's an unusually large team for a skunkworks project, but it meant we could
+              build something real instead of a throwaway prototype.
+            </p>
+            <p>
+              Because we already knew this was solving a problem we'd have to solve anyway, we made the case
+              to our PM to skip the usual "skunkworks project quietly dies after the showcase" fate and ship
+              V1 straight to production. We got the yes, and shipped it.
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <h2>Eight months of listening before building more</h2>
+          <p>
+            Instead of jumping straight into a V2 roadmap, I spent about eight months on this as a side-of-desk
+            project &mdash; watching the search prompts people actually typed into the command bar. Rather than
+            guess what people wanted from an AI search tool, I let real usage tell me: what people searched
+            for, where they got stuck, what phrasing they expected to work and didn't.
+          </p>
+          <p class="text-muted">
+            <em>Prompt patterns and specific findings from this research are going into V2, below.</em>
+          </p>
+        </div>
+
+        <div>
+          <h2>Where this is headed</h2>
+          <p>
+            This project is still active &mdash; V1 shipped, V2 is being scoped from eight months of real usage
+            data, and V3 is already on the radar.
+          </p>
+
+          <div class="roadmap">
+            <div class="roadmap__item roadmap__item--shipped">
+              <span class="roadmap__dot"></span>
+              <div class="roadmap__header">
+                <h3 class="roadmap__version">V1</h3>
+                <span class="roadmap__status">Shipped</span>
+              </div>
+              <p class="roadmap__body">
+                Built in one skunkworks week and shipped to production &mdash; AI-powered search with early
+                support for filtering, aimed at the need we knew Volleyball Consolidation would create.
+              </p>
+            </div>
+
+            <div class="roadmap__item roadmap__item--active">
+              <span class="roadmap__dot"></span>
+              <div class="roadmap__header">
+                <h3 class="roadmap__version">V2</h3>
+                <span class="roadmap__status">In progress</span>
+              </div>
+              <p class="roadmap__body">
+                In progress &mdash; shaped by eight months of watching real search prompts come in. More detail
+                coming here soon.
+              </p>
+            </div>
+
+            <div class="roadmap__item roadmap__item--upcoming">
+              <span class="roadmap__dot"></span>
+              <div class="roadmap__header">
+                <h3 class="roadmap__version">V3</h3>
+                <span class="roadmap__status">Upcoming</span>
+              </div>
+              <p class="roadmap__body">
+                Not yet scoped. Check back for what's next.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+
+  <script src="js/include.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Volleyball Consolidation — Hannah Monk</title>
+  <meta name="description" content="A multi-part case study on consolidating Hudl's volleyball products: reports, video overlays and playback, and frictionless submission." />
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400..700&display=swap" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/utilities.css" />
+  <script>
+    (function () {
+      var stored = localStorage.getItem("theme");
+      var dark = stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      if (dark) document.documentElement.classList.add("theme-dark");
+      var page = document.location.pathname.split("/").pop();
+      if (page.indexOf("case-study") === 0 || localStorage.getItem("nav-collapsed") === "true") {
+        document.documentElement.classList.add("nav-collapsed");
+      }
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div data-include="partials/header.html"></div>
+
+  <main id="main">
+    <section class="case-hero">
+      <div class="case-hero__intro">
+        <a class="back-link" href="projects.html" data-back-link>
+          <svg class="back-link__icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+          <span data-back-link-label>Back to all projects</span>
+        </a>
+
+        <h1 class="case-hero__title">Volleyball Consolidation</h1>
+        <p class="case-hero__tagline">One product out of several, told in three parts</p>
+        <p class="case-hero__client">Hudl</p>
+
+        <p class="case-hero__summary">
+          Overview coming soon &mdash; the shared context behind all three parts: why volleyball needed
+          consolidating, the constraints we worked under, and my role across the effort.
+        </p>
+      </div>
+
+      <div class="case-hero__media">
+        <img src="https://placehold.co/1200x900?text=Volleyball+Consolidation" alt="" />
+      </div>
+
+      <dl class="fact-grid">
+        <div class="fact">
+          <dt class="fact__label">Experience goal</dt>
+          <dd class="fact__value">Coming soon.</dd>
+        </div>
+        <div class="fact">
+          <dt class="fact__label">Business goal</dt>
+          <dd class="fact__value">Coming soon.</dd>
+        </div>
+        <div class="fact">
+          <dt class="fact__label">Timeline</dt>
+          <dd class="fact__value">Coming soon.</dd>
+        </div>
+        <div class="fact">
+          <dt class="fact__label">Team</dt>
+          <dd class="fact__value">Coming soon.</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="container section">
+      <div class="case-body">
+        <h2>The effort</h2>
+        <p class="text-muted">
+          Shared context coming soon &mdash; the problem behind the consolidation, how the work was scoped,
+          and how the three parts below relate to each other.
+        </p>
+      </div>
+
+      <!-- Each part is its own case study so none of them has to be read
+           end-to-end to make sense. Reordering these tiles renumbers them
+           automatically (see .chapter__index in components.css) — but the
+           .series-bar position pills on the chapter pages themselves are
+           hardcoded, so those need updating by hand to match. -->
+      <div class="section-heading mt-lg">
+        <h2 class="section-heading__title">Read it in parts</h2>
+      </div>
+
+      <div class="chapters">
+        <article class="chapter">
+          <p class="chapter__index"></p>
+          <h3 class="chapter__title"><a href="case-study-volleyball-reports.html">Reports</a></h3>
+          <p class="chapter__text">Coming soon.</p>
+        </article>
+
+        <article class="chapter">
+          <p class="chapter__index"></p>
+          <h3 class="chapter__title"><a href="case-study-volleyball-playback.html">Video overlays &amp; playback</a></h3>
+          <p class="chapter__text">Coming soon.</p>
+        </article>
+
+        <article class="chapter">
+          <p class="chapter__index"></p>
+          <h3 class="chapter__title"><a href="case-study-volleyball-submission.html">Frictionless submission</a></h3>
+          <p class="chapter__text">Coming soon.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+
+  <script src="js/include.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

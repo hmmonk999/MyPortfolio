@@ -164,6 +164,59 @@
         </div>
       </dl>
 
+      <h2>Bento grid</h2>
+      <p class="text-muted">
+        Two columns below 900px, four above. Tiles claim their space with
+        <code>--wide</code> (two columns), <code>--full</code> (the whole
+        row) and <code>--tall</code> (two rows); the wall has to tile
+        cleanly at both widths, so a gap means a span needs changing.
+        <code>--panel</code> adds the roomier padding a tile needs when
+        it holds a whole block rather than a single fact.
+      </p>
+      <div class="bento mb-lg">
+        <div class="bento__tile bento__tile--wide bento__tile--tall">
+          <h3 class="bento__title">--wide --tall</h3>
+          <p class="bento__text">
+            The big tile. Two columns across, two rows down — the only one
+            with room for real prose.
+          </p>
+        </div>
+        <div class="bento__tile bento__tile--tall">
+          <p class="bento__label">--tall</p>
+          <p class="bento__text bento__foot">
+            One column, two rows. <code>--foot</code> pins this to the
+            bottom.
+          </p>
+        </div>
+        <div class="bento__tile">
+          <p class="bento__stat">42</p>
+          <p class="bento__text bento__foot">A stat and its caption</p>
+        </div>
+        <div class="bento__tile bento__tile--accent">
+          <p class="bento__label">--accent</p>
+          <p class="bento__text">One per wall.</p>
+        </div>
+        <div class="bento__tile bento__tile--wide">
+          <p class="bento__label">--wide</p>
+          <ul class="bento__list bento__foot">
+            <li>A ruled list of one-liners</li>
+            <li>For a tile that holds three facts</li>
+          </ul>
+        </div>
+        <div class="bento__tile bento__tile--wide">
+          <p class="bento__label">Label</p>
+          <p class="bento__text bento__foot">Label and value, the default tile.</p>
+        </div>
+        <div class="bento__tile bento__tile--full bento__tile--panel">
+          <p class="bento__label">--full --panel</p>
+          <p class="bento__text">
+            The whole row, with the roomier padding. For a tile holding a
+            block of its own — a timeline, a quote switcher, a table —
+            rather than one fact.
+          </p>
+        </div>
+      </div>
+
       <h2>Spacing scale</h2>
       <div class="stack" style="--gap: var(--space-2xs);">
         <div style="background: var(--color-accent-soft); width: var(--space-3xs); height: 12px;"></div>

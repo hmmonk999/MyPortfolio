@@ -44,9 +44,7 @@
       <h1 class="hero__title">Senior Product <em>Designer</em></h1>
       <div class="hero__meta">
         <p class="hero__lead">
-          I'm Hannah Monk, a senior UX designer focused on complex B2B and SaaS
-          products. I lead research, wireframing, and interaction design from
-          early discovery through shipped, measurable outcomes.
+          I’m a product designer who likes solving the messy problems behind the scenes — the workflows, systems, and information structures that make products work. I specialize in turning complex data and processes into experiences that help people find clarity and take action.
         </p>
         <div class="hero__aside">
           <a class="btn btn--primary" href="projects.html">View my work</a>
@@ -56,57 +54,86 @@
     </section>
 
     <!-- Selected work: one featured case study, then the rest 2-up.
+         This is a curated subset — the full list lives on projects.html.
          To feature a different project, move the card--feature class
-         (and its .card__flag / .card__cue) onto that article and drop
-         this one back into the grid below. -->
+         (and its .card__flag) onto that article and drop this one back
+         into the grid below; an ordinary feature card also wants a
+         .card__cue row, which the series card replaces with its
+         per-part links. -->
     <section id="projects" class="section container">
       <div class="section-heading">
         <h2 class="section-heading__title">Selected work</h2>
         <a class="btn btn--ghost" href="projects.html">See all projects &rarr;</a>
       </div>
 
-      <article class="card card--project card--feature" data-project-card data-tags="research,mobile">
-        <div class="card__media">
-          <img src="https://placehold.co/960x600?text=Project+One" alt="" />
+      <!-- One project split across three case studies, in the lead slot.
+           The triptych media and the numbered part rows are what carry
+           the "three in one" read; see .card--feature .card__parts and
+           .card__media--triptych in components.css. -->
+      <article class="card card--project card--feature card--series" data-project-card data-tags="research,web">
+        <div class="card__media card__media--triptych">
+          <span class="card__panel"><img src="https://placehold.co/640x360?text=Reports" alt="" /></span>
+          <span class="card__panel"><img src="https://placehold.co/640x360?text=Overlays+%26+Playback" alt="" /></span>
+          <span class="card__panel"><img src="https://placehold.co/640x360?text=Submission" alt="" /></span>
         </div>
         <div class="card__body">
-          <p class="card__flag">Featured case study</p>
+          <p class="card__flag">Featured case study &middot; 3 parts</p>
           <div class="card__tags">
             <span class="tag">UX Research</span>
-            <span class="tag tag--neutral">Mobile</span>
+            <span class="tag tag--neutral">Web App</span>
           </div>
-          <h3 class="card__title"><a href="case-study-template.html">Redesigning onboarding for a fintech app</a></h3>
-          <p class="card__excerpt">Cut time-to-first-value by 40% through a research-led onboarding redesign.</p>
-          <span class="card__cue">Read the case study</span>
+          <h3 class="card__title"><a href="case-study-volleyball-consolidation.html">Volleyball Consolidation</a></h3>
+          <p class="card__excerpt">
+            Several volleyball products folded into one. Too big for a single read, so it's told in three
+            case studies that each stand on their own.
+          </p>
+          <ul class="card__parts">
+            <li class="card__part">
+              <a class="card__part-link" href="case-study-volleyball-reports.html">
+                <span class="card__part-index">Part 1</span> Reports
+              </a>
+            </li>
+            <li class="card__part">
+              <a class="card__part-link" href="case-study-volleyball-playback.html">
+                <span class="card__part-index">Part 2</span> Video overlays &amp; playback
+              </a>
+            </li>
+            <li class="card__part">
+              <a class="card__part-link" href="case-study-volleyball-submission.html">
+                <span class="card__part-index">Part 3</span> Frictionless submission
+              </a>
+            </li>
+          </ul>
         </div>
       </article>
 
       <div class="grid grid--2up mt-lg">
-        <article class="card card--project" data-project-card data-tags="ixd,web">
+        <article class="card card--project" data-project-card data-tags="ai,web">
           <div class="card__media">
-            <img src="https://placehold.co/640x400?text=Project+Two" alt="" />
+            <img src="https://placehold.co/640x400?text=AI+Command+Bar" alt="" />
           </div>
           <div class="card__body">
             <div class="card__tags">
-              <span class="tag">Interaction Design</span>
+              <span class="tag">AI</span>
               <span class="tag tag--neutral">Web App</span>
             </div>
-            <h3 class="card__title"><a href="case-study-template.html">Simplifying a B2B checkout flow</a></h3>
-            <p class="card__excerpt">Reduced checkout abandonment by streamlining a 7-step flow into 3.</p>
+            <h3 class="card__title"><a href="case-study-ai-command-bar.html">Built in a week, still growing</a></h3>
+            <p class="card__excerpt">A skunkworks bet on AI search that turned into a real, shipped tool &mdash; and eight months of watching how people actually used it.</p>
           </div>
         </article>
 
-        <article class="card card--project" data-project-card data-tags="systems,web">
+        <article class="card card--project card--upcoming" data-project-card data-tags="ai,internal">
           <div class="card__media">
-            <img src="https://placehold.co/640x400?text=Project+Three" alt="" />
+            <img src="https://placehold.co/640x400?text=AI-First+Breakdown" alt="" />
           </div>
           <div class="card__body">
+            <p class="card__flag">Coming soon</p>
             <div class="card__tags">
-              <span class="tag">Design Systems</span>
-              <span class="tag tag--neutral">Web App</span>
+              <span class="tag tag--neutral">Internal Tools</span>
+              <span class="tag tag--neutral">AI</span>
             </div>
-            <h3 class="card__title"><a href="case-study-template.html">Building a shared design system</a></h3>
-            <p class="card__excerpt">Unified 4 product teams around one component library, cutting design debt.</p>
+            <h3 class="card__title"><a href="case-study-ai-breakdown.html">AI-First, Human Reviewed Breakdown</a></h3>
+            <p class="card__excerpt">Hudl's first fully AI-powered breakdown service, reviewed by analysts instead of tagged by hand.</p>
           </div>
         </article>
       </div>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frictionless Submission — Volleyball Consolidation — Hannah Monk</title>
+  <meta name="description" content="Part 3 of the Volleyball Consolidation case study: frictionless submission." />
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400..700&display=swap" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/utilities.css" />
+  <script>
+    (function () {
+      var stored = localStorage.getItem("theme");
+      var dark = stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      if (dark) document.documentElement.classList.add("theme-dark");
+      var page = document.location.pathname.split("/").pop();
+      if (page.indexOf("case-study") === 0 || localStorage.getItem("nav-collapsed") === "true") {
+        document.documentElement.classList.add("nav-collapsed");
+      }
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div data-include="partials/header.html"></div>
+
+  <main id="main">
+    <section class="container section">
+      <div class="series-bar">
+        <a class="series-bar__parent" href="case-study-volleyball-consolidation.html">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+          Volleyball Consolidation
+        </a>
+        <span class="series-bar__position">Part 3 of 3</span>
+      </div>
+
+      <h1>Frictionless submission</h1>
+      <p class="text-muted">Write-up coming soon.</p>
+
+      <nav class="pager" aria-label="Series chapters">
+        <a class="pager__link" href="case-study-volleyball-playback.html">
+          <span class="pager__label">Previous &mdash; Part 2</span>
+          <span class="pager__title">Video overlays &amp; playback</span>
+        </a>
+      </nav>
+    </section>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+
+  <script src="js/include.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
