@@ -51,202 +51,302 @@
         <h1 class="section-heading__title">About me</h1>
       </div>
 
-      <div class="detail-layout">
-        <div class="stack" style="--gap: var(--space-lg);">
-          <p>
-            I'm Hannah Monk, a senior UX designer with N years of experience
-            designing complex B2B and consumer products. I care about
-            grounding design decisions in research, and about leaving
-            behind systems — not just screens — that teams can build on.
+      <!--
+        The bento wall. Every tile below is a placeholder — swap the copy
+        for your own facts, and see the ".bento" block in
+        css/components.css for the span modifiers (--wide / --full /
+        --tall) and what changing one costs.
+      -->
+      <div class="bento">
+        <div class="bento__tile bento__tile--intro bento__tile--wide bento__tile--tall">
+          <h2 class="bento__title">Hi, I’m Hannah.</h2>
+          <p class="bento__text">
+            I’m a product designer who likes solving the messy problems behind the scenes — the workflows, systems, and information structures that make products work. I specialize in turning complex data and processes into experiences that help people find clarity and take action.
           </p>
-          <p>
+          <p class="bento__text">
             Replace this with your real bio: your background, the kinds of
             problems you like solving, and what you're looking for next.
           </p>
-
-          <h2 class="mt-lg">Experience</h2>
-          <ol class="timeline">
-            <li class="timeline__company">
-              <div class="timeline__company-header">
-                <span class="timeline__company-range">2017 &ndash; Present</span>
-                <h3 class="timeline__company-name">Company Name</h3>
-              </div>
-              <ol class="timeline__roles">
-                <li class="timeline__role">
-                  <span class="timeline__dot" aria-hidden="true"></span>
-                  <div class="timeline__role-body">
-                    <span class="timeline__role-title">Senior UX Designer</span>
-                    <span class="timeline__role-range">4 yrs</span>
-                  </div>
-                </li>
-                <li class="timeline__role">
-                  <span class="timeline__dot" aria-hidden="true"></span>
-                  <div class="timeline__role-body">
-                    <span class="timeline__role-title">UX Designer</span>
-                    <span class="timeline__role-range">3 yrs</span>
-                  </div>
-                </li>
-                <li class="timeline__role">
-                  <span class="timeline__dot" aria-hidden="true"></span>
-                  <div class="timeline__role-body">
-                    <span class="timeline__role-title">Junior Designer</span>
-                    <span class="timeline__role-range">2 yrs</span>
-                  </div>
-                </li>
-              </ol>
-            </li>
-
-            <li class="timeline__company">
-              <div class="timeline__company-header">
-                <span class="timeline__company-range">2015 &ndash; 2017</span>
-                <h3 class="timeline__company-name">Previous Company</h3>
-              </div>
-              <ol class="timeline__roles">
-                <li class="timeline__role">
-                  <span class="timeline__dot" aria-hidden="true"></span>
-                  <div class="timeline__role-body">
-                    <span class="timeline__role-title">Design Intern</span>
-                    <span class="timeline__role-range">2 yrs</span>
-                  </div>
-                </li>
-              </ol>
-            </li>
-          </ol>
         </div>
 
-        <aside class="stack" style="--gap: var(--space-lg);">
-          <div class="card__media" style="border-radius: var(--radius-lg); aspect-ratio: 1;">
-            <img src="https://placehold.co/480x480?text=Headshot" alt="Portrait of Hannah Monk" />
+        <div class="bento__tile bento__tile--media bento__tile--tall">
+          <img src="https://placehold.co/480x960?text=Headshot" alt="Portrait of Hannah Monk" />
+        </div>
+
+        <div class="bento__tile">
+          <p class="bento__stat">12</p>
+          <p class="bento__text bento__foot">years designing software people use at work</p>
+        </div>
+
+        <div class="bento__tile">
+          <span class="bento__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+          </span>
+          <p class="bento__label">Based in</p>
+          <p class="bento__text bento__foot">Lincoln, Nebraska</p>
+        </div>
+
+        <div class="bento__tile bento__tile--accent bento__tile--wide">
+          <p class="bento__label">Currently</p>
+          <p class="bento__text">
+            Designing data-heavy workflows for teams who’d rather be doing
+            anything else than reading a dashboard — and teaching myself
+            bookbinding on the weekends, badly.
+          </p>
+        </div>
+
+        <div class="bento__tile">
+          <span class="bento__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+              <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22V4.5Z" />
+              <path d="M4 19.5h16" />
+            </svg>
+          </span>
+          <p class="bento__label">Reading</p>
+          <p class="bento__text bento__foot"><em>Thinking in Systems</em> — Donella Meadows</p>
+        </div>
+
+        <div class="bento__tile">
+          <span class="bento__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+              <path d="M4 8h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8Z" />
+              <path d="M17 9h1.5a2.5 2.5 0 0 1 0 5H17" />
+              <path d="M7 2v3M11 2v3" />
+            </svg>
+          </span>
+          <p class="bento__label">Fuelled by</p>
+          <p class="bento__text bento__foot">An oat cortado, no sugar, roughly hourly</p>
+        </div>
+
+        <div class="bento__tile bento__tile--wide">
+          <h2 class="bento__label">Skills</h2>
+          <div class="cluster bento__foot">
+            <span class="tag tag--neutral">UX Research</span>
+            <span class="tag tag--neutral">Interaction Design</span>
+            <span class="tag tag--neutral">Design Systems</span>
+            <span class="tag tag--neutral">Prototyping</span>
+            <span class="tag tag--neutral">Usability Testing</span>
+            <span class="tag tag--neutral">Figma</span>
           </div>
+        </div>
 
-          <div>
-            <h2>Skills</h2>
-            <div class="cluster">
-              <span class="tag tag--neutral">UX Research</span>
-              <span class="tag tag--neutral">Interaction Design</span>
-              <span class="tag tag--neutral">Design Systems</span>
-              <span class="tag tag--neutral">Prototyping</span>
-              <span class="tag tag--neutral">Usability Testing</span>
-              <span class="tag tag--neutral">Figma</span>
-            </div>
+        <div class="bento__tile bento__tile--wide">
+          <h2 class="bento__label">Ask me about</h2>
+          <ul class="bento__list bento__foot">
+            <li>Naming things in a design system without starting a war</li>
+            <li>Why your survey data is probably lying to you</li>
+            <li>The correct way to load a dishwasher</li>
+          </ul>
+        </div>
+
+        <div class="bento__tile bento__tile--wide">
+          <h2 class="bento__label">Off the clock</h2>
+          <ul class="bento__list bento__foot">
+            <li>Running the same trail four times a week</li>
+            <li>Hunting thrift-store ceramics I have no shelf space for</li>
+            <li>Losing at board games with excellent grace</li>
+          </ul>
+        </div>
+
+        <div class="bento__tile bento__tile--wide">
+          <p class="bento__label">Started out</p>
+          <p class="bento__text">
+            Making gig posters for my brother’s band on a copier that
+            jammed every third page. Still the fastest feedback loop
+            I’ve ever worked in.
+          </p>
+        </div>
+
+        <div class="bento__tile bento__tile--full bento__tile--gallery">
+          <div class="bento__gallery">
+            <img src="assets/img/about-gallery-1.jpg" alt="Working the Hudl volleyball booth at a trade show" />
+            <img src="assets/img/about-gallery-2.jpg" alt="Feeding a giraffe at the zoo" />
+            <img src="assets/img/about-gallery-3.jpg" alt="Hannah and her husband on their wedding day" />
           </div>
-        </aside>
-      </div>
-
-      <div class="testimonial">
-        <div class="testimonial__avatars" role="tablist" aria-label="Testimonials">
-          <button type="button" class="testimonial__avatar is-active" role="tab" aria-selected="true" id="testimonial-tab-0" aria-controls="testimonial-panel-0" data-testimonial-tab="0" style="--avatar-color: #ef6a1e;">
-            <span class="testimonial__avatar-inner">
-              <span class="testimonial__avatar-media"></span>
-              <span class="testimonial__badge">Boss</span>
-            </span>
-          </button>
-          <button type="button" class="testimonial__avatar" role="tab" aria-selected="false" id="testimonial-tab-1" aria-controls="testimonial-panel-1" data-testimonial-tab="1" style="--avatar-color: #f6b58c;">
-            <span class="testimonial__avatar-inner">
-              <span class="testimonial__avatar-media"></span>
-              <span class="testimonial__badge">Dev</span>
-            </span>
-          </button>
-          <button type="button" class="testimonial__avatar" role="tab" aria-selected="false" id="testimonial-tab-2" aria-controls="testimonial-panel-2" data-testimonial-tab="2" style="--avatar-color: #6f93a1;">
-            <span class="testimonial__avatar-inner">
-              <span class="testimonial__avatar-media"></span>
-              <span class="testimonial__badge">Boss</span>
-            </span>
-          </button>
-          <button type="button" class="testimonial__avatar" role="tab" aria-selected="false" id="testimonial-tab-3" aria-controls="testimonial-panel-3" data-testimonial-tab="3" style="--avatar-color: #b9c7ee;">
-            <span class="testimonial__avatar-inner">
-              <span class="testimonial__avatar-media"></span>
-              <span class="testimonial__badge">Client</span>
-            </span>
-          </button>
-          <button type="button" class="testimonial__avatar" role="tab" aria-selected="false" id="testimonial-tab-4" aria-controls="testimonial-panel-4" data-testimonial-tab="4" style="--avatar-color: #6d9a9a;">
-            <span class="testimonial__avatar-inner">
-              <span class="testimonial__avatar-media"></span>
-              <span class="testimonial__badge">Boss</span>
-            </span>
-          </button>
         </div>
 
-        <div class="testimonial__rail" aria-hidden="true">
-          <button type="button" class="testimonial__rail-segment is-active" tabindex="-1" data-testimonial-segment="0" style="--avatar-color: #ef6a1e;"></button>
-          <button type="button" class="testimonial__rail-segment" tabindex="-1" data-testimonial-segment="1" style="--avatar-color: #f6b58c;"></button>
-          <button type="button" class="testimonial__rail-segment" tabindex="-1" data-testimonial-segment="2" style="--avatar-color: #6f93a1;"></button>
-          <button type="button" class="testimonial__rail-segment" tabindex="-1" data-testimonial-segment="3" style="--avatar-color: #b9c7ee;"></button>
-          <button type="button" class="testimonial__rail-segment" tabindex="-1" data-testimonial-segment="4" style="--avatar-color: #6d9a9a;"></button>
+        <div class="bento__tile bento__tile--full bento__tile--panel">
+          <h2 class="bento__label">Experience</h2>
+          <div class="detail-layout">
+            <ol class="timeline">
+              <li class="timeline__company">
+                <div class="timeline__company-header">
+                  <span class="timeline__company-range">2017 &ndash; Present</span>
+                  <h3 class="timeline__company-name">Company Name</h3>
+                </div>
+                <ol class="timeline__roles">
+                  <li class="timeline__role">
+                    <span class="timeline__dot" aria-hidden="true"></span>
+                    <div class="timeline__role-body">
+                      <span class="timeline__role-title">Senior UX Designer</span>
+                      <span class="timeline__role-range">4 yrs</span>
+                    </div>
+                  </li>
+                  <li class="timeline__role">
+                    <span class="timeline__dot" aria-hidden="true"></span>
+                    <div class="timeline__role-body">
+                      <span class="timeline__role-title">UX Designer</span>
+                      <span class="timeline__role-range">3 yrs</span>
+                    </div>
+                  </li>
+                  <li class="timeline__role">
+                    <span class="timeline__dot" aria-hidden="true"></span>
+                    <div class="timeline__role-body">
+                      <span class="timeline__role-title">Junior Designer</span>
+                      <span class="timeline__role-range">2 yrs</span>
+                    </div>
+                  </li>
+                </ol>
+              </li>
+
+              <li class="timeline__company">
+                <div class="timeline__company-header">
+                  <span class="timeline__company-range">2015 &ndash; 2017</span>
+                  <h3 class="timeline__company-name">Previous Company</h3>
+                </div>
+                <ol class="timeline__roles">
+                  <li class="timeline__role">
+                    <span class="timeline__dot" aria-hidden="true"></span>
+                    <div class="timeline__role-body">
+                      <span class="timeline__role-title">Design Intern</span>
+                      <span class="timeline__role-range">2 yrs</span>
+                    </div>
+                  </li>
+                </ol>
+              </li>
+            </ol>
+
+            <aside class="stack" style="--gap: var(--space-2xs);">
+              <p class="bento__label">Looking for next</p>
+              <p class="bento__text">
+                Replace this with what you actually want your next role to
+                be — the kind of team, the kind of problem, the thing you
+                want more of than you get now.
+              </p>
+            </aside>
+          </div>
         </div>
 
-        <div class="testimonial__content">
-          <h2 class="testimonial__heading">What others say about me</h2>
-          <div class="testimonial__panels">
-            <div class="testimonial__panel" id="testimonial-panel-0" role="tabpanel" aria-labelledby="testimonial-tab-0" data-testimonial-panel="0">
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Suspendisse porta felis risus, non placerat lacus rutrum
-                congue. Vivamus porttitor odio mi, sed convallis enim cursus
-                non. Nulla sed arcu velit. Aenean cursus eu velit ac laoreet.
-              </p>
-              <p>
-                Phasellus in massa vitae urna dignissim dictum. Nam rutrum
-                vestibulum augue, vel varius leo mattis non. Morbi vitae
-                nunc porttitor nunc fermentum feugiat lobortis in tortor.
-              </p>
-              <p class="testimonial__attribution"><strong>Alex Rivera</strong>, Engineering Manager</p>
+        <div class="bento__tile bento__tile--full bento__tile--panel">
+          <h2 class="bento__label">What others say about me</h2>
+          <div class="testimonial">
+            <div class="testimonial__avatars" role="tablist" aria-label="Testimonials">
+              <button type="button" class="testimonial__avatar is-active" role="tab" aria-selected="true" id="testimonial-tab-0" aria-controls="testimonial-panel-0" data-testimonial-tab="0" style="--avatar-color: #ef6a1e;">
+                <span class="testimonial__avatar-inner">
+                  <span class="testimonial__avatar-media"></span>
+                  <span class="testimonial__badge">Boss</span>
+                </span>
+              </button>
+              <button type="button" class="testimonial__avatar" role="tab" aria-selected="false" id="testimonial-tab-1" aria-controls="testimonial-panel-1" data-testimonial-tab="1" style="--avatar-color: #f6b58c;">
+                <span class="testimonial__avatar-inner">
+                  <span class="testimonial__avatar-media"></span>
+                  <span class="testimonial__badge">Dev</span>
+                </span>
+              </button>
+              <button type="button" class="testimonial__avatar" role="tab" aria-selected="false" id="testimonial-tab-2" aria-controls="testimonial-panel-2" data-testimonial-tab="2" style="--avatar-color: #6f93a1;">
+                <span class="testimonial__avatar-inner">
+                  <span class="testimonial__avatar-media"></span>
+                  <span class="testimonial__badge">Boss</span>
+                </span>
+              </button>
+              <button type="button" class="testimonial__avatar" role="tab" aria-selected="false" id="testimonial-tab-3" aria-controls="testimonial-panel-3" data-testimonial-tab="3" style="--avatar-color: #b9c7ee;">
+                <span class="testimonial__avatar-inner">
+                  <span class="testimonial__avatar-media"></span>
+                  <span class="testimonial__badge">Client</span>
+                </span>
+              </button>
+              <button type="button" class="testimonial__avatar" role="tab" aria-selected="false" id="testimonial-tab-4" aria-controls="testimonial-panel-4" data-testimonial-tab="4" style="--avatar-color: #6d9a9a;">
+                <span class="testimonial__avatar-inner">
+                  <span class="testimonial__avatar-media"></span>
+                  <span class="testimonial__badge">Boss</span>
+                </span>
+              </button>
             </div>
-            <div class="testimonial__panel" id="testimonial-panel-1" role="tabpanel" aria-labelledby="testimonial-tab-1" data-testimonial-panel="1" hidden>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Suspendisse porta felis risus, non placerat lacus rutrum
-                congue. Vivamus porttitor odio mi, sed convallis enim cursus
-                non. Nulla sed arcu velit. Aenean cursus eu velit ac laoreet.
-              </p>
-              <p>
-                Phasellus in massa vitae urna dignissim dictum. Nam rutrum
-                vestibulum augue, vel varius leo mattis non. Morbi vitae
-                nunc porttitor nunc fermentum feugiat lobortis in tortor.
-              </p>
-              <p class="testimonial__attribution"><strong>Jordan Lee</strong>, Senior Developer</p>
+
+            <div class="testimonial__rail" aria-hidden="true">
+              <button type="button" class="testimonial__rail-segment is-active" tabindex="-1" data-testimonial-segment="0" style="--avatar-color: #ef6a1e;"></button>
+              <button type="button" class="testimonial__rail-segment" tabindex="-1" data-testimonial-segment="1" style="--avatar-color: #f6b58c;"></button>
+              <button type="button" class="testimonial__rail-segment" tabindex="-1" data-testimonial-segment="2" style="--avatar-color: #6f93a1;"></button>
+              <button type="button" class="testimonial__rail-segment" tabindex="-1" data-testimonial-segment="3" style="--avatar-color: #b9c7ee;"></button>
+              <button type="button" class="testimonial__rail-segment" tabindex="-1" data-testimonial-segment="4" style="--avatar-color: #6d9a9a;"></button>
             </div>
-            <div class="testimonial__panel" id="testimonial-panel-2" role="tabpanel" aria-labelledby="testimonial-tab-2" data-testimonial-panel="2" hidden>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Suspendisse porta felis risus, non placerat lacus rutrum
-                congue. Vivamus porttitor odio mi, sed convallis enim cursus
-                non. Nulla sed arcu velit. Aenean cursus eu velit ac laoreet.
-              </p>
-              <p>
-                Phasellus in massa vitae urna dignissim dictum. Nam rutrum
-                vestibulum augue, vel varius leo mattis non. Morbi vitae
-                nunc porttitor nunc fermentum feugiat lobortis in tortor.
-              </p>
-              <p class="testimonial__attribution"><strong>Sam Okafor</strong>, Director of Product</p>
-            </div>
-            <div class="testimonial__panel" id="testimonial-panel-3" role="tabpanel" aria-labelledby="testimonial-tab-3" data-testimonial-panel="3" hidden>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Suspendisse porta felis risus, non placerat lacus rutrum
-                congue. Vivamus porttitor odio mi, sed convallis enim cursus
-                non. Nulla sed arcu velit. Aenean cursus eu velit ac laoreet.
-              </p>
-              <p>
-                Phasellus in massa vitae urna dignissim dictum. Nam rutrum
-                vestibulum augue, vel varius leo mattis non. Morbi vitae
-                nunc porttitor nunc fermentum feugiat lobortis in tortor.
-              </p>
-              <p class="testimonial__attribution"><strong>Priya Nandan</strong>, VP of Operations, Client Co.</p>
-            </div>
-            <div class="testimonial__panel" id="testimonial-panel-4" role="tabpanel" aria-labelledby="testimonial-tab-4" data-testimonial-panel="4" hidden>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Suspendisse porta felis risus, non placerat lacus rutrum
-                congue. Vivamus porttitor odio mi, sed convallis enim cursus
-                non. Nulla sed arcu velit. Aenean cursus eu velit ac laoreet.
-              </p>
-              <p>
-                Phasellus in massa vitae urna dignissim dictum. Nam rutrum
-                vestibulum augue, vel varius leo mattis non. Morbi vitae
-                nunc porttitor nunc fermentum feugiat lobortis in tortor.
-              </p>
-              <p class="testimonial__attribution"><strong>Morgan Blake</strong>, VP of Design</p>
+
+            <div class="testimonial__content">
+              <div class="testimonial__panels">
+                <div class="testimonial__panel" id="testimonial-panel-0" role="tabpanel" aria-labelledby="testimonial-tab-0" data-testimonial-panel="0">
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Suspendisse porta felis risus, non placerat lacus rutrum
+                    congue. Vivamus porttitor odio mi, sed convallis enim cursus
+                    non. Nulla sed arcu velit. Aenean cursus eu velit ac laoreet.
+                  </p>
+                  <p>
+                    Phasellus in massa vitae urna dignissim dictum. Nam rutrum
+                    vestibulum augue, vel varius leo mattis non. Morbi vitae
+                    nunc porttitor nunc fermentum feugiat lobortis in tortor.
+                  </p>
+                  <p class="testimonial__attribution"><strong>Alex Rivera</strong>, Engineering Manager</p>
+                </div>
+                <div class="testimonial__panel" id="testimonial-panel-1" role="tabpanel" aria-labelledby="testimonial-tab-1" data-testimonial-panel="1" hidden>
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Suspendisse porta felis risus, non placerat lacus rutrum
+                    congue. Vivamus porttitor odio mi, sed convallis enim cursus
+                    non. Nulla sed arcu velit. Aenean cursus eu velit ac laoreet.
+                  </p>
+                  <p>
+                    Phasellus in massa vitae urna dignissim dictum. Nam rutrum
+                    vestibulum augue, vel varius leo mattis non. Morbi vitae
+                    nunc porttitor nunc fermentum feugiat lobortis in tortor.
+                  </p>
+                  <p class="testimonial__attribution"><strong>Jordan Lee</strong>, Senior Developer</p>
+                </div>
+                <div class="testimonial__panel" id="testimonial-panel-2" role="tabpanel" aria-labelledby="testimonial-tab-2" data-testimonial-panel="2" hidden>
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Suspendisse porta felis risus, non placerat lacus rutrum
+                    congue. Vivamus porttitor odio mi, sed convallis enim cursus
+                    non. Nulla sed arcu velit. Aenean cursus eu velit ac laoreet.
+                  </p>
+                  <p>
+                    Phasellus in massa vitae urna dignissim dictum. Nam rutrum
+                    vestibulum augue, vel varius leo mattis non. Morbi vitae
+                    nunc porttitor nunc fermentum feugiat lobortis in tortor.
+                  </p>
+                  <p class="testimonial__attribution"><strong>Sam Okafor</strong>, Director of Product</p>
+                </div>
+                <div class="testimonial__panel" id="testimonial-panel-3" role="tabpanel" aria-labelledby="testimonial-tab-3" data-testimonial-panel="3" hidden>
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Suspendisse porta felis risus, non placerat lacus rutrum
+                    congue. Vivamus porttitor odio mi, sed convallis enim cursus
+                    non. Nulla sed arcu velit. Aenean cursus eu velit ac laoreet.
+                  </p>
+                  <p>
+                    Phasellus in massa vitae urna dignissim dictum. Nam rutrum
+                    vestibulum augue, vel varius leo mattis non. Morbi vitae
+                    nunc porttitor nunc fermentum feugiat lobortis in tortor.
+                  </p>
+                  <p class="testimonial__attribution"><strong>Priya Nandan</strong>, VP of Operations, Client Co.</p>
+                </div>
+                <div class="testimonial__panel" id="testimonial-panel-4" role="tabpanel" aria-labelledby="testimonial-tab-4" data-testimonial-panel="4" hidden>
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Suspendisse porta felis risus, non placerat lacus rutrum
+                    congue. Vivamus porttitor odio mi, sed convallis enim cursus
+                    non. Nulla sed arcu velit. Aenean cursus eu velit ac laoreet.
+                  </p>
+                  <p>
+                    Phasellus in massa vitae urna dignissim dictum. Nam rutrum
+                    vestibulum augue, vel varius leo mattis non. Morbi vitae
+                    nunc porttitor nunc fermentum feugiat lobortis in tortor.
+                  </p>
+                  <p class="testimonial__attribution"><strong>Morgan Blake</strong>, VP of Design</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

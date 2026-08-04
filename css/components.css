@@ -219,6 +219,174 @@
   color: var(--color-accent);
 }
 
+/* Not written yet. Same "dim the whole thing rather than just label
+   it" treatment as .roadmap__item--upcoming, so a card for a project
+   that doesn't have a write-up yet reads as quieter than a real one
+   without needing a second visual vocabulary for "not done." */
+.card--upcoming {
+  opacity: 0.7;
+}
+
+.card--upcoming .card__flag {
+  color: var(--color-text-muted);
+}
+
+.card--upcoming:hover {
+  box-shadow: none;
+  transform: none;
+}
+
+/* ---------- Series card ----------
+   One project that got split into several case studies, shown as a
+   single card in the grid rather than one card per part. The parts are
+   listed inside it and individually clickable, so the grid keeps one
+   slot for one project while the pieces stay directly reachable.
+
+   The whole-card link trick every other .card--project uses
+   (.card__title a::after spanning the card) has to be switched off
+   here — a transparent layer over the entire card would sit on top of
+   the part links and swallow every click. The title stays an ordinary
+   link to the hub instead, and each part links for itself. */
+.card--series .card__title a::after {
+  content: none;
+}
+
+.card--series:hover {
+  box-shadow: none;
+  transform: none;
+}
+
+.card__parts {
+  list-style: none;
+  margin: var(--space-sm) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ruled rather than bulleted, matching .bento__list: the card is
+   already a box, and bullets inside one read as a form. */
+.card__part {
+  border-top: 1px solid var(--color-border);
+}
+
+.card__part-link {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2xs);
+  padding-block: var(--space-2xs);
+  color: var(--color-text);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.card__part-link:hover {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+/* The part number, set in the display face so the list reads as
+   numbered chapters rather than a plain link stack. */
+.card__part-index {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-muted);
+}
+
+.card__part-link:hover .card__part-index {
+  color: var(--color-accent);
+}
+
+/* ---------- Triptych media ----------
+   Three panels where a single image would go, for a card standing in
+   for a project that is really three case studies. The split does the
+   "there are three things in here" work before any label is read.
+
+   Three columns by default: on a phone the media is a wide 16/10 band
+   above the copy, and three upright slivers across it read as a
+   triptych. The feature-width override below turns it on its side so
+   each panel sits at the same height as the part it belongs to in the
+   list beside it. */
+.card__media--triptych {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* Hairline of the card's own border color between panels, rather than
+     a gap showing the page through — the three read as one divided
+     image instead of three separate pictures. */
+  gap: 1px;
+  background: var(--color-border);
+}
+
+/* Each panel takes the size its grid cell is given and the image fills
+   it from out of flow — the same arrangement as .bento__tile--media,
+   and for the same reason. In flow, three images have no definite
+   height to resolve `height: 100%` against, so they fall back to their
+   own intrinsic size: the three cells stack to three full-height
+   pictures and drag the card to roughly triple the height it should be.
+   Positioned, the panels contribute no content height at all, so the
+   card body sets the height and the panels divide it. */
+.card__panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.card__panel img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (min-width: 900px) {
+  .card--feature .card__media--triptych {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ---------- Featured series card ----------
+   A series card promoted to the lead slot. At small-card size the part
+   list is a quiet footnote under the excerpt; at feature size it is the
+   point of the card, so the rows get room to breathe, a rule above them
+   marking them off from the excerpt, and type at reading size rather
+   than caption size. */
+.card--feature .card__parts {
+  margin-top: var(--space-md);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-border);
+}
+
+.card--feature .card__part-link {
+  gap: var(--space-sm);
+  padding-block: var(--space-xs);
+  font-size: var(--fs-base);
+}
+
+.card--feature .card__part-index {
+  font-size: var(--fs-sm);
+}
+
+/* Per-row arrow, mirroring .card__cue on an ordinary feature card:
+   without it a list of plain rows doesn't announce that each one is its
+   own destination. */
+.card__part-link::after {
+  content: "\2192";
+  margin-left: auto;
+  color: var(--color-accent);
+  opacity: 0;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.card__part-link:hover::after {
+  opacity: 1;
+  transform: translateX(3px);
+}
+
 /* Explicit "this is a link" affordance. The whole card is already
    clickable via .card__title a::after, but at this size that isn't
    self-evident the way it is on a small card. */
@@ -392,11 +560,261 @@
   color: var(--color-text-muted);
 }
 
+/* ---------- Bento grid (About page) ----------
+   A wall of unequal tiles: two big ones carrying the real content — the
+   bio and the portrait — and a scatter of small ones holding a single
+   fact each. The unevenness is the whole point. Nine identical boxes
+   read as a spec sheet; mixed sizes read as a person.
+
+   Tiles are plain blocks in source order, and the modifiers below only
+   say how many columns or rows each one claims — no tile is pinned to a
+   coordinate, so rearranging the wall is a matter of reordering the
+   markup. One column on phones, two from --bp-sm, four from --bp-md.
+
+   The spans used in about.html are chosen so the wall tiles exactly at
+   each of those widths. grid-auto-flow is deliberately left alone
+   rather than set to `dense`: dense would paper over a bad span by
+   pulling a later tile up into the hole, which quietly drags the visual
+   order away from the reading order a screen reader follows. So if you
+   add or remove a tile, check every width — a gap means the spans need
+   adjusting, and it is meant to be visible. */
+.bento {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-sm);
+  /* A floor rather than a fixed height: a tile holding two words is
+     still a tile and not a strip, but anything longer takes the room it
+     needs and its whole row grows to match. */
+  grid-auto-rows: minmax(8.5rem, auto);
+}
+
+/* --tall is the one span that applies at every width, because spanning
+   rows is safe in a single-column grid — it just makes that tile twice
+   as deep, which is what the portrait wants on a phone too. The column
+   spans below are gated: `span 2` against one explicit column doesn't
+   clamp, it invents a second (implicit) column and knocks the whole
+   wall out of alignment. */
+.bento__tile--tall {
+  grid-row: span 2;
+}
+
+@media (min-width: 600px) {
+  .bento {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* --wide is two columns from here up: the full row at this width,
+     half the wall once there are four. --full is the whole row at
+     both. Pairing a one-column tile with --tall is what produces the
+     upright shapes that stop the wall reading as stacked letterboxes. */
+  .bento__tile--wide,
+  .bento__tile--full {
+    grid-column: span 2;
+  }
+}
+
+@media (min-width: 900px) {
+  .bento {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-md);
+  }
+
+  .bento__tile--full {
+    grid-column: span 4;
+  }
+}
+
+/* --color-bg on --color-surface, the same inversion as .fact above:
+   inside #main the page ground is the raised color, so a tile lifts off
+   the card by going lighter rather than darker. */
+.bento__tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  padding: var(--space-md);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+/* The one filled tile. Keep it to one: a single clay tile is where the
+   eye lands first, and a second turns the wall into a checkerboard
+   where nothing leads. */
+.bento__tile--accent {
+  background: var(--color-accent);
+  border-color: transparent;
+  color: var(--color-accent-text);
+}
+
+.bento__tile--accent .bento__label,
+.bento__tile--accent .bento__text,
+.bento__tile--accent .bento__icon {
+  color: inherit;
+}
+
+/* Photo tile: the image is the tile, so the padding comes off and the
+   image fills the box.
+
+   The image is taken out of flow rather than just given height: 100%.
+   In flow it has no definite height to resolve that percentage against,
+   so it falls back to its own intrinsic size and drags the grid row out
+   to whatever the source file's aspect ratio happens to be — a tall
+   headshot stretched the row half a page deep. Positioned, the tile
+   contributes no content height at all and simply takes the height the
+   grid gives it, whatever portrait you drop in. */
+.bento__tile--media {
+  display: block;
+  position: relative;
+  padding: 0;
+}
+
+.bento__tile--media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Gallery tile: three more photos in a fixed 3-column strip, sitting in
+   one --full tile rather than three separate ones. Fixed at 3 columns
+   regardless of how many columns the wall itself has at that width
+   (unlike every other tile, which reflows with it) — a contact-sheet
+   row is the point, and letting it collapse to fewer columns on a
+   phone would just make three tall images instead of one wide strip of
+   square ones.
+
+   padding: 0 for the same reason as .bento__tile--media: the images
+   are the tile. The 2px gap is a hairline rather than the design
+   system's own spacing scale, deliberately — the smallest token
+   (--space-3xs, 4px) already reads as a gap between separate tiles,
+   which these three images aren't; they're one strip. */
+.bento__tile--gallery {
+  padding: 0;
+}
+
+.bento__gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px;
+  height: 100%;
+}
+
+.bento__gallery img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+/* The two tiles at the foot of the wall hold a whole block each — the
+   experience timeline, the quote switcher — rather than a single fact.
+   Padding sized for a tile carrying a label and one line crowds them,
+   and their contents need more air under the label than the 2xs the
+   small tiles space themselves with. Left at the base padding below
+   --bp-sm, where there is no spare width to give away.
+
+   These are tiles rather than sections of their own, which is the
+   point: the timeline and the testimonials used to sit bare on the
+   card while everything above them was in boxes, so the page read as
+   two designs stacked. Same tile, same gap, same label — one wall. */
+@media (min-width: 600px) {
+  .bento__tile--panel {
+    padding: var(--space-lg);
+    gap: var(--space-md);
+  }
+}
+
+.bento__label {
+  margin: 0;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+.bento__title {
+  margin: 0;
+  font-size: var(--fs-lg);
+}
+
+.bento__text {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-loose);
+}
+
+/* The bio tile carries the only real prose in the wall; every other
+   tile is a label and a line, and those read better a step down from
+   it. */
+.bento__tile--intro .bento__text {
+  font-size: var(--fs-base);
+  color: var(--color-text);
+}
+
+/* One number, set in the display face at a size nothing else in the
+   wall competes with — the tile is the number, and the line under it is
+   its caption. */
+.bento__stat {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-semibold);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--color-accent);
+}
+
+.bento__icon {
+  display: inline-flex;
+  color: var(--color-accent);
+}
+
+/* Pushes itself to the bottom of the tile. Used where a label sits at
+   the top and its value at the bottom, so the empty middle of a tall
+   tile reads as deliberate rather than as content that ran short. */
+.bento__foot {
+  margin-top: auto;
+}
+
+/* Three or four one-line entries — the small-tile equivalent of a
+   paragraph. Ruled rather than bulleted: the tile is already a box, and
+   bullets inside one read as a form. */
+.bento__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.bento__list li {
+  padding-block: var(--space-2xs);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--fs-sm);
+}
+
+.bento__list li:first-child {
+  padding-top: 0;
+  border-top: none;
+}
+
+.bento__list li:last-child {
+  padding-bottom: 0;
+}
+
 /* ---------- Experience timeline (About me) ---------- */
 .timeline {
   list-style: none;
   margin: 0;
   padding: 0;
+  /* A single column of short rows. Left to the container's full width,
+     a role title and its duration end up an arm's length apart. */
+  max-width: 44rem;
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
@@ -637,8 +1055,14 @@
   align-items: center;
 }
 
+/* min-width: 0 is what lets flex: 1 actually shrink these. A flex item
+   defaults to min-width: auto, which floors it at its content's own
+   width — and the content here is a fixed --testimonial-avatar square,
+   so without this the buttons hold that width no matter how narrow the
+   row gets and the last two run out of it. */
 .testimonial__avatar {
   flex: 1;
+  min-width: 0;
   display: flex;
   justify-content: center;
   padding: 0;
@@ -647,9 +1071,17 @@
   cursor: pointer;
 }
 
+/* max-width is the guard: --testimonial-avatar is the size these want,
+   not a size the row can always afford. Five of them plus their gaps
+   come to more than a phone-width row, and without this they kept their
+   full width and spilled out of the row — invisibly before, since
+   nothing clipped them, and visibly once the block moved into a bento
+   tile that does. Where the row is wide enough the button is bigger
+   than the avatar and this never binds. */
 .testimonial__avatar-inner {
   position: relative;
   width: var(--testimonial-avatar);
+  max-width: 100%;
   flex: none;
 }
 
@@ -682,6 +1114,21 @@
   padding: 0.25em 0.7em;
   border-radius: var(--radius-full);
   white-space: nowrap;
+}
+
+/* The badge is dropped below --bp-sm rather than shrunk along with the
+   avatar. Once five avatars are sharing a phone-width row each one is
+   around 35px across, and the badge is wider than that at any legible
+   size — it would sit over its neighbors. The role it names is in the
+   quote's own attribution line either way. */
+@media (max-width: 599px) {
+  .testimonial__avatars {
+    gap: var(--space-2xs);
+  }
+
+  .testimonial__badge {
+    display: none;
+  }
 }
 
 .testimonial__rail-segment {
@@ -783,10 +1230,6 @@
   gap: var(--space-sm);
 }
 
-.testimonial__heading {
-  margin: 0;
-}
-
 .testimonial__panel[hidden] {
   display: none;
 }
@@ -844,6 +1287,633 @@
   .testimonial__content {
     flex: 1;
   }
+}
+
+/* ---------- Stat band (case-study results) ----------
+   A row of oversized numbers, no card chrome around them — the results
+   section is the one place a case study gets to be blunt, so the
+   numbers carry the section on their own rather than sitting inside
+   boxes that compete with them. Reuses the same display-number
+   treatment as .bento__stat rather than inventing a second one. */
+.stat-band {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+}
+
+@media (min-width: 600px) {
+  .stat-band {
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  }
+}
+
+.stat-band__item {
+  padding-top: var(--space-sm);
+  border-top: 2px solid var(--color-accent);
+}
+
+.stat-band__value {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-semibold);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.stat-band__label {
+  margin: var(--space-2xs) 0 0;
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+  max-width: 22ch;
+}
+
+/* ---------- Solution spectrum (case-study framing) ----------
+   A single track running from "least technical" to "most technical",
+   with each option the team considered plotted as a point along it.
+   The point/track metaphor does the job a paragraph of "we considered
+   X, Y, and Z" would do more slowly — position on the line *is* the
+   comparison. */
+.spectrum {
+  margin-top: var(--space-lg);
+}
+
+.spectrum__track {
+  position: relative;
+  height: 2px;
+  background: var(--color-border);
+  margin-inline: var(--space-2xs);
+}
+
+.spectrum__points {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.spectrum__point {
+  position: relative;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.spectrum__point:first-child {
+  justify-content: flex-start;
+}
+
+.spectrum__point:last-child {
+  justify-content: flex-end;
+}
+
+.spectrum__dot {
+  position: absolute;
+  top: calc(-1 * var(--space-lg) - 5px);
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full);
+  background: var(--color-bg);
+  border: 2px solid var(--color-text-muted);
+}
+
+.spectrum__point:first-child .spectrum__dot {
+  left: 0;
+}
+
+.spectrum__point:last-child .spectrum__dot {
+  right: 0;
+  left: auto;
+}
+
+.spectrum__point:not(:first-child):not(:last-child) .spectrum__dot {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.spectrum__point--chosen .spectrum__dot {
+  width: 16px;
+  height: 16px;
+  top: calc(-1 * var(--space-lg) - 7px);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 4px var(--color-accent-soft);
+}
+
+.spectrum__label {
+  max-width: 12rem;
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.spectrum__point:first-child .spectrum__label,
+.spectrum__point:last-child .spectrum__label {
+  text-align: left;
+  max-width: 8rem;
+}
+
+.spectrum__point:last-child .spectrum__label {
+  text-align: right;
+  margin-left: auto;
+}
+
+.spectrum__point--chosen .spectrum__label {
+  color: var(--color-text);
+  font-weight: var(--fw-semibold);
+}
+
+.spectrum__ends {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-2xs);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Sprint compare (case-study process) ----------
+   Two parallel tracks (one per sub-team) run down the page instead of
+   across it — each already reads top-to-bottom as "week 1 then week
+   2", so laying the pair side by side turns that sequence into a
+   single glance: same row = same week, different column = different
+   bet. A .stack of paragraphs would bury that alignment in prose. */
+.sprint-compare {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+@media (min-width: 700px) {
+  .sprint-compare {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+  }
+}
+
+.sprint-compare__track {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.sprint-compare__track-label {
+  margin: 0;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+.sprint-compare__week {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.sprint-compare__week-label {
+  margin: 0 0 var(--space-3xs);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--color-accent);
+}
+
+.sprint-compare__week-title {
+  margin: 0 0 var(--space-3xs);
+  font-weight: var(--fw-semibold);
+}
+
+.sprint-compare__week-note {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+/* Marks the bet that won, without needing a second color vocabulary —
+   same accent border the chosen .spectrum point uses. */
+.sprint-compare__week--won {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 1px var(--color-accent);
+}
+
+/* ---------- Moment (case-study standout beat) ----------
+   Every other section in a case study sits in the same gray prose
+   column. This one breaks that pattern on purpose — full-width, tinted
+   surface, its own padding — because the content inside it (the "aha"
+   the whole project pivots on) is the one beat that should stop a
+   skimming reader rather than blend into the scroll. Use once per
+   case study; if everything gets this treatment nothing does. */
+.moment {
+  padding: var(--space-xl) var(--space-lg);
+  background: var(--color-accent-soft);
+  border-radius: var(--radius-lg);
+  margin-block: var(--space-xl);
+}
+
+.moment__kicker {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  margin-bottom: var(--space-md);
+  color: var(--color-accent);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: var(--fs-xs);
+}
+
+.moment__kicker::before {
+  content: "";
+  width: var(--space-md);
+  height: 2px;
+  background: currentColor;
+  flex: none;
+}
+
+.moment__lead {
+  max-width: 62ch;
+  margin: 0 0 var(--space-lg);
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  line-height: var(--lh-normal);
+}
+
+.moment__lead em {
+  font-style: italic;
+  color: var(--color-accent);
+}
+
+.moment__body {
+  max-width: 62ch;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  color: var(--color-text-muted);
+  line-height: var(--lh-loose);
+}
+
+.moment__diagram {
+  margin-top: var(--space-lg);
+  padding: var(--space-md);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.moment__diagram-caption {
+  margin: var(--space-sm) 0 0;
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+/* ---------- Glossary (case-study "we had to name this" beat) ----------
+   A definition list styled so each term reads as freshly coined rather
+   than looked up — Fraunces italic in the accent color, the same
+   treatment .hero__title em and .moment__lead em use for "the word
+   that matters in this sentence." Two terms per row is enough to imply
+   a small invented lexicon without it sprawling into a reference doc. */
+.glossary {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-sm);
+  margin: var(--space-lg) 0 0;
+}
+
+@media (min-width: 600px) {
+  .glossary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.glossary__item {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.glossary__term {
+  margin: 0 0 var(--space-3xs);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: var(--fw-semibold);
+  color: var(--color-accent);
+}
+
+.glossary__def {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+  line-height: var(--lh-normal);
+}
+
+/* ---------- Roadmap (case-study version status) ----------
+   For a project told in versions rather than a single arc: each stage
+   gets a status rather than a position in a story, so "shipped" vs
+   "in progress" vs "not started yet" reads at a glance instead of
+   needing the prose to carry that distinction. A connecting line ties
+   the stages into one sequence; each stage's own state (filled dot,
+   ring, dashed) carries how real it is yet, independent of the line. */
+.roadmap {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: var(--space-lg);
+}
+
+.roadmap__item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  padding: 0 0 var(--space-lg) var(--space-lg);
+  border-left: 2px solid var(--color-border);
+  margin-left: 5px;
+}
+
+.roadmap__item:last-child {
+  padding-bottom: 0;
+  border-left-color: transparent;
+}
+
+.roadmap__dot {
+  position: absolute;
+  left: -7px;
+  top: 0.2em;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full);
+  background: var(--color-bg);
+  border: 2px solid var(--color-text-muted);
+}
+
+.roadmap__item--shipped .roadmap__dot {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.roadmap__item--active .roadmap__dot {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-soft);
+}
+
+.roadmap__item--upcoming .roadmap__dot {
+  border-style: dashed;
+}
+
+.roadmap__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-sm);
+}
+
+.roadmap__version {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--fw-semibold);
+}
+
+.roadmap__status {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+.roadmap__item--shipped .roadmap__status {
+  color: var(--color-accent);
+}
+
+.roadmap__item--active .roadmap__status {
+  color: var(--color-accent);
+}
+
+.roadmap__body {
+  margin: 0;
+  max-width: 60ch;
+  color: var(--color-text-muted);
+  line-height: var(--lh-loose);
+}
+
+/* Upcoming stages are content nobody's written yet — dim the whole card
+   rather than just labeling it, so the eye naturally settles on what's
+   real (shipped, active) before what's speculative. */
+.roadmap__item--upcoming .roadmap__version,
+.roadmap__item--upcoming .roadmap__body {
+  color: var(--color-text-muted);
+}
+
+.roadmap__item--upcoming {
+  opacity: 0.75;
+}
+
+/* ---------- Series context bar (chapter pages) ----------
+   Sits where the .back-link normally goes on a case study, and does
+   that job too — but for one part of a multi-part project it also has
+   to answer "part of what, and which part." Replaces the back-link
+   rather than stacking under it: two rows of wayfinding chrome above a
+   title is one row too many. */
+.series-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs);
+  margin-bottom: var(--space-md);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+}
+
+.series-bar__parent {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.series-bar__parent:hover {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.series-bar__parent svg {
+  flex: none;
+  transition: transform var(--transition-fast);
+}
+
+.series-bar__parent:hover svg {
+  transform: translateX(-3px);
+}
+
+/* The "Part 2 of 3" pill. Filled in the soft accent rather than left as
+   plain text so the reader can find their place in the series at a
+   glance without reading the words. */
+.series-bar__position {
+  padding: 0.2em 0.7em;
+  border-radius: var(--radius-full);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.02em;
+}
+
+/* ---------- Chapter pager (prev / next within a series) ----------
+   Closes a chapter page the way the series bar opens it. Two cells that
+   sit at opposite ends of the row, so "back" and "onward" are told
+   apart by position before either label is read; a missing neighbor
+   (first or last chapter) just leaves its side empty rather than
+   needing a disabled state. */
+.pager {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-sm);
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--color-border);
+}
+
+@media (min-width: 700px) {
+  .pager {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.pager__link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  text-decoration: none;
+  transition: border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.pager__link:hover {
+  border-color: var(--color-accent);
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+
+/* Pushes a lone "next" into the right-hand cell when there's no
+   previous chapter to fill the left one. */
+.pager__link--next {
+  grid-column: -2;
+  text-align: right;
+}
+
+.pager__label {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+.pager__title {
+  font-family: var(--font-display);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text);
+}
+
+.pager__link:hover .pager__title {
+  color: var(--color-accent);
+}
+
+/* ---------- Chapter list (series hub) ----------
+   The hub's table of contents. Deliberately heavier than .card__parts
+   (its counterpart in the projects grid): there, the parts are a
+   preview inside a card competing with other projects; here they are
+   the page's main content and the thing the visitor came to choose
+   between. */
+.chapters {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+  counter-reset: chapter;
+}
+
+@media (min-width: 900px) {
+  .chapters {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.chapter {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  padding: var(--space-md);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-base), transform var(--transition-base),
+    border-color var(--transition-fast);
+}
+
+.chapter:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* Auto-numbered from the counter on .chapters, so reordering the
+   chapters in the markup renumbers them without touching the copy. */
+.chapter__index {
+  counter-increment: chapter;
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-accent);
+}
+
+.chapter__index::before {
+  content: "Part " counter(chapter);
+}
+
+.chapter__title {
+  margin: 0;
+  font-size: var(--fs-lg);
+}
+
+.chapter__title a {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.chapter__title a:hover {
+  text-decoration: none;
+}
+
+/* Whole-tile click target, same trick .card__title a::after uses. */
+.chapter__title a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.chapter__text {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+  line-height: var(--lh-normal);
 }
 
 /* ---------- Swatch (used only on the styleguide page) ---------- */

@@ -51,97 +51,112 @@
         <h1 class="section-heading__title">All Projects</h1>
       </div>
 
+      <!-- Filter values are matched against each card's data-tags with a
+           substring test (see the filter block in js/main.js), so no tag
+           slug may contain another: "ai" inside a slug like "training"
+           would make that card match the AI filter. Keep slugs short and
+           mutually exclusive, and check new ones against this list. -->
       <div class="filter-bar" data-filter-bar>
         <button class="filter-chip is-active" data-filter="all">All</button>
+        <button class="filter-chip" data-filter="ai">AI</button>
+        <button class="filter-chip" data-filter="internal">Internal Tools</button>
         <button class="filter-chip" data-filter="research">Research</button>
-        <button class="filter-chip" data-filter="ixd">Interaction Design</button>
-        <button class="filter-chip" data-filter="systems">Design Systems</button>
-        <button class="filter-chip" data-filter="mobile">Mobile</button>
         <button class="filter-chip" data-filter="web">Web App</button>
       </div>
 
       <div class="grid grid--3up">
-        <article class="card card--project" data-project-card data-tags="research,mobile">
-          <div class="card__media">
-            <img src="https://placehold.co/640x400?text=Project+One" alt="" />
+        <!-- One project split across three case studies. Shown as a
+             single card with its parts listed inside rather than three
+             cards, so it takes one slot in the grid while each part
+             stays directly reachable. See .card--series. -->
+        <article class="card card--project card--series" data-project-card data-tags="research,web">
+          <div class="card__media card__media--triptych">
+            <span class="card__panel"><img src="https://placehold.co/400x400?text=Reports" alt="" /></span>
+            <span class="card__panel"><img src="https://placehold.co/400x400?text=Playback" alt="" /></span>
+            <span class="card__panel"><img src="https://placehold.co/400x400?text=Submission" alt="" /></span>
           </div>
           <div class="card__body">
-            <div class="card__tags">
-              <span class="tag">UX Research</span>
-              <span class="tag tag--neutral">Mobile</span>
-            </div>
-            <h3 class="card__title"><a href="case-study-template.html">Redesigning onboarding for a fintech app</a></h3>
-            <p class="card__excerpt">Cut time-to-first-value by 40% through a research-led onboarding redesign.</p>
-          </div>
-        </article>
-
-        <article class="card card--project" data-project-card data-tags="ixd,web">
-          <div class="card__media">
-            <img src="https://placehold.co/640x400?text=Project+Two" alt="" />
-          </div>
-          <div class="card__body">
-            <div class="card__tags">
-              <span class="tag">Interaction Design</span>
-              <span class="tag tag--neutral">Web App</span>
-            </div>
-            <h3 class="card__title"><a href="case-study-template.html">Simplifying a B2B checkout flow</a></h3>
-            <p class="card__excerpt">Reduced checkout abandonment by streamlining a 7-step flow into 3.</p>
-          </div>
-        </article>
-
-        <article class="card card--project" data-project-card data-tags="systems,web">
-          <div class="card__media">
-            <img src="https://placehold.co/640x400?text=Project+Three" alt="" />
-          </div>
-          <div class="card__body">
-            <div class="card__tags">
-              <span class="tag">Design Systems</span>
-              <span class="tag tag--neutral">Web App</span>
-            </div>
-            <h3 class="card__title"><a href="case-study-template.html">Building a shared design system</a></h3>
-            <p class="card__excerpt">Unified 4 product teams around one component library, cutting design debt.</p>
-          </div>
-        </article>
-
-        <article class="card card--project" data-project-card data-tags="research,web">
-          <div class="card__media">
-            <img src="https://placehold.co/640x400?text=Project+Four" alt="" />
-          </div>
-          <div class="card__body">
+            <p class="card__flag">3 parts</p>
             <div class="card__tags">
               <span class="tag">UX Research</span>
               <span class="tag tag--neutral">Web App</span>
             </div>
-            <h3 class="card__title"><a href="case-study-template.html">Improving dashboard information architecture</a></h3>
-            <p class="card__excerpt">Reorganized a data-dense dashboard around 3 core user jobs-to-be-done.</p>
+            <h3 class="card__title"><a href="case-study-volleyball-consolidation.html">Volleyball Consolidation</a></h3>
+            <p class="card__excerpt">Several volleyball products folded into one, told in three case studies.</p>
+            <ul class="card__parts">
+              <li class="card__part">
+                <a class="card__part-link" href="case-study-volleyball-reports.html">
+                  <span class="card__part-index">01</span> Reports
+                </a>
+              </li>
+              <li class="card__part">
+                <a class="card__part-link" href="case-study-volleyball-playback.html">
+                  <span class="card__part-index">02</span> Video overlays &amp; playback
+                </a>
+              </li>
+              <li class="card__part">
+                <a class="card__part-link" href="case-study-volleyball-submission.html">
+                  <span class="card__part-index">03</span> Frictionless submission
+                </a>
+              </li>
+            </ul>
           </div>
         </article>
 
-        <article class="card card--project" data-project-card data-tags="ixd,mobile">
+        <article class="card card--project" data-project-card data-tags="ai,web">
           <div class="card__media">
-            <img src="https://placehold.co/640x400?text=Project+Five" alt="" />
+            <img src="https://placehold.co/640x400?text=AI+Command+Bar" alt="" />
           </div>
           <div class="card__body">
             <div class="card__tags">
-              <span class="tag">Interaction Design</span>
-              <span class="tag tag--neutral">Mobile</span>
+              <span class="tag">AI</span>
+              <span class="tag tag--neutral">Web App</span>
             </div>
-            <h3 class="card__title"><a href="case-study-template.html">Prototyping a gesture-based navigation model</a></h3>
-            <p class="card__excerpt">Explored and validated a new nav pattern through rapid prototyping.</p>
+            <h3 class="card__title"><a href="case-study-ai-command-bar.html">Built in a week, still growing</a></h3>
+            <p class="card__excerpt">A skunkworks bet on AI search that turned into a real, shipped tool &mdash; and eight months of watching how people actually used it.</p>
           </div>
         </article>
 
-        <article class="card card--project" data-project-card data-tags="systems,mobile">
+        <article class="card card--project" data-project-card data-tags="internal,research">
           <div class="card__media">
-            <img src="https://placehold.co/640x400?text=Project+Six" alt="" />
+            <img src="https://placehold.co/640x400?text=Video+Alignment+Tool" alt="" />
           </div>
           <div class="card__body">
             <div class="card__tags">
-              <span class="tag">Design Systems</span>
-              <span class="tag tag--neutral">Mobile</span>
+              <span class="tag">Internal Tools</span>
+              <span class="tag tag--neutral">UX Research</span>
             </div>
-            <h3 class="card__title"><a href="case-study-template.html">Scaling a mobile component library</a></h3>
-            <p class="card__excerpt">Extended a web design system to native mobile without fragmenting brand.</p>
+            <h3 class="card__title"><a href="case-study-video-alignment.html">Tagging a game only once</a></h3>
+            <p class="card__excerpt">A math trick found in a video editor cut duplicate analyst work in half and saved $500K a year.</p>
+          </div>
+        </article>
+
+        <article class="card card--project card--upcoming" data-project-card data-tags="ai,internal">
+          <div class="card__media">
+            <img src="https://placehold.co/640x400?text=AI-First+Breakdown" alt="" />
+          </div>
+          <div class="card__body">
+            <p class="card__flag">Coming soon</p>
+            <div class="card__tags">
+              <span class="tag tag--neutral">Internal Tools</span>
+              <span class="tag tag--neutral">AI</span>
+            </div>
+            <h3 class="card__title"><a href="case-study-ai-breakdown.html">AI-First, Human Reviewed Breakdown</a></h3>
+            <p class="card__excerpt">Hudl's first fully AI-powered breakdown service, reviewed by analysts instead of tagged by hand.</p>
+          </div>
+        </article>
+
+        <!-- No data-tags yet: this one has no write-up, so there's
+             nothing to categorize it by honestly. It shows under "All"
+             only until that's known. -->
+        <article class="card card--project card--upcoming" data-project-card data-tags="">
+          <div class="card__media">
+            <img src="https://placehold.co/640x400?text=Training+Tools" alt="" />
+          </div>
+          <div class="card__body">
+            <p class="card__flag">Coming soon</p>
+            <h3 class="card__title"><a href="case-study-training-tools.html">Training Tools</a></h3>
+            <p class="card__excerpt">Write-up coming soon.</p>
           </div>
         </article>
       </div>
