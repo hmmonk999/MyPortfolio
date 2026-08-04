@@ -18,15 +18,39 @@
 @media (min-width: 700px) and (max-width: 899px) {
   .container {
     padding-inline: var(--space-lg);
+    margin-top: var(--space-lg);
   }
+
 }
 
+@media (max-width: 700px) {
+  .container {
+    padding-inline: var(--space-sm);
+  }
+
+}
+
+/* Mobile-first: less vertical padding by default since a phone screen
+   pays for every pixel of it in extra scrolling, then step back up to
+   the roomier desktop value once there's enough viewport height (and
+   width — 900px matches the .grid--3up desktop breakpoint above) to
+   afford it. */
 .section {
-  padding-block: var(--space-2xl);
+  padding-block: var(--space-sm);
 }
 
 .section--tight {
-  padding-block: var(--space-lg);
+  padding-block: var(--space-2xs);
+}
+
+@media (min-width: 900px) {
+  .section {
+    padding-block: var(--space-2xl);
+  }
+
+  .section--tight {
+    padding-block: var(--space-lg);
+  }
 }
 
 /* Simple flex stack with consistent vertical rhythm */
@@ -849,8 +873,17 @@ body {
    carrying the intro and the call to action. The headline is the only
    thing at --fs-display anywhere on the site, so it reads as the entry
    point without needing a graphic to prop it up. */
+/* Mobile-first, same reasoning as .section above: less padding by
+   default, stepping back up to the full statement-piece spacing once
+   the viewport can afford it. */
 .hero {
-  padding-block: var(--space-3xl) var(--space-2xl);
+  padding-block: var(--space-sm) var(--space-md);
+}
+
+@media (min-width: 700px) {
+  .hero {
+    padding-block: var(--space-3xl) var(--space-2xl);
+  }
 }
 
 .hero__eyebrow {
@@ -1094,6 +1127,18 @@ main > section:first-of-type > :nth-child(n + 3) {
   );
 }
 
+/* Mobile-first, same reasoning as .section/.hero above: the base
+   --space-xl padding-block set on .case-hero is sized for the
+   tablet/desktop tiers below (700px+, which still need it — one of
+   them only overrides padding-top for nav-plate clearance), so it has
+   to be pulled back down specifically below 700px rather than changed
+   at the source. */
+@media (max-width: 699px) {
+  .case-hero {
+    padding-inline: var(--space-sm);
+  }
+}
+
 /* Matches the tablet-range .container exception at the top of this
    file — same reasoning: the side rail already eats the width here. */
 @media (min-width: 700px) and (max-width: 899px) {
@@ -1137,7 +1182,7 @@ main > section:first-of-type > :nth-child(n + 3) {
        rather than a small picture floating beside a column of text. */
     align-items: stretch;
     gap: var(--space-lg) var(--space-2xl);
-    padding-block: var(--space-2xl);
+    padding-block: var(--space-3xl);
     /* The right column runs to the card edge. */
     padding-right: 0;
   }
@@ -1178,7 +1223,6 @@ main > section:first-of-type > :nth-child(n + 3) {
 /* The rule above the summary separates the title block from the body
    copy — the same job .hero__meta's border does on the home page. */
 .case-hero__summary {
-  max-width: 46ch;
   margin: var(--space-md) 0 0;
   padding-top: var(--space-md);
   border-top: 1px solid var(--color-border);
@@ -1219,7 +1263,6 @@ main > section:first-of-type > :nth-child(n + 3) {
    the prose under it needs its own measure or it inherits the
    container's 1120px and gets unreadably wide. */
 .case-body {
-  max-width: 68ch;
 }
 
 /* Two-column layout: main content beside a narrower meta column
