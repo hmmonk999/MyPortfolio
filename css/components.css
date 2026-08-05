@@ -95,6 +95,23 @@
   transform: translateX(-3px);
 }
 
+/* Forward-pointing variant: same quiet wayfinding treatment as
+   .back-link, but for "go deeper" links (e.g. "See all projects")
+   rather than "go up a level" ones. Icon trails the text and nudges
+   right on hover instead of left. margin-bottom is reset since this
+   variant sits inline in a heading row rather than atop a page. */
+.back-link--forward {
+  margin-bottom: 0;
+}
+
+.back-link--forward .back-link__icon {
+  order: 1;
+}
+
+.back-link--forward:hover .back-link__icon {
+  transform: translateX(3px);
+}
+
 /* ---------- Tags / badges ---------- */
 .tag {
   display: inline-flex;
