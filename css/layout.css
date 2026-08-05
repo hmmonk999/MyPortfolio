@@ -1243,11 +1243,64 @@ main > section:first-of-type > :nth-child(n + 3) {
   object-fit: cover;
 }
 
+/* Media slot holding an interactive piece rather than a photo (see
+   .court-demo in components.css). The demo draws its own plinth in
+   --color-bg, so the panel behind it steps back to the card colour to
+   give that slab something to sit against; and it needs room to
+   breathe, where a photo wants to bleed to the edges. */
+.case-hero__media--demo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  background: var(--color-surface);
+  /* The illustration's drop-shadow spreads outside the SVG's own box,
+     and on desktop the court itself overhangs this slot entirely — the
+     base rule's clip would cut off both. */
+  overflow: visible;
+}
+
+/* Phone widths can't spare 24px a side — that's most of the difference
+   between a court you can aim at and one you can't. */
+@media (max-width: 699px) {
+  .case-hero__media--demo {
+    padding: var(--space-xs);
+  }
+}
+
 @media (min-width: 1200px) {
   /* Only the left corners curve — the right edge is flush with the
      card it's bleeding off. */
   .case-hero__media {
     border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  }
+
+  /* No padding: the court is meant to run right out to the card's edge
+     here, and it gains the room it breaks leftward with in
+     components.css.
+
+     The court passes behind the fact cards, which are opaque, so it's
+     pinned to the bottom of the slot rather than centred in it — that
+     way it keeps hanging off the same edge as the left column grows,
+     instead of drifting as the intro copy gets longer. */
+  .case-hero__media--demo {
+    padding: 0;
+    align-items: flex-end;
+    position: relative;
+    z-index: 0;
+  }
+
+  /* Both sides of the overlap are positioned with an explicit z-index,
+     rather than leaning on source order: the cards come after the court
+     in the markup, but the court is positioned, and a positioned
+     element paints over a static one no matter what order they're in.
+     Saying it outright is what keeps the cards on top.
+
+     Because they're opaque and on top, the cards don't need to reserve
+     any gutter for the court — their text just sits above it. */
+  .case-hero:has(.court-demo) .fact-grid {
+    position: relative;
+    z-index: 1;
   }
 
   /* aspect-ratio would fight the stretched grid row, so the image just

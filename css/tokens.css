@@ -32,6 +32,30 @@
   --color-success: #1a7f4e;
   --color-danger: #b3261e;
 
+  /* ---- Color: court illustration ----
+     Used only by .court-demo (components.css), the interactive court on
+     the volleyball consolidation case study. These depict a physical
+     object, so unlike everything above they hold the same value in both
+     themes — teal apron, clay playing surface, white lines. Only
+     --court-plinth follows the theme, because the slab the court sits on
+     is page furniture rather than part of the court.
+     The heat ramp is deliberately hotter and more saturated than
+     --color-accent: it has to read as data laid over the clay surface,
+     not as more of the clay. */
+  --court-apron: #7cc6d1;
+  --court-surface: #d8896a;
+  --court-line: #ffffff;
+  --court-post: #ded8ce;
+  /* Panels just off white so the seams aren't the only thing separating
+     the ball from the court's white lines. */
+  --court-ball: #ededed;
+  --court-ball-seam: #333333;
+  --court-drop-shadow: rgba(33, 29, 25, 0.5);
+  --court-plinth: var(--color-bg);
+  --court-heat-core: #ff3b1f;
+  --court-heat-mid: #ff7a33;
+  --court-heat-edge: #ffc14d;
+
   /* ---- Typography ----
      Fraunces (display) against Inter (body) — a high-contrast pairing
      that gives headings a voice instead of defaulting to the system
@@ -107,6 +131,13 @@
   --shadow-sm: 0 1px 2px rgba(20, 20, 25, 0.06);
   --shadow-md: 0 4px 16px rgba(20, 20, 25, 0.08);
   --shadow-lg: 0 12px 32px rgba(20, 20, 25, 0.12);
+  /* For shapes that aren't rectangles — see .court-demo__svg, where a
+     box-shadow would draw a box around the empty corners above the
+     illustration. Written for filter: drop-shadow(), which takes no
+     spread and so can't reuse the box-shadow tokens. Kept tighter than
+     --shadow-lg because a drop-shadow spreads outside its element's
+     box, and the panels these sit in clip their overflow. */
+  --shadow-drop: 0 8px 18px rgba(20, 20, 25, 0.16);
 
   /* ---- Glass (floating mobile tab bar) ----
      A translucent pane that the page scrolls under, blurred via
@@ -165,4 +196,6 @@
   --glass-bg: rgba(25, 23, 21, 0.72);
   --glass-border: rgba(255, 255, 255, 0.12);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+
+  --shadow-drop: 0 8px 18px rgba(0, 0, 0, 0.5);
 }

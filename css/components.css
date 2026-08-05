@@ -1942,3 +1942,270 @@
   font-size: var(--fs-xs);
   font-family: monospace;
 }
+
+/* ---------- Interactive volleyball court ----------
+   Only on case-study-volleyball-consolidation.html, in place of the
+   hero image. The court, net and plinth are static markup on that page
+   so the illustration still renders with JS off; js/court-demo.js adds
+   the ball, its trail and the heat map on top.
+
+   Everything inside the SVG is coloured from here rather than from
+   presentation attributes, because attributes can't read custom
+   properties (fill="var(--x)" does nothing) and the court palette lives
+   in tokens.css like every other colour on the site. */
+.court-demo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  margin: 0;
+  width: 100%;
+  /* On desktop this box overhangs the fact cards, and most of that
+     overhang is empty. Nothing in here takes pointer events; the court
+     surface and the caption turn them back on for themselves, so a
+     click or a text selection anywhere else reaches what's underneath
+     rather than hitting an invisible pane. */
+  pointer-events: none;
+}
+
+.court-demo__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* The plinth's silhouette isn't a rectangle, so box-shadow would
+     draw a box around the empty corners above it. */
+  filter: drop-shadow(var(--shadow-drop));
+}
+
+/* The slab the court sits on. Follows the theme — it reads as a shelf
+   the illustration is standing on, not as part of the court. */
+.court-demo__plinth {
+  fill: var(--court-plinth);
+}
+
+/* The apron is outlined in the plinth colour so the teal appears to sit
+   on the slab as one moulded piece rather than float above it. */
+.court-demo__floor {
+  fill: var(--court-apron);
+  stroke: var(--court-plinth);
+  stroke-width: 9;
+  stroke-linejoin: round;
+}
+
+.court-demo__surface {
+  fill: var(--court-surface);
+}
+
+.court-demo__line {
+  fill: none;
+  stroke: var(--court-line);
+  stroke-linecap: round;
+}
+
+/* Court markings are 5cm wide in reality, so their drawn width has to
+   fall off with depth like everything else — hence a stroke-width per
+   line rather than one on the group. */
+.court-demo__line--far { stroke-width: 1.9; }
+.court-demo__line--mid { stroke-width: 2.3; }
+.court-demo__line--near { stroke-width: 2.7; }
+
+/* Attack-line extensions: the dashes painted outside each sideline. */
+.court-demo__line--dashed {
+  opacity: 0.9;
+}
+
+.court-demo__mesh-line {
+  fill: none;
+  stroke: var(--court-line);
+  stroke-width: 1;
+  opacity: 0.5;
+}
+
+.court-demo__tape {
+  fill: var(--court-line);
+}
+
+.court-demo__post {
+  fill: var(--court-post);
+}
+
+/* ---- Heat map ----
+   One ellipse per pass, foreshortened to sit flat on the floor plane.
+   They're plain translucent gradients with no blend mode: overlapping
+   alpha is what makes a repeatedly-hit area read as hotter, and the
+   blur filter on the group smooths the seams between neighbours into a
+   single field. */
+.court-demo__heat-core {
+  stop-color: var(--court-heat-core);
+  stop-opacity: 0.6;
+}
+
+.court-demo__heat-mid {
+  stop-color: var(--court-heat-mid);
+  stop-opacity: 0.28;
+}
+
+.court-demo__heat-edge {
+  stop-color: var(--court-heat-edge);
+  stop-opacity: 0;
+}
+
+.court-demo__blob {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: court-bloom var(--transition-base) ease-out both;
+}
+
+@keyframes court-bloom {
+  from {
+    opacity: 0;
+    transform: scale(0.45);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---- Ball, shadow, trail ---- */
+.court-demo__shadow {
+  fill: 165px;
+}
+
+.court-demo__ball-body {
+  fill: var(--court-ball);
+}
+
+/* Widths are in the ball artwork's own coordinates (radius 50), so the
+   seams thin out with the ball as it travels away — same as everything
+   else on the floor plane. Heavier than a photo of a real ball, because
+   the ball lands around 25px across and thinner seams turn to mush. */
+.court-demo__ball-seams {
+  fill: none;
+  stroke: var(--court-ball-seam);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Drawn point by point as the ball travels, then retired: the class
+   swap is what starts the fade, and js/court-demo.js removes the
+   element once this transition has had time to finish. Keep the two
+   durations in step if either changes. */
+.court-demo__trail {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.65;
+  transition: opacity 620ms ease;
+}
+
+.court-demo__trail.is-spent {
+  opacity: 0;
+}
+
+/* ---- Partner marks on the plinth ----
+   Two of the three are dark artwork that would vanish against the dark
+   plinth, so they ship as a pair of files with only the neutral ink
+   flipped — the brand colours (hudl orange, BallTime blue) are the same
+   in both. display rather than opacity so the hidden one also leaves
+   the accessibility tree; otherwise every mark is announced twice. */
+.court-demo__logo--dark {
+  display: none;
+}
+
+.theme-dark .court-demo__logo--light {
+  display: none;
+}
+
+.theme-dark .court-demo__logo--dark {
+  display: block;
+}
+
+/* ---- Click target ----
+   Sits last in the SVG so it's on top of everything, and is the only
+   element in there that takes pointer events. It carries no tabindex,
+   so it can't be focused and nothing ever rings the court — which is
+   the whole reason it isn't focusable. */
+.court-demo__hit {
+  fill: transparent;
+  cursor: crosshair;
+  pointer-events: auto;
+}
+
+.court-demo__hint {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+  /* Back on, against the figure's blanket pass-through, so the caption
+     is still selectable. */
+  pointer-events: auto;
+}
+
+/* On a phone the whole court is only ~300px across, which leaves the
+   marks too small to recognise. Scaling the group up 20% about its own
+   centre buys that back without moving anything: the three logos span
+   176–824 of an 838-wide plinth, so 1.2 is as far as it goes before the
+   outer two overhang the edges. */
+@media (max-width: 699px) {
+  .court-demo {
+    gap: var(--space-sm);
+  }
+
+  .court-demo__brands {
+    transform-box: fill-box;
+    transform-origin: center;
+    transform: scale(1.2);
+  }
+}
+
+/* Desktop only: the court stops behaving like a picture in a slot and
+   breaks left out of its column, overhanging the fact cards beside it.
+   The overlap is deliberate — it lands on the right edge of the two
+   right-hand cards — and .court-demo__svg passes pointer events straight
+   through everywhere it isn't painted, so those cards stay usable
+   underneath.
+
+   Turn the overlap up or down here and nowhere else: --court-bleed is
+   how much width the court steals leftward, and .fact's reserved gutter
+   (layout.css) is derived from it so the two can't drift apart. */
+@media (min-width: 1200px) {
+  /* The floor is high because the overlap isn't linear in the bleed:
+     the column gap and the plinth's own inset eat the first ~105px
+     before any of it lands on a card. Below ~170px the court reaches
+     past its column but still stops short of the cards, which reads as
+     a mistake rather than a choice. */
+  .case-hero:has(.court-demo) {
+    /* The ceiling is what keeps the cards clear of the first partner
+       mark on wide screens — the further the court reaches left, the
+       more of its plinth the cards cover. */
+    --court-bleed: clamp(170px, 12vw, 190px);
+    /* How far the court hangs below the slot the grid gives it. Eats
+       into the hero's own bottom padding (--space-3xl), so it has room
+       to drop without reaching the section underneath. */
+    --court-drop: 160px;
+  }
+
+  .court-demo {
+    width: calc(100% + var(--court-bleed));
+    margin-left: calc(var(--court-bleed) * -1);
+    /* Offset rather than a margin so dropping the court can't change
+       the height of the hero row it sits in. */
+    position: relative;
+    top: var(--court-drop);
+  }
+}
+
+/* The court reads as a still illustration under reduced motion: the
+   ball is placed at the new spot rather than flown there (handled in
+   js/court-demo.js), so only the blob's entrance needs muting. The
+   trail keeps its fade — with the flight gone it's the only thing left
+   showing where the ball went, and a cross-fade isn't the kind of
+   motion this query is asking us to drop. */
+@media (prefers-reduced-motion: reduce) {
+  .court-demo__blob {
+    animation: none;
+  }
+}

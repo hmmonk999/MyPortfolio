@@ -51,8 +51,160 @@
         </p>
       </div>
 
-      <div class="case-hero__media">
-        <img src="https://placehold.co/1200x900?text=Volleyball+Consolidation" alt="" />
+      <!-- The court is drawn in one-point perspective. Every coordinate
+           below comes from the same five numbers as the maths in
+           js/court-demo.js — a trapezoid 556 wide at the far baseline
+           (y=60) opening to 838 at the near one (y=560), centred on
+           x=500. Change any of them and the constants at the top of
+           that file have to change to match, or clicks will land
+           somewhere other than where the pointer is.
+
+           All of this is static markup rather than JS-generated so the
+           illustration still renders with scripting off; the script
+           only adds the ball, its trail and the heat map. -->
+      <div class="case-hero__media case-hero__media--demo">
+        <figure class="court-demo" data-court-demo>
+          <svg class="court-demo__svg" viewBox="0 0 1000 688" xmlns="http://www.w3.org/2000/svg">
+            <title>A volleyball court showing a heat map of where the ball has been passed</title>
+
+            <defs>
+              <clipPath id="court-floor-clip">
+                <polygon points="222,60 778,60 919,560 81,560" />
+              </clipPath>
+
+              <pattern id="court-net-mesh" width="15" height="11" patternUnits="userSpaceOnUse">
+                <path class="court-demo__mesh-line" d="M15 0V11M0 11H15" />
+              </pattern>
+
+              <radialGradient id="court-heat-grad">
+                <stop class="court-demo__heat-core" offset="0%" />
+                <stop class="court-demo__heat-mid" offset="45%" />
+                <stop class="court-demo__heat-edge" offset="100%" />
+              </radialGradient>
+
+              <!-- Softens the boundaries between neighbouring marks so a
+                   cluster reads as one field instead of a pile of discs. -->
+              <filter id="court-heat-blur" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="8" />
+              </filter>
+            </defs>
+
+            <!-- Top edge sits exactly on the apron's near-baseline corners
+                 (81,560) and (919,560, both below), so the plinth reads as
+                 a continuation of the court's own width rather than a wider
+                 base it's standing on. -->
+            <path class="court-demo__plinth" d="M81 560H919V658Q919 676 901 676H99Q81 676 81 658Z" />
+            <polygon class="court-demo__floor" points="222,60 778,60 919,560 81,560" />
+            <polygon class="court-demo__surface" points="336.59,90.79 663.41,90.79 730.64,509.06 269.36,509.06" />
+
+            <g class="court-demo__lines">
+              <polygon class="court-demo__line court-demo__line--mid" points="336.59,90.79 663.41,90.79 730.64,509.06 269.36,509.06" />
+              <line class="court-demo__line court-demo__line--far" x1="319.00" y1="200.20" x2="681.00" y2="200.20" />
+              <line class="court-demo__line court-demo__line--mid" x1="308.71" y1="264.24" x2="691.29" y2="264.24" />
+              <line class="court-demo__line court-demo__line--near" x1="297.18" y1="336.00" x2="702.82" y2="336.00" />
+
+              <!-- Attack-line extensions: the dashes painted on the free
+                   zone outside each sideline. -->
+              <g class="court-demo__line court-demo__line--dashed">
+                <path class="court-demo__line court-demo__line--far" stroke-dasharray="9 6.5" d="M319.00 200.20H277.30M681.00 200.20H722.70" />
+                <path class="court-demo__line court-demo__line--mid" stroke-dasharray="13 9" d="M308.71 264.24H236.60M691.29 264.24H763.40" />
+                <path class="court-demo__line court-demo__line--near" stroke-dasharray="11 7.5" d="M297.18 336.00H247.90M702.82 336.00H752.10" />
+              </g>
+            </g>
+
+            <g data-court-heat clip-path="url(#court-floor-clip)" filter="url(#court-heat-blur)"></g>
+
+            <!-- Everything at the centre line shares one depth, so the net
+                 is an ordinary rectangle on screen. The mesh runs a little
+                 past each sideline and the posts a little past that. -->
+            <g class="court-demo__net">
+              <rect x="291.93" y="176.24" width="416.14" height="50" fill="url(#court-net-mesh)" />
+              <rect class="court-demo__tape" x="266.43" y="172.74" width="467.15" height="7" />
+              <rect class="court-demo__tape" x="291.93" y="224.54" width="416.14" height="3.4" opacity="0.75" />
+              <rect class="court-demo__post" x="263.43" y="168" width="6" height="96.24" rx="3" />
+              <rect class="court-demo__post" x="730.58" y="168" width="6" height="96.24" rx="3" />
+            </g>
+
+            <g data-court-trails></g>
+
+            <!-- Ball and shadow are drawn at radius 50 and scaled down by the
+                 script (BALL_R / ART_R), so the ball can be resized from one
+                 constant in js/court-demo.js without touching this artwork.
+
+                 A volleyball is a cube blown out onto a sphere: six faces,
+                 each split into three parallel strips, with adjacent faces
+                 running their strips at right angles. So every seam here is
+                 an arc of a great circle clipped to its face, computed for
+                 one fixed orientation rather than drawn freehand — which is
+                 why the strips stay parallel and meet cleanly at the
+                 three-way junction right of centre. -->
+            <ellipse class="court-demo__shadow" data-court-shadow rx="50" ry="22" opacity="0.3"
+              transform="translate(500 398.76) scale(0.356)" />
+
+            <g class="court-demo__ball" data-court-ball transform="translate(500 398.76) scale(0.356)">
+              <circle class="court-demo__ball-body" r="50" />
+              <g class="court-demo__ball-seams">
+                <path d="M43.7 -24.3C43.9 -23.8 44.8 -22.1 45.2 -20.9C45.6 -19.7 45.8 -18.4 46.0 -17.1C46.1 -15.8 46.2 -14.6 46.1 -13.2C46.0 -11.8 45.9 -10.4 45.6 -9.0C45.3 -7.6 44.9 -6.1 44.3 -4.6C43.8 -3.2 42.8 -1.0 42.4 -0.2" />
+                <path d="M-31.4 34.1C-31.9 33.9 -33.6 33.3 -34.6 32.8C-35.6 32.3 -36.5 31.7 -37.4 31.1C-38.3 30.5 -39.1 29.8 -39.9 29.1C-40.7 28.4 -41.3 27.7 -42.0 26.9C-42.6 26.1 -43.4 24.8 -43.6 24.4" />
+                <path d="M-10.1 -11.2C-8.8 -11.0 -5.0 -10.7 -2.5 -10.4C0.0 -10.2 2.6 -9.8 5.1 -9.5C7.6 -9.1 10.1 -8.7 12.5 -8.3C14.9 -7.9 17.4 -7.4 19.7 -6.9C22.0 -6.4 24.3 -5.9 26.5 -5.4C28.6 -4.8 30.6 -4.3 32.5 -3.7C34.4 -3.2 36.2 -2.6 37.8 -2.0C39.5 -1.4 41.6 -0.5 42.3 -0.2" />
+                <path d="M42.4 0.0C42.5 1.2 43.0 4.7 43.0 6.9C43.1 9.2 43.0 11.4 42.8 13.6C42.5 15.7 42.2 18.0 41.6 20.0C41.1 22.1 40.5 24.1 39.7 26.0C38.9 27.9 37.9 29.8 36.9 31.5C35.8 33.3 34.6 34.9 33.3 36.4C32.0 37.9 30.6 39.2 29.1 40.4C27.6 41.7 25.0 43.2 24.2 43.7" />
+                <path d="M-20.5 4.7C-19.1 5.3 -14.9 6.9 -12.0 7.9C-9.1 9.0 -6.1 10.0 -3.1 10.9C-0.1 11.8 3.1 12.7 6.1 13.5C9.1 14.3 12.0 14.9 14.9 15.5C17.7 16.1 20.5 16.7 23.1 17.1C25.8 17.5 28.4 17.8 30.7 18.0C33.0 18.2 35.2 18.3 37.1 18.3C38.9 18.2 41.2 17.9 42.1 17.9" />
+                <path d="M-28.9 22.8C-27.7 23.8 -24.2 27.0 -21.7 28.9C-19.2 30.7 -16.6 32.4 -13.8 33.9C-11.1 35.4 -8.1 36.8 -5.3 37.9C-2.4 38.9 0.5 39.8 3.3 40.4C6.1 41.0 9.0 41.3 11.8 41.4C14.5 41.6 17.4 41.4 20.0 41.0C22.5 40.7 25.0 40.0 27.3 39.2C29.6 38.3 32.6 36.5 33.7 35.9" />
+                <path d="M-48.9 -10.5C-48.7 -11.3 -48.1 -13.8 -47.5 -15.4C-46.9 -17.0 -46.2 -18.6 -45.4 -20.1C-44.6 -21.6 -43.6 -23.1 -42.6 -24.5C-41.6 -26.0 -40.5 -27.3 -39.3 -28.6C-38.1 -29.9 -36.9 -31.1 -35.5 -32.2C-34.1 -33.3 -32.6 -34.4 -31.1 -35.4C-29.5 -36.4 -27.9 -37.3 -26.2 -38.2C-24.6 -39.0 -21.9 -40.0 -21.0 -40.3" />
+                <path d="M46.2 -13.6C46.5 -12.8 47.5 -10.4 48.0 -8.8C48.4 -7.3 48.8 -5.7 49.1 -4.1C49.4 -2.5 49.6 -0.8 49.7 0.8C49.8 2.4 49.7 3.9 49.6 5.5C49.5 7.1 49.0 9.5 48.9 10.3" />
+                <path d="M-16.6 -26.8C-17.9 -25.8 -21.7 -23.0 -24.0 -20.9C-26.3 -18.9 -28.5 -16.6 -30.5 -14.3C-32.5 -12.0 -34.4 -9.6 -36.0 -7.1C-37.6 -4.7 -39.0 -2.2 -40.2 0.2C-41.3 2.7 -42.2 5.2 -42.9 7.6C-43.5 10.0 -44.0 12.5 -44.1 14.8C-44.2 17.1 -44.1 19.3 -43.7 21.3C-43.3 23.4 -42.1 26.2 -41.8 27.1" />
+                <path d="M24.9 -43.3C25.4 -42.9 27.0 -41.9 27.9 -41.0C28.8 -40.1 29.6 -39.0 30.2 -37.8C30.9 -36.6 31.5 -35.2 31.9 -33.7C32.4 -32.3 32.7 -30.7 32.9 -29.0C33.1 -27.2 33.2 -25.3 33.2 -23.4C33.1 -21.5 33.0 -19.5 32.7 -17.5C32.4 -15.4 32.0 -13.3 31.5 -11.2C31.0 -9.0 30.0 -5.7 29.7 -4.6" />
+                <path d="M-16.5 45.1C-16.9 45.1 -18.1 45.2 -18.8 45.1C-19.5 45.1 -20.3 45.0 -21.0 44.8C-21.7 44.7 -22.3 44.5 -23.0 44.3C-23.6 44.0 -24.6 43.5 -24.9 43.4" />
+                <path d="M-3.4 -49.9C-3.1 -49.8 -2.3 -49.7 -1.7 -49.2C-1.1 -48.7 -0.5 -48.0 0.1 -47.0C0.7 -46.1 1.2 -44.9 1.8 -43.5C2.4 -42.1 2.9 -40.4 3.5 -38.5C4.0 -36.7 4.6 -34.6 5.1 -32.4C5.6 -30.2 6.1 -27.9 6.5 -25.4C6.9 -22.9 7.4 -20.2 7.7 -17.5C8.1 -14.7 8.6 -10.4 8.7 -9.0" />
+              </g>
+            </g>
+
+            <!-- Partner marks, all rendered at the same 160-unit width, so
+                 each box is 160 wide and 160/aspect tall — BallTime is
+                 therefore the tallest of the three and volleymetrics the
+                 shortest. Each box is already the exact aspect of its file,
+                 so preserveAspectRatio is only a guard against a
+                 replacement asset being cropped differently; swapping in
+                 art with a different aspect means recomputing that box's
+                 height and y, or the widths stop matching.
+
+                 The 110-unit outer margins aren't just symmetry — the fact
+                 cards overlap the plinth's left edge, and the marks have to
+                 start clear of them.
+
+                 hudl and BallTime are dark artwork and would disappear on
+                 the dark plinth, so each ships a second file with the
+                 neutral ink flipped and the brand colour left alone;
+                 volleymetrics is blue throughout and reads on both
+                 grounds from one file. The swap is in components.css. -->
+            <g class="court-demo__brands">
+              <image class="court-demo__logo" role="img" aria-label="Volleymetrics"
+                href="assets/img/logo-volleymetrics.png"
+                x="176" y="595.5" width="160" height="45" preserveAspectRatio="xMidYMid meet" />
+
+              <image class="court-demo__logo court-demo__logo--light" role="img" aria-label="Hudl"
+                href="assets/img/logo-hudl.png"
+                x="420" y="590.4" width="160" height="55.3" preserveAspectRatio="xMidYMid meet" />
+              <image class="court-demo__logo court-demo__logo--dark" role="img" aria-label="Hudl"
+                href="assets/img/logo-hudl-dark.png"
+                x="420" y="590.4" width="160" height="55.3" preserveAspectRatio="xMidYMid meet" />
+
+              <image class="court-demo__logo court-demo__logo--light" role="img" aria-label="BallTime"
+                href="assets/img/logo-balltime.png"
+                x="664" y="584" width="160" height="68" preserveAspectRatio="xMidYMid meet" />
+              <image class="court-demo__logo court-demo__logo--dark" role="img" aria-label="BallTime"
+                href="assets/img/logo-balltime-dark.png"
+                x="664" y="584" width="160" height="68" preserveAspectRatio="xMidYMid meet" />
+            </g>
+
+            <!-- Deliberately not focusable: this is a decorative toy, not a
+                 control, and nothing on the page depends on reaching it.
+                 Adding tabindex here means adding a focus ring back too. -->
+            <polygon class="court-demo__hit" data-court-hit points="222,60 778,60 919,560 81,560" />
+          </svg>
+
+          <figcaption class="court-demo__hint">Click to pass the ball</figcaption>
+        </figure>
       </div>
 
       <dl class="fact-grid">
@@ -119,5 +271,7 @@
 
   <script src="js/include.js"></script>
   <script src="js/main.js"></script>
+  <!-- Only this page has a court to drive, so it isn't in main.js. -->
+  <script src="js/court-demo.js"></script>
 </body>
 </html>
