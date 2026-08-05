@@ -1124,6 +1124,37 @@
   white-space: nowrap;
 }
 
+/* Company logo mark, centered over the color square like a watermark.
+   :empty hides it entirely when a testimonial has no logo image, so the
+   square just reads as a plain color swatch. */
+.testimonial__avatar-logo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.testimonial__avatar-logo:empty {
+  display: none;
+}
+
+.testimonial__avatar-logo img {
+  display: block;
+  width: 58%;
+  height: 58%;
+  object-fit: contain;
+  border-radius: 20%;
+}
+
+/* Source logos carry their own brand colors; this flattens them to
+   solid white so they read cleanly against the avatar's fill color
+   instead of clashing with it. */
+.testimonial__avatar-logo--tint img {
+  filter: brightness(0) invert(1);
+}
+
 /* The badge is dropped below --bp-sm rather than shrunk along with the
    avatar. Once five avatars are sharing a phone-width row each one is
    around 35px across, and the badge is wider than that at any legible
