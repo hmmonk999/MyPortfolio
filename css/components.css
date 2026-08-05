@@ -113,6 +113,11 @@
   color: var(--color-text-muted);
 }
 
+.tag--contrast {
+  background: var(--color-accent);
+  color: white;
+}
+
 /* ---------- Card ---------- */
 .card {
   display: flex;
