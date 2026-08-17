@@ -3,8 +3,9 @@
   "configurations": [
     {
       "name": "static-site",
+      "autoPort": true,
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "8010"],
+      "runtimeArgs": [".claude/serve.py"],
       "port": 8010
     }
   ]
