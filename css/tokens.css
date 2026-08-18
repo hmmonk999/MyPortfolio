@@ -28,6 +28,17 @@
      accent-text uses dark ink instead — 4.5:1+ against #c96c4a. */
   --color-accent-text: #241209;
 
+  /* ---- Hero wash ----
+     The slow warm glows anchored to the top and bottom of the landing
+     page, spanning the full surface width (#main:has(.hero), layout.css).
+     Two clay tints animated on different cycles so their combined motion
+     never reads as an obvious loop. Kept low-alpha so they warm the
+     surface rather than tinting it. Under prefers-reduced-motion the
+     drift is frozen to a static glow (the blanket rule in base.css), so
+     these still have to look right at rest. */
+  --hero-wash-a: rgba(201, 108, 74, 0.20);
+  --hero-wash-b: rgba(224, 122, 63, 0.12);
+
   /* ---- Color: feedback ---- */
   --color-success: #1a7f4e;
   --color-danger: #b3261e;
@@ -188,6 +199,13 @@
   --color-accent-hover: #d98363;
   --color-accent-soft: #3a2a22;
   --color-accent-text: #241209;
+
+  /* Subtler over the dark ground — a clay glow reads as heavier against
+     dark than against light, so it wants less alpha, not more, to stay
+     an ambient warmth rather than a visible blob. Same two-tint pairing
+     as light mode. */
+  --hero-wash-a: rgba(201, 108, 74, 0.14);
+  --hero-wash-b: rgba(217, 131, 99, 0.09);
 
   /* Glass over a dark ground: the pane tints toward the page bg rather
      than white, and the hairline flips to a faint white lift so the
