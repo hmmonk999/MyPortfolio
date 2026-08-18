@@ -348,10 +348,10 @@ function referrerPage() {
    clip only runs on a deliberate hover and pauses the instant the
    visitor leaves, so it's user-initiated rather than the ambient,
    unstoppable motion that setting is meant to suppress; at rest it's
-   always the still poster. The whole card is the trigger (not just the
-   media box) so the thumbnail wakes up as the visitor moves toward the
-   title, and keyboard users get the same via focusin/focusout on the
-   card's link. */
+   always the still poster. The trigger is the closest panel for a
+   triptych (so only the hovered clip plays) or the whole card for a
+   single-media card; keyboard users get the same via focusin/focusout
+   on the card's link. */
 function setupHoverVideos() {
   const videos = document.querySelectorAll("[data-hover-video]");
   if (!videos.length) return;
@@ -359,7 +359,13 @@ function setupHoverVideos() {
   const canHover = window.matchMedia("(hover: hover)");
 
   videos.forEach((video) => {
-    const card = video.closest(".card") || video.parentElement;
+    // Each triptych panel triggers on its own hover, so only the clip
+    // under the cursor plays — three at once was too much motion. A
+    // single-media card has no panel, so it falls back to the whole
+    // card as the trigger (hovering anywhere, e.g. toward the title,
+    // wakes it).
+    const trigger =
+      video.closest(".card__panel") || video.closest(".card") || video.parentElement;
 
     const play = () => {
       if (!canHover.matches) return;
@@ -376,10 +382,10 @@ function setupHoverVideos() {
       video.currentTime = 0;
     };
 
-    card.addEventListener("mouseenter", play);
-    card.addEventListener("mouseleave", stop);
-    card.addEventListener("focusin", play);
-    card.addEventListener("focusout", stop);
+    trigger.addEventListener("mouseenter", play);
+    trigger.addEventListener("mouseleave", stop);
+    trigger.addEventListener("focusin", play);
+    trigger.addEventListener("focusout", stop);
   });
 }
 
