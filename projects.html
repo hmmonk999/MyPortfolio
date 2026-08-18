@@ -71,9 +71,21 @@
              stays directly reachable. See .card--series. -->
         <article class="card card--project card--series" data-project-card data-tags="research,web">
           <div class="card__media card__media--triptych">
-            <span class="card__panel"><img src="https://placehold.co/400x400?text=Reports" alt="" /></span>
-            <span class="card__panel"><img src="https://placehold.co/400x400?text=Playback" alt="" /></span>
-            <span class="card__panel"><img src="https://placehold.co/400x400?text=Submission" alt="" /></span>
+            <span class="card__panel">
+              <video data-hover-video muted loop playsinline preload="none" poster="assets/video/volleyball-reports-poster.jpg">
+                <source src="assets/video/volleyball-reports.mp4" type="video/mp4" />
+              </video>
+            </span>
+            <span class="card__panel">
+              <video data-hover-video muted loop playsinline preload="none" poster="assets/video/volleyball-playback-poster.jpg">
+                <source src="assets/video/volleyball-playback.mp4" type="video/mp4" />
+              </video>
+            </span>
+            <span class="card__panel">
+              <video data-hover-video muted loop playsinline preload="none" poster="assets/video/volleyball-submission-poster.jpg">
+                <source src="assets/video/volleyball-submission.mp4" type="video/mp4" />
+              </video>
+            </span>
           </div>
           <div class="card__body">
             <p class="card__flag">3 parts</p>
@@ -104,8 +116,17 @@
         </article>
 
         <article class="card card--project" data-project-card data-tags="ai,web">
-          <div class="card__media">
-            <img src="https://placehold.co/640x400?text=AI+Command+Bar" alt="" />
+          <div class="card__media card__media--video">
+            <video
+              data-hover-video
+              muted
+              loop
+              playsinline
+              preload="none"
+              poster="assets/video/ai-command-bar-poster.jpg"
+            >
+              <source src="assets/video/ai-command-bar.mp4" type="video/mp4" />
+            </video>
           </div>
           <div class="card__body">
             <div class="card__tags">
@@ -151,11 +172,11 @@
              only until that's known. -->
         <article class="card card--project card--upcoming" data-project-card data-tags="">
           <div class="card__media">
-            <img src="https://placehold.co/640x400?text=Training+Tools" alt="" />
+            <img src="https://placehold.co/640x400?text=3d+Tools" alt="" />
           </div>
           <div class="card__body">
             <p class="card__flag">Coming soon</p>
-            <h3 class="card__title"><a href="case-study-training-tools.html">Training Tools</a></h3>
+            <h3 class="card__title"><a href="case-study-training-tools.html">Claude -> Prod: SVG and 3d iPad drawing app</a></h3>
             <p class="card__excerpt">Write-up coming soon.</p>
           </div>
         </article>

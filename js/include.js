@@ -23,6 +23,10 @@
         }
       })
     );
+    // Flag set before the event so a late-loading main.js can detect
+    // that includes are already in and init immediately instead of
+    // waiting on an event it missed. See the guard in main.js.
+    window.__includesLoaded = true;
     document.dispatchEvent(new CustomEvent("includes:loaded"));
   }
 
