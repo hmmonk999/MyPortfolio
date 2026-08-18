@@ -63,6 +63,19 @@
   padding: 0.45em 0.9em;
 }
 
+/* Trailing arrow that nudges forward on hover — same wayfinding gesture
+   as .back-link--forward, borrowed so the button's motion matches the
+   "See all projects" links elsewhere on the page. The button's own
+   inline-flex + gap already space it from the label. */
+.btn__icon {
+  flex: none;
+  transition: transform var(--transition-fast);
+}
+
+.btn:hover .btn__icon {
+  transform: translateX(3px);
+}
+
 /* ---------- Back link ----------
    "Up one level" affordance that sits above a page's title. Kept
    visually quieter than .btn on purpose: it's wayfinding chrome, not a
