@@ -152,10 +152,35 @@
   overflow: hidden;
 }
 
-.card__media img {
+.card__media img,
+.card__media video {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
+}
+
+/* Motion thumbnail: an mp4 that plays on hover/focus (see
+   setupHoverVideos in main.js) and otherwise shows its poster frame,
+   so it reads as a still image until the visitor engages with the card.
+   preload="none" in the markup keeps the bytes unfetched until first
+   hover. On hover — or keyboard focus, which adds .is-playing — the clip
+   eases up a touch, a gentle "wake up" zoom cropped by the media box's
+   overflow:hidden so it never shifts layout. This is the only motion on
+   the card now; the card body itself no longer lifts. */
+.card__media--video video {
+  /* Promoted to its own compositor layer so scaling a *playing* video is
+     a cheap GPU composite, not a per-frame re-rasterization — without
+     this the zoom stutters as freshly decoded frames land at the new
+     scale. The long ease-out enter curve lets it glide in and settle
+     rather than snapping over the shorter base timing. */
+  transition: transform var(--transition-enter);
+  will-change: transform;
+}
+
+.card:hover .card__media--video video,
+.card__media--video video.is-playing {
+  transform: scale(1.03);
 }
 
 .card__body {
@@ -202,7 +227,6 @@
 
 .card--project:hover {
   box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
 }
 
 /* ---------- Featured card ----------
@@ -356,7 +380,8 @@
   overflow: hidden;
 }
 
-.card__panel img {
+.card__panel img,
+.card__panel video {
   position: absolute;
   inset: 0;
   width: 100%;

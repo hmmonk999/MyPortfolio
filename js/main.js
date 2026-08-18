@@ -1,6 +1,6 @@
 /* Site-wide interactivity. Runs once the header/footer partials have
    been injected by include.js. */
-document.addEventListener("includes:loaded", () => {
+function initSite() {
   setActiveNavLink();
   setupScrollSpy();
   setupNavToggle();
@@ -9,7 +9,24 @@ document.addEventListener("includes:loaded", () => {
   setFooterYear();
   setupCopyEmail();
   setupContactMenu();
-});
+  setupHoverVideos();
+}
+
+/* include.js fetches the header/footer partials asynchronously and
+   fires includes:loaded when they land. That fetch can resolve on
+   either side of this script executing: if main.js is still downloading
+   when the (often cached) partials arrive, the event fires before this
+   listener would exist and every setup above is silently skipped —
+   which breaks the nav, theme toggle, footer year, and card videos all
+   at once. include.js sets window.__includesLoaded right before it
+   dispatches, so run immediately when it's already done and only wait
+   on the event otherwise. (No double-init: the flag is set synchronously
+   with the dispatch, so exactly one branch ever runs.) */
+if (window.__includesLoaded) {
+  initSite();
+} else {
+  document.addEventListener("includes:loaded", initSite);
+}
 
 function getCurrentPage() {
   return (
@@ -316,6 +333,54 @@ function referrerPage() {
   } catch (err) {
     return null;
   }
+}
+
+/* Motion thumbnails on the project cards. Each [data-hover-video] is a
+   muted, looping mp4 that sits behind its poster frame until the
+   visitor engages with the card, then plays; it pauses and rewinds to
+   frame 0 (identical to the poster) when they leave, so at rest it
+   reads as a still image. The clip is only fetched on first play
+   because the markup carries preload="none".
+
+   Playback is gated to pointer devices that can hover — touch visitors
+   just see the poster, which is why every card needs a real poster
+   frame. It deliberately plays even under prefers-reduced-motion: the
+   clip only runs on a deliberate hover and pauses the instant the
+   visitor leaves, so it's user-initiated rather than the ambient,
+   unstoppable motion that setting is meant to suppress; at rest it's
+   always the still poster. The whole card is the trigger (not just the
+   media box) so the thumbnail wakes up as the visitor moves toward the
+   title, and keyboard users get the same via focusin/focusout on the
+   card's link. */
+function setupHoverVideos() {
+  const videos = document.querySelectorAll("[data-hover-video]");
+  if (!videos.length) return;
+
+  const canHover = window.matchMedia("(hover: hover)");
+
+  videos.forEach((video) => {
+    const card = video.closest(".card") || video.parentElement;
+
+    const play = () => {
+      if (!canHover.matches) return;
+      video.classList.add("is-playing");
+      // play() rejects if the visitor leaves before the fetch resolves
+      // (we pause it below); that's expected, so swallow it.
+      const started = video.play();
+      if (started) started.catch(() => {});
+    };
+
+    const stop = () => {
+      video.classList.remove("is-playing");
+      video.pause();
+      video.currentTime = 0;
+    };
+
+    card.addEventListener("mouseenter", play);
+    card.addEventListener("mouseleave", stop);
+    card.addEventListener("focusin", play);
+    card.addEventListener("focusout", stop);
+  });
 }
 
 function setFooterYear() {
