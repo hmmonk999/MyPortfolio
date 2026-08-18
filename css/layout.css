@@ -886,6 +886,91 @@ body {
   }
 }
 
+/* Warm wash: two soft clay glows anchored to the top and bottom of the
+   landing page, spanning the full width of the surface and drifting on
+   their own long, offset cycles — so the combined motion reads as
+   ambient warmth breathing rather than a looping effect. Landing page
+   only: scoped with :has(.hero), which no other page's <main> carries.
+
+   Lives on #main (the full-width surface) rather than the centered
+   .hero container, so the glow reaches edge to edge. #main becomes the
+   stacking context and clips the wash: the layers sit above its surface
+   fill (negative z-index) but below the page content, and overflow:clip
+   keeps their drift and scale from spilling past the rounded surface —
+   without it the movement adds horizontal page scroll.
+
+   No blur() here on purpose: the gradients are already soft, and a
+   blur filter would re-rasterize this large area every frame for the
+   whole (very slow) cycle. Transform + opacity stay on the compositor.
+
+   prefers-reduced-motion zeroes the animation wholesale (base.css); at
+   rest each layer shows its own base styles — full opacity, no drift —
+   which is the intended static wash. */
+#main:has(.hero) {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+
+#main:has(.hero)::before,
+#main:has(.hero)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* Top glow: full-width ellipse hugging the top edge, fading down past
+   the hero. */
+#main:has(.hero)::before {
+  top: 0;
+  height: min(85vh, 880px);
+  background: radial-gradient(
+    130% 92% at 50% 0%,
+    var(--hero-wash-a),
+    transparent 72%
+  );
+  animation: hero-wash-a 19s ease-in-out infinite alternate;
+}
+
+/* Bottom glow: mirror of the top, hugging the bottom edge and fading
+   up, on a longer cycle so the two never move in lockstep. */
+#main:has(.hero)::after {
+  bottom: 0;
+  height: min(75vh, 780px);
+  background: radial-gradient(
+    130% 92% at 50% 100%,
+    var(--hero-wash-b),
+    transparent 72%
+  );
+  animation: hero-wash-b 27s ease-in-out infinite alternate;
+}
+
+@keyframes hero-wash-a {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.72;
+  }
+  to {
+    transform: translate3d(2%, -1.5%, 0) scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes hero-wash-b {
+  from {
+    transform: translate3d(0, 0, 0) scale(1.06);
+    opacity: 0.5;
+  }
+  to {
+    transform: translate3d(-2.5%, 2%, 0) scale(0.95);
+    opacity: 0.85;
+  }
+}
+
 .hero__eyebrow {
   display: flex;
   align-items: center;
