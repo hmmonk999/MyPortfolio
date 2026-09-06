@@ -10,6 +10,7 @@ function initSite() {
   setupCopyEmail();
   setupContactMenu();
   setupHoverVideos();
+  setupBallTracks();
 }
 
 /* include.js fetches the header/footer partials asynchronously and
@@ -49,6 +50,11 @@ function setActiveNavLink() {
   document.querySelectorAll("[data-nav]").forEach((link) => {
     if (link.getAttribute("data-nav") === section) {
       link.setAttribute("aria-current", "page");
+      /* This is a real URL match (projects.html/about.html themselves),
+         not the index page's scroll-spy guess at which section is in
+         view — styled in the dark terracotta so it reads as more
+         certain than the scroll spy's light terracotta below. */
+      link.classList.add("is-page-match");
     }
   });
 }
@@ -72,6 +78,12 @@ function setupScrollSpy() {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
+        /* observe() fires this callback immediately with whatever the
+           current intersection state is. On a short hero that state can
+           already have "projects" sitting in the middle band before the
+           visitor has scrolled at all, highlighting the nav on load —
+           so ignore any intersection reported before scrollY moves. */
+        if (window.scrollY < 24) return;
         document
           .querySelectorAll(".site-nav__link[aria-current]")
           .forEach((l) => l.removeAttribute("aria-current"));
@@ -386,6 +398,113 @@ function setupHoverVideos() {
     trigger.addEventListener("mouseleave", stop);
     trigger.addEventListener("focusin", play);
     trigger.addEventListener("focusout", stop);
+  });
+}
+
+/* The ball trace on the volleyball playback card.
+
+   The panel is real footage of a rally with the product's trajectory
+   overlay redrawn on top of it, rather than burnt into the pixels — which
+   is what lets the trace survive being cropped to a panel a third as wide.
+   Each SVG carries data-ball-track: the ball's measured position at every
+   frame of the clip, as [startFrame, [x, y], [x, y], ...] per flight, in
+   the video's own coordinate space.
+
+   Everything here is read off video.currentTime rather than run on a timer,
+   so the trace cannot drift against the rally: the end of the line is the
+   ball's position at the frame currently on screen, interpolated between
+   the two samples either side of it. The scrubber and the clock come from
+   the same clock, so the whole panel agrees with itself.
+
+   At rest the video sits on its poster at t=0, which is a frame from before
+   the rally starts — so an empty trace and an empty scrubber are the
+   correct still, and no reset logic is needed beyond redrawing on seek. */
+function setupBallTracks() {
+  const svgs = document.querySelectorAll("[data-ball-track]");
+  if (!svgs.length) return;
+
+  const FPS = 30;
+
+  const clock = (t) => {
+    const s = Math.max(0, Math.floor(t));
+    return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+  };
+
+  svgs.forEach((svg) => {
+    const stage = svg.closest(".vbd");
+    const video = stage && stage.querySelector("video");
+    if (!video) return;
+
+    let flights;
+    try {
+      flights = JSON.parse(svg.dataset.ballTrack);
+    } catch (err) {
+      return;
+    }
+
+    const paths = svg.querySelectorAll(".vbd__arc");
+    const fill = stage.querySelector(".vbd__scrub-fill");
+    const now = stage.querySelector("[data-clock-now]");
+    const total = stage.querySelector("[data-clock-total]");
+    let raf = 0;
+
+    const draw = () => {
+      const frame = video.currentTime * FPS;
+
+      flights.forEach((flight, i) => {
+        const path = paths[i];
+        if (!path) return;
+        const pts = flight.slice(1);
+        const travelled = frame - flight[0];
+        if (travelled < 0) {
+          path.removeAttribute("d");
+          return;
+        }
+        const last = Math.min(pts.length - 1, Math.floor(travelled));
+        let d = "M" + pts[0][0] + " " + pts[0][1];
+        for (let k = 1; k <= last; k++) d += "L" + pts[k][0] + " " + pts[k][1];
+        // Carry the tip the rest of the way to the current sub-frame
+        // position, so the line ends on the ball and not on the last
+        // whole frame behind it.
+        if (last < pts.length - 1) {
+          const t = travelled - last;
+          const a = pts[last];
+          const b = pts[last + 1];
+          d += "L" + (a[0] + (b[0] - a[0]) * t).toFixed(1) +
+               " " + (a[1] + (b[1] - a[1]) * t).toFixed(1);
+        }
+        path.setAttribute("d", d);
+      });
+
+      const length = video.duration;
+      if (fill && length) {
+        fill.style.setProperty("--vbd-played", (video.currentTime / length).toFixed(4));
+      }
+      if (now) now.textContent = clock(video.currentTime);
+      if (total && length) total.textContent = clock(length);
+    };
+
+    const tick = () => {
+      draw();
+      raf = window.requestAnimationFrame(tick);
+    };
+
+    const start = () => {
+      if (!raf) raf = window.requestAnimationFrame(tick);
+    };
+
+    const stop = () => {
+      if (raf) window.cancelAnimationFrame(raf);
+      raf = 0;
+      draw();
+    };
+
+    video.addEventListener("play", start);
+    video.addEventListener("pause", stop);
+    // setupHoverVideos rewinds to 0 on leave; redraw so the trace clears.
+    video.addEventListener("seeked", draw);
+    video.addEventListener("loadedmetadata", draw);
+    draw();
   });
 }
 

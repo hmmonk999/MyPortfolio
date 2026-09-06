@@ -5,13 +5,27 @@ and otherwise shows its poster frame, so it reads as a still image until
 a visitor engages with the card. See `setupHoverVideos()` in
 `js/main.js` and `.card__media--video` in `css/components.css`.
 
+One card uses this: the volleyball playback panel, whose subject is a
+rally and so cannot be drawn. Everything that was product UI is drawn in
+CSS instead — see "AI COMMAND BAR DEMO" and "VOLLEYBALL PRODUCT DEMOS"
+in `css/components.css`. That is the line worth holding: film the thing
+that is genuinely photographic, draw the interface over it.
+
+`volleyball-rally.mp4` is the exception, and it is prepared differently
+from the recipe below. Its source had the product's chrome and its
+ball-trajectory overlay burnt into the pixels, which pinned the panel to
+one crop and one size. Both were taken back off — the chrome cropped
+away, the overlay painted out — so the page can draw them at whatever
+shape the card gives it, and so the trace can be driven off the video's
+own clock (`setupBallTracks` in `js/main.js`) instead of being baked in
+a dozen frames behind the ball.
+
 `_demo.mp4` / `_demo-poster.jpg` are placeholders — replace them with
 real clips.
 
 ## Adding a clip to a card
 
-Swap the card's `<img>` for this block (the AI Command Bar card on
-`index.html` and `projects.html` is a working example):
+Swap the card's `<img>` for this block:
 
 ```html
 <div class="card__media card__media--video">

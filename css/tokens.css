@@ -17,6 +17,17 @@
   --color-text: #211d19;
   --color-text-muted: #6b6259;
   --color-text-inverse: #ffffff;
+  /* Every other letter of anything wearing the fringe — the landing
+     headline and the landing page's section headings — so the filter can
+     tell those letters from their neighbours and give each parity its own
+     fringe colour (the edge stage of #hero-liquid in index.html, and the
+     two edge-only filters beside it). Only the red and blue channels
+     differ from --color-text, and only by four levels each: the same
+     luminance bucket, so the ink key still catches it and the eye reads
+     one colour, but neutral where --color-text is warm, which is the
+     whole difference the filter keys on. Every other use of the ink
+     stays --color-text. */
+  --ink-alt: #1d1d1d;
 
   /* ---- Color: accent ----
      Clay. Deliberately not the default indigo/blue every portfolio
@@ -24,20 +35,18 @@
   --color-accent: #c96c4a;
   --color-accent-hover: #b15a3a;
   --color-accent-soft: #f3e3db;
+  /* Light terracotta, between the accent and its soft tint. Only the
+     fringe on the even letters of the landing headline and the landing
+     page's section headings (the edge stage of #hero-liquid in
+     index.html) — the odd ones get the accent proper. */
+  --color-accent-light: #e6a88d;
   /* White-on-accent falls short of AA at normal text size (~3.7:1), so
      accent-text uses dark ink instead — 4.5:1+ against #c96c4a. */
   --color-accent-text: #241209;
 
-  /* ---- Hero wash ----
-     The slow warm glows anchored to the top and bottom of the landing
-     page, spanning the full surface width (#main:has(.hero), layout.css).
-     Two clay tints animated on different cycles so their combined motion
-     never reads as an obvious loop. Kept low-alpha so they warm the
-     surface rather than tinting it. Under prefers-reduced-motion the
-     drift is frozen to a static glow (the blanket rule in base.css), so
-     these still have to look right at rest. */
-  --hero-wash-a: rgba(201, 108, 74, 0.20);
-  --hero-wash-b: rgba(224, 122, 63, 0.12);
+  /* Dot grid on #main.has-dot-grid surfaces (layout.css). Kept
+     barely-there — texture, not a pattern anyone consciously sees. */
+  --hero-grid-dot: rgba(33, 29, 25, 0.06);
 
   /* ---- Color: feedback ---- */
   --color-success: #1a7f4e;
@@ -67,19 +76,102 @@
   --court-heat-mid: #ff7a33;
   --court-heat-edge: #ffc14d;
 
+  /* ---- Color: AI command bar demo ----
+     Used only by .cmdbar (components.css), the drawn-in-CSS thumbnail on
+     the AI Command Bar card. Like the court above, these depict a product
+     rather than this site, so they hold the same value in both themes.
+     The stage colours below were sampled off the mp4 the component
+     replaced; the sweep's three ramp colours are specified. */
+  --cmdbar-void: #080002;
+  --cmdbar-glow-amber: #f08007;
+  --cmdbar-glow-ember: #a04703;
+  --cmdbar-panel: #21242b;
+  --cmdbar-well: #161920;
+  --cmdbar-line: #3d4148;
+  --cmdbar-text: #ced1d8;
+  --cmdbar-text-muted: #b9bcc3;
+  --cmdbar-text-dim: #71757d;
+  /* The sweep's ramp: amber and indigo are the two poles, plum the one
+     rung between them. Plum is not decoration — orange interpolated
+     straight into indigo passes through #90343e, a muddy brick, and plum
+     sits deliberately bluer than that halfway blend to steer the turn
+     clear of it. These three are specified rather than sampled; the stop
+     positions in components.css still come off the clip. */
+  --cmdbar-amber: #fd7203;
+  --cmdbar-plum: #7c3067;
+  --cmdbar-indigo: #23039d;
+
+  /* ---- Color: volleyball product demos ----
+     Used only by .vbd (components.css), the three drawn-in-CSS panels on
+     the volleyball consolidation card. Same deal as the command bar
+     above: these are the product's colors, not the site's, so they hold
+     the same value in both themes. Sampled off the three mp4s the
+     component replaced.
+
+     All three clips shared one stage — a deep blue glow and a warm amber
+     one over near-black, placed differently in each — so the stage gets
+     one set of tokens and each panel only chooses where to put them.
+     These are the glows at full strength, as sampled; the gradients in
+     components.css are what fade them out towards the middle, so tune
+     the spread there rather than dimming the colour here. */
+  --vbd-void: #050104;
+  --vbd-glow-blue: #0069b4;
+  --vbd-glow-amber: #c2650a;
+  /* App chrome. The two greys are deliberately close together: the
+     product separates surfaces by a hair rather than by contrast, and
+     widening the gap here made the panels read as this site's cards
+     instead of as the product. */
+  --vbd-window: #161e25;
+  --vbd-well: #10161c;
+  /* The frame around a window. The product bezels a clip rather than
+     letting the footage run to the panel edge, and against a stage this
+     saturated the windows need the separation. */
+  --vbd-bezel: #0b1015;
+  --vbd-line: #2f3841;
+  --vbd-text: #dfe4e9;
+  --vbd-text-dim: #8d959e;
+  --vbd-pill: #383f47;
+  --vbd-pill-active: #f4f7f9;
+  /* The product's orange: the rule under the tab row and the played part
+     of the scrubber. Full-strength #ff6100, straight off the clip. */
+  --vbd-accent: #ff6100;
+  --vbd-blue: #0173e3;
+  /* The setter-tendency heat map runs a diverging scale — red for a hot
+     zone, blue for a cold one, pale lavender through the middle, and a
+     flat grey where there were no attempts to score at all. Kept as four
+     named stops rather than a gradient because the map is discrete: each
+     cell lands on one of these, never between two. */
+  --vbd-heat-hot: #e8443a;
+  --vbd-heat-mid: #9fa5c3;
+  --vbd-heat-cool: #40578b;
+  --vbd-heat-empty: #262c33;
+  --vbd-trend: #7f7fb5;
+  --vbd-good: #7fb069;
+  --vbd-bad: #d9694f;
+  --vbd-chip-good: #1d4a12;
+  --vbd-chip-check: #63c74d;
+
   /* ---- Typography ----
-     Fraunces (display) against Inter (body) — a high-contrast pairing
-     that gives headings a voice instead of defaulting to the system
-     stack for everything. Both are loaded via the <link> tags in each
-     page's <head>; change those too if you swap these families. */
-  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+     Baloo 2 (display) against DM Sans (body) — a rounded, chunky
+     heading voice paired with a clean, readable text face. Both are
+     loaded via the <link> tags in each page's <head>; change those
+     too if you swap these families. */
+  --font-body: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, Helvetica, Arial, sans-serif;
-  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-display: "Baloo 2", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  /* Only for the drawn product mockups (.cmdbar, .vbd in components.css)
+     — a third face, deliberately not one of the site's own two, so the
+     illustrations of Hudl's UI read as a different product's type
+     rather than borrowing the portfolio's own voice. */
+  --font-mockup: "Barlow", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
 
   --fs-xs: 0.75rem;    /* 12px */
   --fs-sm: 0.875rem;   /* 14px */
-  --fs-base: 1rem;     /* 16px */
-  --fs-md: 1.125rem;   /* 18px */
+  --fs-base: 1rem;     /* 16px — the site's one body/UI text size; xs/sm
+                           are only for the couple of spots deliberately
+                           smaller than that (see their own comments). */
   --fs-lg: 1.375rem;   /* 22px */
   --fs-xl: 1.75rem;    /* 28px */
 
@@ -89,7 +181,9 @@
      caps out around 1280px. */
   --fs-2xl: clamp(1.75rem, 1.35rem + 1.8vw, 2.5rem);   /* 28 → 40px */
   --fs-3xl: clamp(2.25rem, 1.4rem + 3.6vw, 3.5rem);    /* 36 → 56px */
-  --fs-display: clamp(2.5rem, 1.2rem + 7vw, 6rem);     /* 40 → 96px */
+  /* The "Portfolio" wordmark only — one short word filling the measure,
+     so it can run bigger than --fs-3xl without wrapping risk. */
+  --fs-mega: clamp(3rem, 0.5rem + 15vw, 8.5rem);       /* 48 → 136px */
 
   --fw-regular: 400;
   --fw-medium: 500;
@@ -178,6 +272,79 @@
      over before it draws attention to itself. */
   --transition-enter: 380ms cubic-bezier(0.22, 1, 0.36, 1);
 
+  /* ---- Hero atmosphere (index.html only) ----
+     The headline is liquid: every shape in it is blurred and snapped
+     back to a hard edge, so the letters round off at the corners and
+     fuse with anything that comes close — including the cursor, which
+     inside the hero is a drop of the same ink, with a larger drop
+     trailing it on a spring. See the .hero__liquid block in layout.css
+     and js/hero-atmosphere.js.
+
+     How liquid each kind of shape is: its blur radius, which is how far
+     its edge reaches out to meet a neighbour. The filter snaps the
+     result back to a hard edge whatever the radius, so these set reach
+     and softness of corner, not sharpness. The type is kept to a hair so
+     it reads crisp — the reference this follows blurs its name by 5px
+     and the letters come out rounded and bloated; the drops get most, so
+     they stretch into whatever they touch. A drop's blur also shrinks
+     it: past about a third of its diameter the middle no longer reaches
+     full coverage and the snapped edge pulls inward. */
+  --liquid-blur-pretitle: 0px;
+  --liquid-blur-type: 1.6px;
+  --liquid-blur-deco: 0.8px;
+  /* The arrow gets next to none: it has to read as the pointer, sharp,
+     so all it has is the wrapper filter's own smoothing — enough that it
+     fuses on contact and no more. The drop keeps some, so it still
+     stretches, but not so much that its edge goes soft: the ramp's
+     anti-aliasing widens with the blur behind it. */
+  --liquid-blur-lead: 0px;
+  --liquid-blur-trail: 8px;
+  /* The wake carries more blur than the drop ahead of it: it is the
+     softer body, and the extra reach is what bridges the gap between
+     the two into a neck rather than letting them read as two dots. Kept
+     under a third of --cursor-wake-size, past which the wrapper's
+     threshold starts eating the body from the edge in. */
+  --liquid-blur-wake: 9.5px;
+  /* The drop's blur at full melt — when it is right up against a letter
+     or a decoration. The script ramps the drop between the two off how
+     near it is (--melt, 0 to 1), so its edge reaches further exactly
+     when there is something in reach to reach for, and the neck between
+     the two forms earlier and thicker. Resting reach is what the drop
+     looks like on its own, so this is the only one that grows.
+
+     Held just under a third of the drop's diameter, which is where the
+     note above bites: at 13px the snapped edge pulled in so far that
+     the drop all but vanished at the moment it was meant to be merging.
+     The script swells the drop as it melts for the same reason, and
+     that swell is what buys the last of this. */
+  --liquid-blur-trail-melt: 10.5px;
+  --liquid-blur-wake-melt: 12px;
+  /* The cursor: an arrow the shape of the system pointer, and a blob
+     trailing it. Their resting ink is the text colour; the script
+     recolours them to whatever they approach. Solid — they go through
+     an alpha-threshold filter, so anything translucent here would
+     vanish outright. */
+  --goo-cursor: #211d19;
+  --cursor-size: 24px;
+  /* The two bodies of the trail. Both are plain circles and neither
+     ever deforms — the trail's shape is what the pair does through the
+     goo as the slower one falls behind (see "The trail" in
+     js/hero-atmosphere.js). The wake is the larger and softer of the
+     two, so parked, when they sit concentric, it is the one you see and
+     the trail reads as a single quiet bead a little over 30px across.
+     The script swells both as they near ink. */
+  --cursor-trail-size: 26px;
+  --cursor-wake-size: 32px;
+  /* The hand-off at the hero's edge. Coming in, the drop grows on the
+     pointer, quickly and settling gently. Going out, the arrow fades
+     over the system pointer it's shaped like, and the drop shrinks —
+     slower, and still following the pointer while it does (the script
+     keeps its spring running for the length of this), so it's drawn in
+     after the pointer rather than left behind. The script reads the
+     exit's duration to know how long to keep the loop alive. */
+  --cursor-enter: 380ms cubic-bezier(0.22, 1, 0.36, 1);
+  --cursor-exit: 700ms cubic-bezier(0.45, 0, 0.55, 1);
+
   /* ---- Breakpoints (for reference in comments; media queries can't read vars) ----
      --bp-sm: 600px
      --bp-md: 900px
@@ -193,6 +360,10 @@
   --color-border: #3d3a37;
   --color-text: #f3efea;
   --color-text-muted: #a79e93;
+  /* The alt ink again, the same four levels off this theme's --color-text
+     in red and blue, so the filter's warm/neutral key holds in both
+     themes without being retuned. */
+  --ink-alt: #efefef;
   /* Same clay value as light mode; only its hover/soft companions shift
      to stay legible against a dark ground. */
   --color-accent: #c96c4a;
@@ -200,12 +371,8 @@
   --color-accent-soft: #3a2a22;
   --color-accent-text: #241209;
 
-  /* Subtler over the dark ground — a clay glow reads as heavier against
-     dark than against light, so it wants less alpha, not more, to stay
-     an ambient warmth rather than a visible blob. Same two-tint pairing
-     as light mode. */
-  --hero-wash-a: rgba(201, 108, 74, 0.14);
-  --hero-wash-b: rgba(217, 131, 99, 0.09);
+  /* Same barely-there texture, tuned for a dark ground. */
+  --hero-grid-dot: rgba(243, 239, 234, 0.05);
 
   /* Glass over a dark ground: the pane tints toward the page bg rather
      than white, and the hairline flips to a faint white lift so the
@@ -216,4 +383,8 @@
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
 
   --shadow-drop: 0 8px 18px rgba(0, 0, 0, 0.5);
+
+  /* Hero atmosphere: the cursor follows the text colour; the fringe
+     follows the accent tokens above on its own. */
+  --goo-cursor: #f3efea;
 }
