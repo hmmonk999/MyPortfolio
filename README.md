@@ -58,10 +58,10 @@ studies.
   Heading sizes from `--fs-2xl` up are `clamp()`-based, so they scale with
   the viewport instead of stepping at a breakpoint — set the min and max
   and the middle takes care of itself.
-- **Fonts:** the families are Fraunces (headings) and Inter (body), set in
+- **Fonts:** the families are Baloo 2 (headings) and DM Sans (body), set in
   `css/tokens.css` as `--font-display` / `--font-body` **and** loaded by the
   Google Fonts `<link>` in each page's `<head>`. Swapping a family means
-  changing both — the token alone will silently fall back to Georgia/system.
+  changing both — the token alone will silently fall back to system fonts.
 - **A component's look (buttons, cards, tags...):** edit `css/components.css`.
   Open `styleguide.html` while you work — it renders every component so you
   can see the effect immediately without hunting through real pages.

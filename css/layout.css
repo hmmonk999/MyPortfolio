@@ -196,6 +196,55 @@
 
 .site-nav__brand-name {
   display: none;
+  position: relative;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  /* Same hand-tilted, underlined treatment as the "Portfolio" wordmark
+     (.hero__title-main in this file), scaled down for the nav plate. */
+  transform: rotate(-3deg);
+}
+
+/* Positioned against the name's own box (relative, above), same idea
+   as .hero__deco--underline but simpler: one squiggle, no badge/stars —
+   the plate is only 96px tall and clips its own content. Two stacked
+   paths trace the same "d": a plain ink one underneath, and a clay one
+   on top that's hidden by default and wiped in left-to-right on hover
+   (see the two paths below). */
+.site-nav__brand-underline {
+  position: absolute;
+  left: 2%;
+  bottom: 0.1em;
+  width: 96%;
+  height: 0.22em;
+  pointer-events: none;
+}
+
+.site-nav__brand-underline-base {
+  stroke: var(--color-text);
+}
+
+/* pathLength="100" normalizes the squiggle's length to 100 regardless
+   of its drawn shape, so a plain 100 → 0 dashoffset tween is a
+   left-to-right reveal no matter how the curve wiggles. */
+.site-nav__brand-underline-accent {
+  stroke: var(--color-accent);
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  transition: stroke-dashoffset var(--transition-base);
+}
+
+.site-nav__brand:hover .site-nav__brand-underline-accent,
+.site-nav__brand:focus-visible .site-nav__brand-underline-accent {
+  stroke-dashoffset: 0;
+}
+
+/* The plate is a plain <a>, so it would otherwise pick up base.css's
+   global a:hover underline — redundant with (and uglier than) the
+   squiggle's own hover animation above. */
+.site-nav__brand:hover,
+.site-nav__brand:focus-visible {
+  text-decoration: none;
 }
 
 /* flex: 2 rather than 1 is deliberate: .site-nav__contact (the Connect
@@ -224,7 +273,6 @@
   display: flex;
   flex: none;
   align-items: center;
-  padding-inline: var(--space-sm);
 }
 
 .site-nav__link {
@@ -238,7 +286,7 @@
   /* Stadium, to nest cleanly inside the fully-rounded glass pill. */
   border-radius: var(--radius-full);
   color: var(--color-text-muted);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-base);
   font-weight: var(--fw-medium);
   text-decoration: none;
   transition: background var(--transition-fast), color var(--transition-fast),
@@ -264,9 +312,21 @@
   display: none;
 }
 
+/* Light terracotta wash is the default: the index page's scroll spy is
+   a guess at which section is centered in the viewport, not a real
+   page match, so it gets the soft tint. .is-page-match (set only for
+   an actual URL match, i.e. on projects.html/about.html) upgrades the
+   background to solid dark terracotta so it reads as more certain,
+   pairing it with --color-accent-text the way .btn--primary does for
+   the same contrast reason. */
 .site-nav__link[aria-current="page"] {
   color: var(--color-accent);
   background: var(--color-accent-soft);
+}
+
+.site-nav__link[aria-current="page"].is-page-match {
+  background: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 .site-nav__link[aria-current="page"] .site-nav__link-icon {
@@ -345,7 +405,7 @@
   border-radius: var(--radius-md);
   background: transparent;
   color: var(--color-text);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-base);
   font-weight: var(--fw-medium);
   text-align: left;
   cursor: pointer;
@@ -439,7 +499,7 @@
     white-space: nowrap;
     background: var(--color-bg);
     font-weight: var(--fw-semibold);
-    font-size: var(--fs-md);
+    font-size: var(--fs-base);
     color: var(--color-text);
     transition: clip-path var(--transition-nav);
     /* Expanded: the rail is 220 wide and the plate 256, so the drop to
@@ -497,7 +557,7 @@
   }
 
   .site-nav__brand-name {
-    display: inline;
+    display: inline-block;
     white-space: nowrap;
   }
 
@@ -534,7 +594,7 @@
     border-radius: var(--radius-md);
     background: transparent;
     color: var(--color-text-muted);
-    font-size: var(--fs-sm);
+    font-size: var(--fs-base);
     font-weight: var(--fw-medium);
     text-align: left;
     cursor: pointer;
@@ -618,8 +678,8 @@
     border-color: var(--color-accent);
   }
 
-  .site-nav__toggle-icon {
-    transition: transform var(--transition-base);
+  .site-nav__toggle-icon--open {
+    display: none;
   }
 
   /* The brand is fixed (out of flow) in both states now, so the column
@@ -673,6 +733,11 @@
     background: var(--color-accent-soft);
   }
 
+  .site-nav__link[aria-current="page"].is-page-match,
+  .site-nav__link[aria-current="page"].is-page-match:hover {
+    background: var(--color-accent);
+  }
+
   .site-nav__link-label {
     display: inline-block;
     white-space: nowrap;
@@ -704,8 +769,12 @@
     align-items: center;
   }
 
-  .nav-collapsed .site-nav__toggle-icon {
-    transform: rotate(180deg);
+  .nav-collapsed .site-nav__toggle-icon--close {
+    display: none;
+  }
+
+  .nav-collapsed .site-nav__toggle-icon--open {
+    display: block;
   }
 
   /* padding-inline is zeroed here: the desktop padding above is sized
@@ -718,7 +787,7 @@
     position: relative;
     justify-content: center;
     padding-block: var(--space-md);
-    padding-inline: 0;
+    padding-inline: 6px 0;
   }
 
   /* Turn the labels on their side for the collapsed rail.
@@ -759,6 +828,10 @@
     right: calc(-1 * var(--space-md) - 10px);
     background: var(--color-accent-soft);
     border-radius: var(--radius-md);
+  }
+
+  .nav-collapsed .site-nav__link[aria-current="page"].is-page-match::before {
+    background: var(--color-accent);
   }
 
   /* Collapsed rail: icon only, centered, no rotated label — unlike
@@ -871,13 +944,22 @@ body {
    Two tiers rather than a single centered stack: an oversized statement
    that gets the full measure to itself, then a supporting row beneath it
    carrying the intro and the call to action. The headline is the only
-   thing at --fs-display anywhere on the site, so it reads as the entry
+   thing at --fs-mega anywhere on the site, so it reads as the entry
    point without needing a graphic to prop it up. */
 /* Mobile-first, same reasoning as .section above: less padding by
    default, stepping back up to the full statement-piece spacing once
    the viewport can afford it. */
 .hero {
   padding-block: var(--space-sm) var(--space-md);
+  /* Redundant in practice — container-type below already makes .hero a
+     containing block for absolutely positioned children — but stated so
+     the goo filter defs' positioning doesn't look like it depends on a
+     side effect of the container query. */
+  position: relative;
+  /* Lets .hero__title-main size itself off the hero's own rendered
+     width (see its cqw rule below) instead of the full viewport, which
+     is wrong here once the side nav has eaten a fixed chunk of it. */
+  container-type: inline-size;
 }
 
 @media (min-width: 700px) {
@@ -886,131 +968,314 @@ body {
   }
 }
 
-/* Warm wash: two soft clay glows anchored to the top and bottom of the
-   landing page, spanning the full width of the surface and drifting on
-   their own long, offset cycles — so the combined motion reads as
-   ambient warmth breathing rather than a looping effect. Landing page
-   only: scoped with :has(.hero), which no other page's <main> carries.
-
-   Lives on #main (the full-width surface) rather than the centered
-   .hero container, so the glow reaches edge to edge. #main becomes the
-   stacking context and clips the wash: the layers sit above its surface
-   fill (negative z-index) but below the page content, and overflow:clip
-   keeps their drift and scale from spilling past the rounded surface —
-   without it the movement adds horizontal page scroll.
-
-   No blur() here on purpose: the gradients are already soft, and a
-   blur filter would re-rasterize this large area every frame for the
-   whole (very slow) cycle. Transform + opacity stay on the compositor.
-
-   prefers-reduced-motion zeroes the animation wholesale (base.css); at
-   rest each layer shows its own base styles — full opacity, no drift —
-   which is the intended static wash. */
-#main:has(.hero) {
-  position: relative;
-  isolation: isolate;
-  overflow: clip;
+/* Faint dot grid: opted into per-page via .has-dot-grid on #main (index,
+   about, projects), not every page — case studies keep a flat surface.
+   Sized in px, not rem, so the dots stay crisp pixels regardless of the
+   user's text-size setting. */
+#main.has-dot-grid {
+  background-image: radial-gradient(circle, var(--hero-grid-dot) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
-#main:has(.hero)::before,
-#main:has(.hero)::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  z-index: -1;
-  pointer-events: none;
-  will-change: transform, opacity;
-}
-
-/* Top glow: full-width ellipse hugging the top edge, fading down past
-   the hero. */
-#main:has(.hero)::before {
-  top: 0;
-  height: min(85vh, 880px);
-  background: radial-gradient(
-    130% 92% at 50% 0%,
-    var(--hero-wash-a),
-    transparent 72%
-  );
-  animation: hero-wash-a 19s ease-in-out infinite alternate;
-}
-
-/* Bottom glow: mirror of the top, hugging the bottom edge and fading
-   up, on a longer cycle so the two never move in lockstep. */
-#main:has(.hero)::after {
-  bottom: 0;
-  height: min(75vh, 780px);
-  background: radial-gradient(
-    130% 92% at 50% 100%,
-    var(--hero-wash-b),
-    transparent 72%
-  );
-  animation: hero-wash-b 27s ease-in-out infinite alternate;
-}
-
-@keyframes hero-wash-a {
-  from {
-    transform: translate3d(0, 0, 0) scale(1);
-    opacity: 0.72;
-  }
-  to {
-    transform: translate3d(2%, -1.5%, 0) scale(1.1);
-    opacity: 1;
-  }
-}
-
-@keyframes hero-wash-b {
-  from {
-    transform: translate3d(0, 0, 0) scale(1.06);
-    opacity: 0.5;
-  }
-  to {
-    transform: translate3d(-2.5%, 2%, 0) scale(0.95);
-    opacity: 0.85;
-  }
-}
-
-.hero__eyebrow {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2xs);
-  margin-bottom: var(--space-md);
-  color: var(--color-accent);
-  font-weight: var(--fw-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: var(--fs-sm);
-}
-
-/* Short rule leading into the eyebrow — anchors the text block to the
-   left edge and gives the top of the page a horizon line. */
-.hero__eyebrow::before {
-  content: "";
-  width: var(--space-lg);
-  height: 2px;
-  background: currentColor;
-  flex: none;
-}
-
+/* Title: "Hannah Monk's" in italic body text, then "Portfolio" as an
+   oversized sticker in the rounded display face, hand-tilted and hung
+   with a badge, two sparkles, and an underline squiggle — see
+   .hero__deco below. The pretitle and wordmark are both plain text (no
+   line-break between them in the DOM), so a screen reader still hears
+   one sentence; the decorations are aria-hidden and purely visual. */
 .hero__title {
-  max-width: 18ch;
-  margin-bottom: var(--space-xl);
-  font-size: var(--fs-display);
-  font-weight: var(--fw-semibold);
-  /* Display sizes need a tighter leading than the --lh-tight used for
-     ordinary headings, or the lines drift apart. */
-  line-height: 0.98;
-  letter-spacing: -0.03em;
+  display: block;
+  max-width: none;
+  margin-bottom: 0;
 }
 
-/* The one word carrying the argument. Fraunces' italic is a genuinely
-   different cut rather than a slant, so this reads as emphasis in the
-   typeface's own voice instead of an effect applied on top of it. */
-.hero__title em {
+.hero__pretitle {
+  position: relative;
+  display: block;
+  margin: 0 0 var(--space-md) !important;
+  transform: rotate(-1.5deg);
+  font-family: var(--font-body);
   font-style: italic;
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-2xl);
+  color: var(--color-text-muted);
+}
+
+.hero__title-main {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  transform: rotate(-2deg);
+  font-family: var(--font-display);
+  font-weight: 800;
+  /* vw-based fallback for browsers without container query support;
+     overridden by the cqw version below wherever it's understood. */
+  font-size: var(--fs-mega);
+  font-size: clamp(2.75rem, 0.5rem + 13cqw, 7.5rem);
+  line-height: 0.85;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+/* Everything hung off the wordmark: positioned against its box, sized
+   in em so they scale with --fs-mega instead of needing their own
+   breakpoints, and pulled out of flow so they never affect layout. */
+.hero__deco {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+}
+
+.hero__deco--badge {
+  top: -0.32em;
+  right: -0.15em;
+  transform: rotate(9deg);
+  padding: 0.32em 0.65em;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-body);
+  font-size: 0.135em;
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: var(--color-accent-text);
+}
+
+.hero__deco--star {
+  width: 0.5em;
+  height: 0.5em;
   color: var(--color-accent);
 }
+
+.hero__deco--star-a {
+  top: -0.28em;
+  left: -0.4em;
+  transform: rotate(-18deg);
+}
+
+.hero__deco--star-b {
+  width: 0.32em;
+  height: 0.32em;
+  bottom: 0.08em;
+  right: -0.32em;
+  transform: rotate(24deg);
+  color: var(--color-text);
+}
+
+.hero__deco--underline {
+  left: 0.05em;
+  bottom: -0.22em;
+  width: 88%;
+  height: 0.18em;
+  color: var(--color-accent);
+}
+
+@media (min-width: 700px) {
+  .hero__pretitle {
+    margin-bottom: var(--space-xs);
+  }
+}
+
+/* The liquid. Same idea as the site this hero follows: every shape in
+   the headline — the two runs of type, the decorations, and the cursor's
+   two drops — is blurred a little and then snapped back to a hard edge by
+   one filter on the wrapper (#hero-liquid, defined in index.html), so
+   shapes round off at the corners and fuse with anything that comes
+   within their blur's reach. How liquid each kind of shape is comes down
+   to its own blur, set here off the --liquid-blur-* tokens: the type gets
+   a hair, so it stays crisp and only just softens its corners; the
+   decorations get more; the drops get the most, so they stretch into
+   whatever they touch. Blur is per element rather than on the wrapper
+   because a single blur strong enough to make the drops gooey would
+   round the type into pebbles.
+
+   Gated on the script (.hero.is-liquid) so no-JS keeps the plain
+   headline; the drops only exist with a fine pointer on top of that.
+   The wrapper is the twins' positioning box and carries the h1's old
+   bottom margin, since the filter region is measured against the
+   wrapper's box and a margin on it would count toward that. */
+.hero__liquid {
+  position: relative;
+  margin-bottom: var(--space-2xl);
+}
+
+.hero.is-liquid .hero__liquid {
+  filter: url("#hero-liquid");
+}
+
+.hero.is-liquid .hero__pretitle {
+  filter: blur(var(--liquid-blur-pretitle));
+}
+
+/* The wordmark's blur goes on its text alone (.hero__title-text), not on
+   the run: the decorations are its children, a blur on the run would
+   stack under their own, and the sparkles' thin points don't survive
+   that — they came out as pebbles. */
+.hero.is-liquid .hero__title-text {
+  filter: blur(var(--liquid-blur-type));
+}
+
+/* Every other letter of a run that wears the fringe — the wordmark, and
+   the landing page's section headings (.section-heading__title--inked in
+   components.css) — carrying an ink four levels off --color-text in red
+   and blue and identical to it in luminance. The eye reads one colour;
+   the filter reads two, and that is the only handle it has for giving
+   alternate letters alternate fringe colours — see the edge stage of
+   #hero-liquid in index.html, which keys on warm-vs-neutral rather than
+   on light-vs-dark, so the same numbers hold in both themes. nth-child
+   rather than a second class because the alternation is positional: it
+   should survive editing the words. Not scoped to the hero, since the
+   headings use it too, and it does nothing on its own — without one of
+   the edge filters above it, it is a four-level colour shift nobody can
+   see. */
+.ink-glyph:nth-child(even) {
+  color: var(--ink-alt);
+}
+
+/* The colour of the line around the ink — see the edge stage of
+   #hero-liquid in index.html, and the two edge-only copies of it beside
+   that one: #hero-ink-edge for the fixed cursor and #ink-edge-sm for the
+   landing page's section headings. A flood's colour is a CSS property,
+   so unlike the filter's numbers it can read a token and follow the
+   theme, which is why all three share these two classes. */
+.hero-goo__edge-ink {
+  flood-color: var(--color-accent);
+}
+
+.hero-goo__edge-ink-light {
+  flood-color: var(--color-accent-light);
+}
+
+.hero.is-liquid .hero__deco {
+  filter: blur(var(--liquid-blur-deco));
+}
+
+/* The cursor's twin, dropped into the wrapper by the script: the same
+   arrow and drop as the fixed cursor (see .cursor in components.css),
+   placed in the wrapper's own coordinate space so they go through the
+   same filter as the type — that's the whole point; a fixed-position
+   element outside the filter could never merge with it. Where they
+   render solid the fixed cursor gives way to them (the hand-off in the
+   script), so these are the cursor while it's over the headline. Their
+   blur is what makes them liquid: it reaches out past their own edge,
+   and where it meets a letter's the ramp turns the overlap into a neck.
+   Parked at scale(0) until the pointer is in the hero, and shrinking
+   back to it on the way out, on the same clock as the fixed drop
+   (--cursor-exit) and still following the pointer while it does. The
+   twins can't fade like the fixed arrow does: they're inside the
+   filter, whose ramp turns any half-opacity into a snap.
+
+   The colour is per part and set by the script as --ink on both the
+   twin and its fixed copy, every frame: a blend of the inks of whatever
+   shapes are near, weighted by closeness — the wordmark's, the
+   pretitle's muted one, the underline's clay — so it always merges as
+   one substance with what it touches rather than as a dark blob over a
+   coloured one, and runs from one to the next rather than switching.
+   No transition on it: the values are already continuous, and a
+   transition would only lag them. --goo-cursor is the resting ink for
+   when nothing is near. The clay line the wordmark carries isn't set
+   here at all: the filter draws it around whatever holds the wordmark's
+   ink, so a twin in that ink has it, continuous with the letters' where
+   they've merged, and fades it out as its ink blends away. */
+.hero__blob {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  user-select: none;
+  scale: 0;
+  transition: scale var(--cursor-exit);
+  will-change: translate;
+}
+
+/* The arrow's tip is the path's origin, so no centring margin: the
+   element's top-left corner is the pointer. Scales about that tip. */
+.hero__blob--lead {
+  width: var(--cursor-size);
+  height: var(--cursor-size);
+  max-width: none;
+  overflow: visible;
+  fill: var(--ink, var(--goo-cursor));
+  transform-origin: 0 0;
+  filter: blur(var(--liquid-blur-lead));
+}
+
+/* Both bodies of the trail are circles, and they stay circles: an
+   earlier version kneaded an irregular radius here on the theory that a
+   circle can only come back out of a radially symmetric blur as a
+   smaller circle, which is true of one body and is why that version read
+   as a dot. It is not true of two. The pair separates as the slower one
+   falls behind (see "The trail" in js/hero-atmosphere.js), the
+   threshold bridges the gap, and the union is a teardrop that nothing
+   had to be deformed to get. Matched on .cursor__trail and
+   .cursor__wake in components.css so twin and fixed copy are the one
+   shape for the hand-off.
+
+   transform is left free for the script, which uses it for the swell as
+   a body nears ink, and is why it is in will-change: scale is the enter
+   and exit (below), translate is the position (also the script), and the
+   three compose rather than fighting over one property.
+
+   Blur is the part of the melt that lives here. It runs from
+   --liquid-blur-trail to --liquid-blur-trail-melt as --melt goes 0 to 1,
+   so a body's edge reaches furthest exactly when there is a letter in
+   reach: the neck to the letter starts earlier and comes out thicker,
+   and the body loses its own edge into the letter rather than docking
+   against it. --melt is set by the script per body and on the twins
+   only — the fixed copies in components.css have no goo filter behind
+   them, so a wider blur out there would just be a fuzzy blob. */
+.hero__blob--trail,
+.hero__blob--wake {
+  border-radius: 50%;
+  background: var(--ink, var(--goo-cursor));
+  will-change: translate, transform;
+}
+
+.hero__blob--trail {
+  width: var(--cursor-trail-size);
+  height: var(--cursor-trail-size);
+  margin: calc(var(--cursor-trail-size) / -2) 0 0 calc(var(--cursor-trail-size) / -2);
+  filter: blur(
+    calc(
+      var(--liquid-blur-trail) +
+        (var(--liquid-blur-trail-melt) - var(--liquid-blur-trail)) * var(--melt, 0)
+    )
+  );
+}
+
+.hero__blob--wake {
+  width: var(--cursor-wake-size);
+  height: var(--cursor-wake-size);
+  margin: calc(var(--cursor-wake-size) / -2) 0 0 calc(var(--cursor-wake-size) / -2);
+  filter: blur(
+    calc(
+      var(--liquid-blur-wake) +
+        (var(--liquid-blur-wake-melt) - var(--liquid-blur-wake)) * var(--melt, 0)
+    )
+  );
+}
+
+.hero.is-pointer-inside .hero__blob {
+  scale: 1;
+  transition: scale var(--cursor-enter);
+}
+
+/* On press the arrow tightens, matching the fixed cursor
+   (components.css) so the hand-off between the two stays invisible. */
+.hero.is-pointer-inside.is-pressed .hero__blob--lead {
+  scale: 0.8;
+}
+
+/* Filter defs only — the <svg> itself must not be display: none or the
+   filters stop resolving in some engines, so it's just collapsed. */
+.hero-goo {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
 
 .hero__meta {
   display: flex;
@@ -1023,7 +1288,7 @@ body {
 .hero__lead {
   max-width: 52ch;
   margin: 0;
-  font-size: var(--fs-md);
+  font-size: var(--fs-base);
   line-height: var(--lh-loose);
   color: var(--color-text-muted);
 }
@@ -1037,7 +1302,7 @@ body {
 
 .hero__note {
   margin: 0;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-base);
   color: var(--color-text-muted);
 }
 
@@ -1053,6 +1318,14 @@ body {
     align-items: flex-end;
     text-align: right;
   }
+}
+
+/* The homepage's "About me" teaser bio — plain paragraphs, no class of
+   their own. Matches the About page's intro bio treatment
+   (.bento__tile--intro .bento__text in components.css) so both read at
+   the same size. */
+#about-me p {
+  font-size: var(--fs-base);
 }
 
 /* Entrance. Content resolves where it already sits — fading up from a
@@ -1086,13 +1359,37 @@ main > section:first-of-type > :nth-child(n + 3) {
   animation-delay: 120ms;
 }
 
+/* The goo <svg> in the hero is filter definitions only, with nothing to
+   fade in. The full ancestor chain is repeated on purpose: the rule above
+   is (0,1,2) and a bare .hero-goo selector would be (0,1,0) and lose to
+   it silently. */
+main > section:first-of-type > .hero-goo {
+  animation: none;
+}
+
+/* The liquid wrapper carries the #hero-liquid filter, and an animation
+   on `filter` would replace it for the length of the entrance — the two
+   values can't interpolate, so the headline would arrive plain and snap
+   liquid halfway through. It fades in with no blur instead. Same
+   specificity reasoning as the rule above. */
+@keyframes settle-in-flat {
+  from {
+    opacity: 0;
+  }
+}
+
+main > section:first-of-type > .hero__liquid {
+  animation-name: settle-in-flat;
+}
+
 /* Generic tooltip: a small bubble carrying the fuller copy for an
    item whose visible label is shorter or truncated (nav rail rows,
    the footer email link below). Opens above the trigger by default;
    .site-nav__social-link overrides the direction to the side since
    its rows are stacked vertically. (hover: hover) keeps it from
    popping up on tap with no pointer around to move away and dismiss
-   it. */
+   it. Stays at --fs-xs deliberately — a hover aside, not body text,
+   and the site's base size would overwhelm the small bubble. */
 [data-tooltip] {
   position: relative;
 }
@@ -1127,8 +1424,8 @@ main > section:first-of-type > :nth-child(n + 3) {
 
 /* Site footer */
 .site-footer {
-  border-top: 1px solid var(--color-border);
-  padding-block: 33px;
+  padding-block: 7px;
+  font-size: var(--fs-base);
   color: var(--color-text-muted);
 }
 
@@ -1290,8 +1587,8 @@ main > section:first-of-type > :nth-child(n + 3) {
 }
 
 /* The one-line "what this project actually was" under the title —
-   set in the body face, not Fraunces, so it reads as a caption on the
-   heading rather than a second heading competing with it. */
+   set in the body face, not the display face, so it reads as a caption
+   on the heading rather than a second heading competing with it. */
 .case-hero__tagline {
   margin: 0 0 var(--space-3xs);
   font-family: var(--font-body);

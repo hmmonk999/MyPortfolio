@@ -58,6 +58,8 @@
   color: var(--color-accent-hover);
 }
 
+/* The one deliberately-smaller-than-base UI text on the site: a compact
+   button variant for contexts too tight for a full-size CTA. */
 .btn--sm {
   font-size: var(--fs-sm);
   padding: 0.45em 0.9em;
@@ -86,7 +88,7 @@
   gap: var(--space-3xs);
   margin-bottom: var(--space-md);
   color: var(--color-text-muted);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-base);
   font-weight: var(--fw-medium);
   text-decoration: none;
   transition: color var(--transition-fast);
@@ -133,7 +135,7 @@
   border-radius: var(--radius-full);
   background: var(--color-accent-soft);
   color: var(--color-accent);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
   letter-spacing: 0.02em;
 }
@@ -141,11 +143,6 @@
 .tag--neutral {
   background: var(--color-surface);
   color: var(--color-text-muted);
-}
-
-.tag--contrast {
-  background: var(--color-accent);
-  color: white;
 }
 
 /* ---------- Card ---------- */
@@ -196,6 +193,359 @@
   transform: scale(1.03);
 }
 
+/* AI COMMAND BAR DEMO
+   The motion thumbnail on the AI Command Bar card, drawn in CSS instead
+   of shipped as an mp4. The clip it replaces was a still screenshot with
+   exactly one thing moving in it — a violet-to-amber gradient sweeping
+   around the search field — so everything but the match footage is drawn
+   here: the panel, the two buttons, the field and its icons.
+
+   Like .court-demo this depicts a product rather than the site, so its
+   colors are their own tokens (--cmdbar-*, tokens.css) and hold the same
+   value in both themes.
+
+   Everything is sized in cqw against .card__media--demo's inline size, so
+   the whole thing is one set of proportions that scales to any card width
+   without a single breakpoint. 1cqw = 1% of the media box's width, and
+   every number below is the source screenshot's measurement at 1280px
+   wide divided by 12.8 — including the vertical ones, which is what keeps
+   the composition from stretching when the card's aspect ratio changes. */
+
+/* Registered so it can be animated: a plain custom property would jump
+   from 0deg to 360deg in one step rather than interpolating. Where
+   @property isn't supported the ring simply holds its start angle, which
+   is the same thing the reduced-motion path lands on. */
+@property --cmdbar-sweep {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.card__media--demo {
+  container-type: inline-size;
+  position: relative;
+}
+
+/* The stage, drawn at the screenshot's own 16:9 and then scaled to cover
+   the card's 16:10 media box — precisely what object-fit: cover was doing
+   to the mp4, quietly enlarging it by a ninth and trimming the sides.
+   Doing it here rather than baking the enlargement into every number
+   below keeps those measurements equal to the screenshot's own, and keeps
+   the card looking the same as it did with the video in it. The 10/9 is
+   the media box's ratio over the stage's — the one line to revisit if
+   .card__media ever stops being 16:10. */
+.cmdbar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100cqw;
+  aspect-ratio: 16 / 9;
+  translate: -50% -50%;
+  scale: calc(10 / 9);
+  overflow: hidden;
+  font-family: var(--font-mockup);
+  /* The stage the panel floats on: an amber glow up the right-hand side
+     meeting a deeper ember one across the bottom. Sampled off the original
+     clip rather than mixed by eye, which is why the positions aren't round
+     numbers. */
+  background:
+    radial-gradient(52% 82% at 108% 76%, var(--cmdbar-glow-amber) 0%, transparent 76%),
+    radial-gradient(130% 62% at 34% 116%, var(--cmdbar-glow-ember) 0%, transparent 76%),
+    var(--cmdbar-void);
+  /* Matches the "wake up" zoom the mp4 got on hover, so swapping the
+     video out didn't change how the card behaves. */
+  transition: transform var(--transition-enter);
+  will-change: transform;
+}
+
+.card:hover .cmdbar,
+.card:focus-within .cmdbar {
+  transform: scale(1.03);
+}
+
+/* The app window. It runs off the bottom of the media box on purpose —
+   the screenshot was cropped the same way, and a panel that stops short
+   reads as a floating rectangle rather than a window you're looking
+   into. */
+.cmdbar__panel {
+  position: absolute;
+  top: 13.8cqw;
+  left: 9.6cqw;
+  width: 79.8cqw;
+  bottom: 0;
+  /* No padding at the foot: the footage is meant to run off the bottom
+     edge of the media box, the way the screenshot was cropped. */
+  padding: 1.56cqw 1.56cqw 0;
+  border-radius: 1.56cqw 1.56cqw 0 0;
+  background: var(--cmdbar-panel);
+}
+
+.cmdbar__row {
+  display: flex;
+  align-items: center;
+  gap: 1.64cqw;
+}
+
+/* Filters and Share. The source screenshot has both carrying a funnel —
+   the product's own inconsistency — but Share is redrawn here with an
+   actual share glyph rather than kept as a record of what shipped. */
+.cmdbar__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9cqw;
+  flex: 0 0 13.75cqw;
+  height: 5.39cqw;
+  border: 0.16cqw solid var(--cmdbar-line);
+  border-radius: 1.09cqw;
+  font-size: 2.03cqw;
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.01em;
+  color: var(--cmdbar-text);
+}
+
+/* The search field — the only part of this that moves. */
+.cmdbar__field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  height: 6.64cqw;
+  padding-inline: 1.6cqw;
+  border-radius: 1.6cqw;
+  background: var(--cmdbar-well);
+  font-size: 2.03cqw;
+  color: var(--cmdbar-text);
+}
+
+/* The sweep, twice over: ::before is the halo bleeding onto the panel
+   around the field, ::after the hard ring on its edge. Both run the same
+   animation at the same duration, so the halo can't drift out of phase
+   with the ring. */
+.cmdbar__field::before,
+.cmdbar__field::after {
+  content: "";
+  position: absolute;
+  border-radius: inherit;
+  /* One turn of the ramp per revolution, not two: amber holds two thirds
+     of the circle flat, falls through plum to touch indigo once, and
+     comes back. Indigo is a cusp rather than a plateau — the ramp reaches
+     it at a single angle and leaves.
+
+     Both of those are there to keep the indigo quiet, and the field's
+     shape is why it needs the help. The box is about ten times wider than
+     it is tall, so the conic angle is very nearly STATIONARY around the
+     corners and sweeps the whole ramp through the middle few percent of
+     each long edge: walk one edge corner to corner and the angle moves
+     8deg over the first third of its length, then 140deg over the next
+     fifth. A colour that lands on a corner therefore covers a long run of
+     ring however narrow its slice of the circle, and with the sweep
+     turning, every colour lands on a corner sooner or later.
+
+     So the number that matters is not indigo's share of the circle but
+     its share of the ring at its WORST rotation, and that is what these
+     stops are tuned against. Measured over a full turn: worst phase 26%
+     of the ring distinctly indigo, 6% on average — against 64% and 17%
+     for the two-turn ramp this replaces. Halving the turns halves how
+     often indigo meets a corner at all; the 18deg cusp is what keeps it
+     brief when it does.
+
+     Narrowing the cusp further does keep going — 8deg would hold the
+     worst phase near 14% — but the transition then crosses in about three
+     pixels where the sweep is fastest, which is a glint rather than a
+     gradient. 18deg is the tightest that still reads as a fade.
+
+     The 60deg offset parks the resting frame with the cusp mid-edge,
+     where the angle moves fastest and the least length is spent on it:
+     4% indigo at rest, 93% of the ring warm. It is also the smoothest
+     phase of the cycle. */
+  background: conic-gradient(
+    from calc(var(--cmdbar-sweep) + 60deg),
+    var(--cmdbar-amber) 0deg,
+    var(--cmdbar-amber) 120deg,
+    var(--cmdbar-plum) 162deg,
+    var(--cmdbar-indigo) 180deg,
+    var(--cmdbar-plum) 198deg,
+    var(--cmdbar-amber) 240deg,
+    var(--cmdbar-amber) 360deg
+  );
+  /* Same ramp interpolated in oklab, where it is supported: sRGB drags
+     amber into plum through a brown midpoint, which is the one place the
+     ramp still shows a dull patch. Declared second so browsers that
+     do not parse the colour space keep the sRGB gradient above rather
+     than dropping the ring entirely. */
+  background: conic-gradient(
+    in oklab from calc(var(--cmdbar-sweep) + 60deg),
+    var(--cmdbar-amber) 0deg,
+    var(--cmdbar-amber) 120deg,
+    var(--cmdbar-plum) 162deg,
+    var(--cmdbar-indigo) 180deg,
+    var(--cmdbar-plum) 198deg,
+    var(--cmdbar-amber) 240deg,
+    var(--cmdbar-amber) 360deg
+  );
+  /* Both are rings, not filled boxes: paint the gradient over the whole
+     area, then mask out everything but a band of it. The padding is the
+     band's width — change the thickness there and nowhere else. */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  /* Held at its first frame until the visitor engages with the card, the
+     same deal the mp4 had (setupHoverVideos, main.js): the card reads as
+     a still until you reach for it. */
+  animation: cmdbar-sweep 2.7s linear infinite paused;
+}
+
+/* Only where hovering is a real thing — on a touchscreen :hover latches
+   after a tap and the sweep would never stop again. */
+@media (hover: hover) {
+  .card:hover .cmdbar__field::before,
+  .card:hover .cmdbar__field::after {
+    animation-play-state: running;
+  }
+}
+
+/* Keyboard gets the same wake-up as the mouse: tabbing to the card's
+   title is the equivalent of pointing at it. */
+.card:focus-within .cmdbar__field::before,
+.card:focus-within .cmdbar__field::after {
+  animation-play-state: running;
+}
+
+/* The halo: a wide, blurred, low-opacity band straddling the field's
+   edge. Masked into a ring like the one below rather than left as a
+   filled box, so the well stays dark instead of picking up a violet wash
+   across the whole placeholder. */
+.cmdbar__field::before {
+  inset: -0.6cqw;
+  padding: 1.05cqw;
+  border-radius: 2.1cqw;
+  filter: blur(0.45cqw);
+  opacity: 0.42;
+}
+
+/* The ring itself, hard-edged on the field's own border. */
+.cmdbar__field::after {
+  inset: 0;
+  padding: 0.24cqw;
+}
+
+/* Contents sit above the halo. */
+.cmdbar__field > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Not a plain 0deg-to-360deg turn. A conic-gradient's angle advances at a
+   constant rate, but the field it is wrapped around does not: at 45.9cqw
+   by 6.64cqw the ring is roughly seven times wider than it is tall, so a
+   constant angular speed spends most of its time barely creeping along
+   the two long edges and then lunges around the short ones — the color
+   band reads as a purple blob darting round a static orange field rather
+   than one continuous glow. These stops correct for that: each was solved
+   so that equal steps of animation time move the gradient's reference
+   angle by equal steps of ARC LENGTH around the field's actual rectangle
+   instead of equal degrees, so the ring now turns at one visual speed the
+   whole way round. Regenerate this table if the field's own proportions
+   change (button width, gap, or field height above). */
+@keyframes cmdbar-sweep {
+  0% { --cmdbar-sweep: 0deg; }
+  3.33% { --cmdbar-sweep: 10.27deg; }
+  6.67% { --cmdbar-sweep: 15.42deg; }
+  10% { --cmdbar-sweep: 18.46deg; }
+  13.33% { --cmdbar-sweep: 20.47deg; }
+  16.67% { --cmdbar-sweep: 22.54deg; }
+  20% { --cmdbar-sweep: 31.25deg; }
+  23.33% { --cmdbar-sweep: 38.48deg; }
+  26.67% { --cmdbar-sweep: 40.04deg; }
+  30% { --cmdbar-sweep: 42.27deg; }
+  33.33% { --cmdbar-sweep: 45.76deg; }
+  36.67% { --cmdbar-sweep: 51.90deg; }
+  40% { --cmdbar-sweep: 64.92deg; }
+  43.33% { --cmdbar-sweep: 99.31deg; }
+  46.67% { --cmdbar-sweep: 154.11deg; }
+  50% { --cmdbar-sweep: 180.01deg; }
+  53.33% { --cmdbar-sweep: 190.27deg; }
+  56.67% { --cmdbar-sweep: 195.42deg; }
+  60% { --cmdbar-sweep: 198.46deg; }
+  63.33% { --cmdbar-sweep: 200.47deg; }
+  66.67% { --cmdbar-sweep: 202.54deg; }
+  70% { --cmdbar-sweep: 211.25deg; }
+  73.33% { --cmdbar-sweep: 218.48deg; }
+  76.67% { --cmdbar-sweep: 220.04deg; }
+  80% { --cmdbar-sweep: 222.27deg; }
+  83.33% { --cmdbar-sweep: 225.76deg; }
+  86.67% { --cmdbar-sweep: 231.90deg; }
+  90% { --cmdbar-sweep: 244.92deg; }
+  93.33% { --cmdbar-sweep: 279.31deg; }
+  96.67% { --cmdbar-sweep: 334.11deg; }
+  100% { --cmdbar-sweep: 360deg; }
+}
+
+.cmdbar__placeholder {
+  flex: 1 1 auto;
+  margin-left: 0.9cqw;
+  color: var(--cmdbar-text-muted);
+  white-space: nowrap;
+}
+
+.cmdbar__icon {
+  flex: none;
+  display: block;
+}
+
+.cmdbar__icon--search {
+  width: 3.1cqw;
+  height: 3.1cqw;
+}
+
+.cmdbar__icon--spark {
+  width: 2.1cqw;
+  height: 2.1cqw;
+  margin-left: 1.2cqw;
+}
+
+.cmdbar__icon--clear,
+.cmdbar__icon--mic {
+  width: 2.3cqw;
+  height: 2.3cqw;
+  color: var(--cmdbar-text-dim);
+}
+
+.cmdbar__icon--mic {
+  margin-left: 1.6cqw;
+}
+
+.cmdbar__icon--btn {
+  width: 2.1cqw;
+  height: 2.1cqw;
+}
+
+.cmdbar__divider {
+  flex: none;
+  width: 0.08cqw;
+  height: 3.4cqw;
+  margin-left: 1.6cqw;
+  background: var(--cmdbar-line);
+}
+
+/* The one photographed pixel left in here: a frame of the match the
+   search is running against. Everything around it is drawn; this can't
+   be. */
+.cmdbar__footage {
+  display: block;
+  width: 100%;
+  height: calc(100% - 8.5cqw);
+  margin-top: 1.88cqw;
+  object-fit: cover;
+  object-position: center top;
+}
+
 .card__body {
   padding: var(--space-md);
   display: flex;
@@ -212,6 +562,7 @@
 }
 
 .card__title {
+  font-family: var(--font-body);
   font-size: var(--fs-lg);
   margin: 0;
 }
@@ -228,7 +579,7 @@
 
 .card__excerpt {
   color: var(--color-text-muted);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-base);
   margin: 0;
 }
 
@@ -260,7 +611,6 @@
 }
 
 .card--feature .card__excerpt {
-  font-size: var(--fs-md);
   max-width: 48ch;
 }
 
@@ -268,13 +618,11 @@
   aspect-ratio: 16 / 10;
 }
 
-/* Small caps label marking this out as the lead item. */
+/* Label marking this out as the lead item. */
 .card__flag {
   margin: 0;
-  font-size: var(--fs-xs);
+  font-size: var(--fs-base);
   font-weight: var(--fw-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
   color: var(--color-accent);
 }
 
@@ -297,9 +645,15 @@
 
 /* ---------- Series card ----------
    One project that got split into several case studies, shown as a
-   single card in the grid rather than one card per part. The parts are
-   listed inside it and individually clickable, so the grid keeps one
-   slot for one project while the pieces stay directly reachable.
+   single card rather than one card per part. The parts are listed
+   inside it and individually clickable, so one slot holds one project
+   while the pieces stay directly reachable.
+
+   index.html's lead slot is the only place this is used. On
+   projects.html the same parts are three ordinary cards instead: the
+   filter bar there matches one set of tags per card, so a card standing
+   for three case studies can only ever be filtered as though it were
+   one thing.
 
    The whole-card link trick every other .card--project uses
    (.card__title a::after spanning the card) has to be switched off
@@ -335,7 +689,7 @@
   gap: var(--space-2xs);
   padding-block: var(--space-2xs);
   color: var(--color-text);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-base);
   font-weight: var(--fw-medium);
   text-decoration: none;
   transition: color var(--transition-fast);
@@ -351,7 +705,7 @@
 .card__part-index {
   flex: none;
   font-family: var(--font-display);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-base);
   font-weight: var(--fw-semibold);
   color: var(--color-text-muted);
 }
@@ -363,21 +717,53 @@
 /* ---------- Triptych media ----------
    Three panels where a single image would go, for a card standing in
    for a project that is really three case studies. The split does the
-   "there are three things in here" work before any label is read.
+   "there are three things in here" work before any label is read. Only
+   index.html's lead card uses it: projects.html shows those same three
+   parts as three ordinary cards so each can be filtered on its own, one
+   scene to a card (.card__media--scene, below).
 
-   Three columns by default: on a phone the media is a wide 16/10 band
-   above the copy, and three upright slivers across it read as a
-   triptych. The feature-width override below turns it on its side so
-   each panel sits at the same height as the part it belongs to in the
-   list beside it. */
+   Three ROWS, at every width — never three columns. Columns hand each
+   panel a third of the card's width at the box's full height: 168 x 366
+   on the lead card at 820px, a ratio of 0.46. Nothing these scenes are
+   drawings of is that shape, and no composition reads at it — the panel
+   comes out a stripe with one squeezed window in it. Rows keep every
+   panel as wide as the card and leave its shape to be set by how tall
+   the box is, which is the one number this file controls.
+
+   So 10/9 is chosen for what it makes each ROW, not for the box: a
+   third of that height gives panels a ratio of 3.35 — the same panorama
+   the lead card shows beside its copy at desktop width (2.50 at 1440),
+   near enough that one composition serves both. Above 900px this ratio never
+   applies at all; the media fills the copy column's height instead (see
+   .card--feature .card__media in the min-width: 900px block near the end
+   of this file). Needs .card__media repeated in the selector to outrank
+   .card--feature .card__media (above) at the same specificity; without
+   it the feature card's 16/10 would win here too, below 900px. */
+.card__media.card__media--triptych {
+  aspect-ratio: 10 / 9;
+}
+
 .card__media--triptych {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
   /* Hairline of the card's own border color between panels, rather than
      a gap showing the page through — the three read as one divided
      image instead of three separate pictures. */
   gap: 1px;
   background: var(--color-border);
+}
+
+/* ---------- One scene as an ordinary thumbnail ----------
+   The same drawn scenes as the triptych's panels, one to a card, in the
+   site's usual 16/10 media box — how projects.html carries the three
+   parts now that each is its own filterable card. Nothing is needed
+   here but the containing block the scene positions itself against;
+   .card__media above already supplies the ratio and the clipping. At
+   16/10 the box measures 1.60, a ratio the lead card's own media sweeps
+   through as the viewport widens past 900px, so the composition picked
+   here is one that already had to work there. */
+.card__media--scene {
+  position: relative;
 }
 
 /* Each panel takes the size its grid cell is given and the image fills
@@ -387,10 +773,18 @@
    own intrinsic size: the three cells stack to three full-height
    pictures and drag the card to roughly triple the height it should be.
    Positioned, the panels contribute no content height at all, so the
-   card body sets the height and the panels divide it. */
+   card body sets the height and the panels divide it.
+
+   Each panel here is itself a link to that part's case study (see the
+   markup comment above .card__media--triptych), which is the one place
+   this selector needs to fight the tag rather than just style it: the
+   global a/a:hover rule (base.css) would otherwise tint every drawn
+   label with link blue and underline the lot of them on hover. */
 .card__panel {
   position: relative;
   overflow: hidden;
+  color: inherit;
+  text-decoration: none;
 }
 
 .card__panel img,
@@ -402,19 +796,1227 @@
   object-fit: cover;
 }
 
-@media (min-width: 900px) {
-  .card--feature .card__media--triptych {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: repeat(3, minmax(0, 1fr));
+/* VOLLEYBALL PRODUCT DEMOS
+   The three motion thumbnails for the volleyball consolidation work,
+   drawn in CSS instead of shipped as mp4s — the same move as .cmdbar
+   above, but with a problem that one didn't have.
+
+   A scene is a wildly different shape depending on where it is
+   standing: stacked three-high in index.html's lead card, or alone in
+   an ordinary card's thumbnail on projects.html. Every shape it is
+   handed today is listed under "Layout by panel shape" further down,
+   and they run from 1.06 to 3.36 — a spread of more than three times.
+
+   The mp4s were 1280x612 — ratio 2.09 — so anywhere but the widest of
+   those, object-fit: cover threw most of every frame away and left a
+   slice of the middle. There is no crop of a fixed-size video that
+   works at both 1.06 and 3.36; that is the whole reason these are drawn
+   now rather than filmed.
+
+   So each scene is a composition that reflows rather than a picture that
+   crops. Two ideas carry that:
+
+   1. The box a scene sits in is a size container, and the scene picks
+      its layout from that box's ASPECT RATIO, not the viewport. A wide
+      one gets the full composition; a narrow one drops to the single
+      element that still reads at that width. No page has to know which
+      shape it is handing out, and the next context would be served
+      without touching this file — which is exactly what happened when
+      projects.html stopped showing these three slotted into one card
+      and started giving each a thumbnail of its own.
+
+   2. Everything is sized in cqmin — 1% of the box's SHORTER side — so
+      type and spacing stay physically similar across shapes that differ
+      threefold in ratio. Across the sizes in that table 1cqmin lands
+      between 0.99 and 3.09px, near enough that one set of numbers
+      serves all of them. Sizing in cqw would get this backwards: the
+      507x151 panel is the one with the least room to spend and would
+      draw the LARGEST type of the lot, while the near-square 269x254
+      panel, which has height going spare, would draw the smallest.
+
+   Colors are the product's own (--vbd-*, tokens.css), sampled off the
+   clips and equal in both themes, exactly as .cmdbar's are. */
+
+.card__panel,
+.card__media--scene {
+  container-type: size;
+  container-name: panel;
+}
+
+.vbd {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  display: flex;
+  gap: 4cqmin;
+  /* No bottom padding by default: see the note by .vbd__win below on
+     why the report windows run to the card's own bottom edge on any
+     panel wider than it is tall. The near-square shape gets it back —
+     see the max-aspect-ratio query under "Layout by panel shape". */
+  padding: 7cqh 6cqw 0;
+  font-family: var(--font-mockup);
+  font-size: 3.5cqmin;
+  line-height: 1.15;
+  color: var(--vbd-text);
+  background: var(--vbd-void);
+  /* Nothing in here is content — it is a drawing of a product. The panel
+     carries the description for assistive tech (role="img" in the
+     markup), so the parts must not be announced one at a time. */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* The stage all three clips shared: one blue glow, one amber, over
+   near-black. Only the placement differs, which is what made the three
+   read as one set rather than three unrelated screenshots.
+
+   Each glow holds full strength through the first fifth of its radius
+   before falling away, rather than fading from the centre out. Fading
+   straight away is what made these read as a grey wash at panel size:
+   the window covers the middle of the panel, so the only part of the
+   gradient anyone ever sees is its outer edge — and that edge has to
+   still have colour left in it. */
+.vbd--reports {
+  background:
+    radial-gradient(85% 75% at -14% 52%, var(--vbd-glow-blue) 0%, var(--vbd-glow-blue) 22%, transparent 78%),
+    radial-gradient(135% 68% at 44% 122%, var(--vbd-glow-amber) 0%, var(--vbd-glow-amber) 20%, transparent 80%),
+    var(--vbd-void);
+}
+
+.vbd--playback {
+  background:
+    radial-gradient(80% 92% at -12% -14%, var(--vbd-glow-blue) 0%, var(--vbd-glow-blue) 20%, transparent 76%),
+    radial-gradient(82% 105% at 112% 96%, var(--vbd-glow-amber) 0%, var(--vbd-glow-amber) 20%, transparent 80%),
+    var(--vbd-void);
+}
+
+.vbd--library {
+  background:
+    radial-gradient(125% 58% at 42% -8%, var(--vbd-glow-amber) 0%, var(--vbd-glow-amber) 24%, transparent 80%),
+    radial-gradient(90% 95% at -16% 82%, var(--vbd-glow-blue) 0%, var(--vbd-glow-blue) 24%, transparent 80%),
+    var(--vbd-void);
+}
+
+/* ---------- The window frame ----------
+   Every panel puts its content inside a pane that floats on the stage —
+   the report windows, the player, the library — so the three share one
+   frame. A dark bezel and a lifted shadow: against a stage this
+   saturated, a pane with neither reads as a hole cut in the gradient
+   rather than something sitting on top of it. */
+.vbd__win,
+.vbd__player,
+.vbd__lib {
+  border-radius: 2.6cqmin;
+  border: 0.7cqmin solid var(--vbd-bezel);
+  box-shadow:
+    0 1.4cqmin 3.6cqmin rgba(0, 0, 0, 0.55),
+    0 0 0 0.2cqmin rgba(255, 255, 255, 0.05);
+}
+
+/* On any panel wider than it is tall, the report windows and the
+   library run to the card's own bottom edge rather than floating clear
+   of it on all four sides — the same "runs off the edge" move as
+   .cmdbar__panel above. A rounded corner sitting flush against the
+   panel's actual boundary reads as a mistake, not a frame, so it drops
+   here. The player keeps its full frame on every shape: it is centred
+   rather than pinned to an edge, so all four corners stay in view and a
+   squared-off one would have nothing to justify it.
+
+   This is the wide shapes' look, not a universal one. The near-square
+   panel just past the 900px breakpoint puts the bezel back on all four
+   sides — see the max-aspect-ratio query under "Layout by panel shape"
+   — because a crop reads as a crop only when the frame is narrower than
+   what is being framed. */
+.vbd__win,
+.vbd__lib {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* ---------- Shared app chrome ----------
+   All three scenes are the same product, so the window, the header and
+   the tab row are written once here and used by each.
+
+   Insets are given in cqh/cqw rather than cqmin so each axis is a share
+   of its OWN dimension — a percentage inset, in effect, which is how the
+   source framed these: about a tenth of the width at the sides, a
+   fourteenth of the height at the top. One cqmin figure for both would
+   leave a hairline of stage down the long side of the panorama and eat
+   the sliver from the sides. (Padding percentages cannot do this: in
+   CSS they resolve against the inline size on every side.)
+
+   The bottom is the exception, and only on the wide shapes — .vbd above
+   carries no bottom padding there, so the flex stretch that gives every
+   window here its height runs it straight to the card's own edge
+   instead of stopping short of it. Table, heat map and trend all move
+   together, since they are equal-height siblings in the same row
+   regardless of which of them a given panel shape is showing. The
+   near-square shape restores the fourth side of padding; see the
+   max-aspect-ratio query under "Layout by panel shape". */
+.vbd__win {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2cqmin;
+  padding: 2.4cqmin;
+  background: var(--vbd-window);
+  overflow: hidden;
+}
+
+.vbd__head {
+  display: flex;
+  align-items: center;
+  gap: 1.8cqmin;
+  flex: none;
+  padding: 1cqmin 0;
+}
+
+.vbd__avatar {
+  flex: none;
+  width: 6cqmin;
+  height: 6cqmin;
+  border: 0.5cqmin solid var(--vbd-text-dim);
+  border-radius: 50%;
+  background: var(--vbd-accent);
+}
+
+.vbd__team {
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* The tab row, and the orange rule under it. The rule is the product's
+   loudest piece of brand and the one thing that still reads at any size,
+   so it stays in every layout including the narrowest. */
+.vbd__tabs {
+  display: flex;
+  align-items: center;
+  /* Sized for three pills now that every window shows the same set
+     (Team Stats / Setter Tendencies / Trends) rather than a pair unique
+     to each — "Setter Tendencies" alone needs most of the room this used
+     to split between two shorter labels. */
+  gap: 1cqmin;
+  flex: none;
+  padding-top: 1.2cqmin;
+  padding-bottom: 2.4cqmin;
+  border-bottom: 0.5cqmin solid var(--vbd-accent);
+}
+
+.vbd__tab {
+  padding: 1.25cqmin 3cqmin;
+  border-radius: 99px;
+  font-size: 3cqmin;
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+  background: var(--vbd-pill);
+  color: var(--vbd-text);
+}
+
+.vbd__tab.is-on {
+  background: var(--vbd-pill-active);
+  color: #12181d;
+}
+
+.vbd__reportTitle {
+  font-size: 3.4cqmin;
+  padding: 2px 0;
+}
+
+/* ---------- Panel 1: reports ----------
+   Three windows in the source: a rotation table, the setter-tendency
+   heat map, and a trend chart. Which of them survive is a function of
+   how much width the panel has per window — see the container queries at
+   the foot of this section. */
+.vbd__win--table,
+.vbd__win--trend {
+  display: none;
+}
+
+/* The product's Team Stats table: a two-part header above one grid
+   that the label column and the three number columns both belong to —
+   which is what lets a border on "column 2" line up between the header
+   bar, the column headings and every data row, reading as one
+   continuous vertical rule rather than several that happen to match.
+
+   .vbd__tablegroup is the one shared grid. Everything nested inside it
+   — .vbd__tablehead, .vbd__table, every .vbd__tr — is display:contents,
+   which deletes THEIR boxes without deleting their children: the actual
+   cells fall through to become direct items of .vbd__tablegroup's grid,
+   so "column 2" means the same physical position everywhere. The
+   markup keeps its three-deep nesting; only the boxes disappear.
+
+   A standalone grid item spanning every row (grid-row: 1 / -1) looks
+   like the more direct way to draw that rule, and was the first attempt
+   here — but an item explicitly placed in column 2 across every row
+   blocks auto-placement from ever putting the REAL column-2 content
+   (every Pts W, "Side Out" itself) there, since auto-placed items route
+   around cells an explicit one already claims. The result wasn't a
+   divider beside a working table; it was a table where every row past
+   the first had nowhere left to put its own numbers. The rule below —
+   a border on column 2's own cells, one row at a time — has no such
+   conflict, because it never claims a cell of its own. */
+.vbd__tablegroup {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  row-gap: 0;
+  column-gap: 1.6cqmin;
+  min-height: 0;
+  background: var(--vbd-well);
+  padding: 3cqmin;
+  border-radius: 2px;
+}
+
+.vbd__tablehead,
+.vbd__table,
+.vbd__tr {
+  display: contents;
+}
+
+.vbd__tablehead > * {
+  padding-bottom: 0.7cqmin;
+  border-bottom: 0.2cqmin solid var(--vbd-line);
+  font-size: 2.8cqmin;
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--vbd-text-dim);
+  white-space: nowrap;
+}
+
+.vbd__tablehead > :first-child {
+  text-align: left;
+}
+
+/* "Side Out" / "Point Scoring": one cell spanning the three number
+   columns, right-aligned within them — the header bar has two parts,
+   not four, even though the grid underneath it has four. */
+.vbd__tablehead > :last-child {
+  grid-column: 2 / -1;
+  padding-left: 2px
+}
+
+.vbd__tr > * {
+  padding-block: 1.1cqmin;
+  border-bottom: 0.2cqmin dotted var(--vbd-line);
+  font-size: 3cqmin;
+  white-space: nowrap;
+  text-align: right;
+  color: var(--vbd-text-dim);
+  padding: 1.5cqmin 1cqmin;
+}
+
+.vbd__tr > :first-child {
+  text-align: left;
+  overflow: hidden;
+  color: var(--vbd-text-dim);
+}
+
+.vbd__tr--head > * {
+  border-bottom-style: solid;
+  color: var(--vbd-text-dim);
+  font-weight: var(--fw-semibold);
+}
+
+/* Pts W and Pts L underlined — the product's own treatment for "these
+   are the two numbers this row is built from". Scoped off the header
+   row, where an underline would read as a link rather than a rule. */
+.vbd__tr:not(.vbd__tr--head) > :nth-child(2),
+.vbd__tr:not(.vbd__tr--head) > :nth-child(3) {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* Rotation 1's Pts W, picked out as the rotation currently selected —
+   still underlined like every other Pts W/Pts L (the rule above
+   doesn't check for this class), just with a dark pill around it too,
+   the same "you are looking at this one" state the product itself
+   uses. --vbd-void rather than --vbd-well: the well is barely a shade
+   off the window it would be sitting on, and the pill reads as a hole
+   in the table rather than a mark on it unless it is darker than
+   everything around it. */
+.vbd__cell-hi {
+}
+
+/* The Overall row: a solid rule above it rather than the dotted ones
+   between rotations, and bright rather than dim — a sum, not one more
+   sample. */
+.vbd__tr--total > * {
+  border-top: 0.2cqmin solid var(--vbd-line);
+  border-bottom: none;
+  font-weight: var(--fw-semibold);
+}
+
+.vbd__tr--total > :first-child {
+  color: var(--vbd-text);
+}
+
+.vbd__pos {
+  color: var(--vbd-good);
+}
+
+.vbd__neg {
+  color: var(--vbd-bad);
+}
+
+/* The vertical rule: a border-left on whatever sits in column 2 — the
+   header bar's spanning "Side Out"/"Point Scoring" cell and every row's
+   Pts W, .vbd__cell-hi included — rather than a rule of its own. Every
+   one of those cells starts at the same grid line, so their borders
+   land on top of each other and read as one continuous line rather
+   than several that happen to match. */
+.vbd__tablehead > :last-child,
+.vbd__tr > :nth-child(2) {
+  border-left: 0.2cqmin solid var(--vbd-line);
+}
+
+/* The heat map: a 3x3 of attack zones on a diverging red/blue scale.
+   This is the scene's centrepiece and the one window that survives all
+   the way down to the narrowest panel, so it is the child that grows
+   while the other two are dropped. */
+.vbd__heat {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 0.7cqmin;
+  flex: 1 1 auto;
+  min-height: 0;
+  background: var(--vbd-well);
+  padding: 2px;
+}
+
+.vbd__cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5cqmin;
+  min-width: 0;
+  border-radius: 0.5cqmin;
+  background: var(--vbd-heat-empty);
+  color: #10151a;
+  overflow: hidden;
+}
+
+/* The "empty" swatch a cell fills in from on hover (see Motion below) is
+   drawn as a cover over the real, already-correct cell rather than as an
+   animated background-color on the cell itself — a colour cross-fade
+   would need its own end colour written out per cell (hot/mid/cool/none
+   all differ), where an opacity fade off a single flat colour needs only
+   one keyframe for all nine. */
+.vbd__cell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--vbd-heat-empty);
+  opacity: 0;
+}
+
+.vbd__cell--hot {
+  background: var(--vbd-heat-hot);
+}
+
+.vbd__cell--mid {
+  background: var(--vbd-heat-mid);
+}
+
+.vbd__cell--cool {
+  background: var(--vbd-heat-cool);
+  color: #eef0f6;
+}
+
+.vbd__cell--none {
+  background: none;
+}
+
+.vbd__cell-v {
+  font-size: 4cqmin;
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+}
+
+.vbd__cell-n {
+  font-size: 3.2cqmin;
+  opacity: 0.72;
+  white-space: nowrap;
+}
+
+/* A zone nobody attacked from says how many attempts there were and
+   nothing else, in the muted grey of the cell itself. */
+.vbd__cell--none .vbd__cell-n {
+  color: var(--vbd-text-dim);
+  opacity: 1;
+}
+
+/* The scale legend under the map. Drawn as a row of dots rather than a
+   gradient bar because the map is discrete — see --vbd-heat-* in
+   tokens.css. It is the first thing to go when height runs short. */
+.vbd__legend {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 1cqmin;
+  flex: none;
+  font-size: 3.1cqmin;
+  color: var(--vbd-text-dim);
+}
+
+.vbd__scale {
+  display: flex;
+  gap: 0.7cqmin;
+}
+
+.vbd__scale span {
+  width: 1.8cqmin;
+  height: 1.8cqmin;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.vbd__scale span:nth-child(1) { color: var(--vbd-heat-hot); }
+.vbd__scale span:nth-child(2) { color: #ee7060; }
+.vbd__scale span:nth-child(3) { color: #dda093; }
+.vbd__scale span:nth-child(4) { color: #cfcfd6; }
+.vbd__scale span:nth-child(5) { color: var(--vbd-heat-mid); }
+.vbd__scale span:nth-child(6) { color: #7079a8; }
+.vbd__scale span:nth-child(7) { color: var(--vbd-heat-cool); }
+
+/* The trend chart. */
+.vbd__chart {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  border-radius: 1cqmin;
+  background-image: linear-gradient(to right, transparent calc(100% - 1px), var(--vbd-line) calc(100% - .5px));
+    background-size: 14.5% 10%;
+    background-color: var(--vbd-well);
+    border-left: 1px solid var(--vbd-line);
+    border-bottom: 1px solid var(--vbd-line);
+}
+
+.vbd__chart svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.vbd__trendline {
+  fill: none;
+  stroke: var(--vbd-trend);
+  stroke-width: 2;
+  stroke-linecap: round;
+  /* The chart box is a different shape in every panel, so the viewBox is
+     stretched to fit rather than letterboxed; this keeps the stroke an
+     even weight through the stretch. */
+  vector-effect: non-scaling-stroke;
+}
+
+/* The line is revealed by wiping this box open from the left, not by
+   running a dash along the path. Under the non-uniform stretch above,
+   distance along the path is no longer the same quantity in user space
+   and on screen, and a dashoffset drifts out of step with the curve —
+   the pattern wraps and the line comes in as two pieces. A wipe asks
+   nothing of path length, and since the curve only ever moves left to
+   right it reads as the same drawing motion. */
+.vbd__chart svg {
+  clip-path: inset(0 0 0 0);
+}
+
+.vbd__chartkey {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2cqmin;
+  flex: none;
+  font-size: 3.2cqmin;
+  color: var(--vbd-text-dim);
+}
+
+.vbd__dot {
+  width: 1.8cqmin;
+  height: 1.8cqmin;
+  border-radius: 50%;
+  background: var(--vbd-trend);
+}
+
+/* ---------- Panel 2: playback ----------
+   The one scene with a photograph left in it. The rally the clip played
+   cannot be drawn, so a single frame of it stays as an image and
+   everything the product laid over that frame — the pills, the scrubber,
+   the trajectory arcs — is drawn on top.
+
+   The footage and the trace are registered to each other by
+   construction: the video is object-fit: cover and the SVG uses the
+   matching preserveAspectRatio="xMidYMid slice", so the two crop
+   identically and the trace stays pinned to the court in any panel
+   shape.
+
+   Nothing in this panel is animated by CSS. The trace, the scrubber and
+   the clock are all redrawn from the video's own currentTime by
+   setupBallTracks in main.js, so they cannot drift out of step with the
+   rally the way a fixed-duration keyframe animation would. */
+.vbd--playback,
+.vbd--library {
+  display: block;
+  padding: 0;
+}
+
+/* The player window. The footage, the trace and the controls are all
+   positioned against this rather than against the panel, so they crop
+   and sit together inside the bezel. */
+.vbd__player {
+  position: absolute;
+  inset: 7cqh 9cqw;
+  overflow: hidden;
+}
+
+.vbd__court,
+.vbd__arcs {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.vbd__court {
+  object-fit: cover;
+  /* Must stay centred: xMidYMid on the SVG beside it has no equivalent
+     of an off-centre object-position, so any other origin here slides the
+     footage out from under the trace. */
+  object-position: center;
+}
+
+.vbd__arcs {
+  fill: none;
+  pointer-events: none;
+}
+
+.vbd__arc {
+  stroke: #fff;
+  stroke-width: 5;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* The transport cluster, drawn small enough to read as a control rather
+   than an icon set — it is three glyphs at thumbnail size. Sized in em
+   (viewBox is 30x12, hence the 2.5:1) rather than cqmin so it tracks
+   .vbd__pill's own font-size exactly, the same way .vbd__icon does —
+   two icons sized off two different units is what made them drift out
+   of step with the text beside them. */
+.vbd__transport {
+  width: 2.5em;
+  height: 1em;
+}
+
+.vbd__chrome {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* cqh/cqw, not cqmin: the player is wide, close to 2:1, so cqmin (tied
+     to whichever side of the PANEL is shorter) pins both the top/bottom
+     inset AND the left/right inset to the same small unit — the corner
+     pills end up sitting proportionally too close to the left and right
+     edges, where the box actually has the width to spare, while the
+     top/bottom inset is fine on its own. Measured off the source frame:
+     the "2/128" chip sits ~1.5% of the window's width from the left
+     edge and ~1.4% of its height from the top — two different
+     percentages of two different numbers, which only cqh/cqw (as .vbd's
+     own stage padding above already does) can express. */
+  padding: 1.2cqh 1.2cqw;
+}
+
+/* Grid, not flex-plus-auto-margins: an auto margin centres itself in
+   whatever free space is left over, which is only the row's true centre
+   when both neighbours happen to be the same width. Frame counter vs.
+   the tools+cta group (or transport vs. the av cluster below) never
+   are, so the score/time pill drifted toward whichever side was
+   narrower. Three explicit tracks put the middle column at the row's
+   actual centre regardless of what the outer two hold. */
+.vbd__bar-top {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 2cqmin;
+}
+
+.vbd__bar-top > .vbd__pill:first-child {
+  justify-self: start;
+}
+
+.vbd__bar-bot {
+  display: flex;
+  flex-direction: column;
+  gap: 2cqmin;
+}
+
+.vbd__controls {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 2cqmin;
+}
+
+.vbd__controls > .vbd__pill:first-child {
+  justify-self: start;
+}
+
+/* The tools+cta pair, grouped so the grid above treats them as the
+   third column rather than wrapping cta onto a row of its own. */
+.vbd__end {
+  display: flex;
+  align-items: center;
+  gap: 2cqmin;
+  justify-self: end;
+}
+
+/* Floating controls over footage: near-opaque, so they hold up over both
+   the pale wood and the dark crowd behind it. */
+.vbd__pill {
+  display: flex;
+  align-items: center;
+  gap: 1.6cqmin;
+  padding: 1.6cqmin 2.6cqmin;
+  border-radius: 1.7cqmin;
+  font-size: 4.2cqmin;
+  /* 1, not .vbd's own 1.15: at this font-size the extra line-height
+     added more space below the baseline than above it, so an
+     icon-only pill (height set by .vbd__icon alone) and a text pill
+     (height set by the line box) no longer matched — the text pill
+     read as having extra padding on the bottom. */
+  line-height: 1;
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+  background: rgba(16, 20, 24, 0.82);
+  color: var(--vbd-text);
+}
+
+.vbd__pill--score {
+  display: none;
+  /* The slight gap between the two teams' halves — tighter than the
+     space between a logo and its own number below, so the pill still
+     reads as one score split down the middle rather than four evenly
+     spaced items. */
+  gap: 1cqmin;
+  /* The grid on .vbd__bar-top puts this column at the row's true
+     centre; no margin trick needed here. */
+  justify-self: center;
+}
+
+.vbd__score-half {
+  display: flex;
+  align-items: center;
+  gap: 2.2cqmin;
+}
+
+/* The chevron after the frame counter — a plain character rather than an
+   icon, so it scales with the pill's own font-size instead of needing a
+   size of its own. */
+.vbd__chevron {
+  opacity: 0.7;
+}
+
+/* The icon cluster beside Create Clip, and its twin over on the transport
+   row (.vbd__pill--av below) — both are the same glyphs shrunk to fit a
+   pill, so they share one size rather than each icon setting its own.
+   1em, same as .vbd__transport, so every glyph tracks the pill's own
+   font-size instead of two units (cqmin and em) drifting apart at
+   different panel shapes. */
+.vbd__icon {
+  width: 1em;
+  height: 1em;
+  flex: none;
+}
+
+.vbd__pill--tools,
+.vbd__pill--av {
+  display: none;
+  gap: 2.4cqmin;
+}
+
+.vbd__pill--cta {
+  display: none;
+  background: var(--vbd-blue);
+  color: #fff;
+}
+
+.vbd__pill--time {
+  display: none;
+  color: var(--vbd-text-dim);
+  /* The grid on .vbd__controls puts this column at the row's true
+     centre — see the note by .vbd__bar-top above. */
+  justify-self: center;
+}
+
+.vbd__pill--time b {
+  color: var(--vbd-text);
+  font-weight: var(--fw-semibold);
+}
+
+.vbd__pill--av {
+  justify-self: end;
+}
+
+.vbd__logo {
+  width: 0.86em;
+  height: 0.86em;
+  border-radius: 50%;
+  background: var(--vbd-text-dim);
+}
+
+/* The scrubber. In the clip this sat still while the rally played; with
+   the rally now a frozen frame it is the piece that has to say "this is
+   running", so it is the piece that moves. */
+.vbd__scrub {
+  position: relative;
+  height: 0.9cqmin;
+  border-radius: 1cqmin;
+  background: rgba(210, 216, 222, 0.34);
+}
+
+.vbd__scrub-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  /* Set from the video's currentTime; 0 is right for the resting state,
+     where the poster is the clip's own first frame. */
+  width: calc(var(--vbd-played, 0) * 100%);
+  border-radius: inherit;
+  background: var(--vbd-accent);
+}
+
+.vbd__scrub-fill::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 2.6cqmin;
+  height: 2.6cqmin;
+  border-radius: 50%;
+  background: #fff;
+  translate: 50% -50%;
+}
+
+/* ---------- Panel 3: library ----------
+   The clip library, and the only scene whose motion is a state change
+   rather than a flourish: a freshly uploaded game sits on "Analyzing..."
+   until the product finishes with it and swaps in the result. The
+   resolved state is the resting one — see the note on the animations
+   below — so the still a visitor sees is a library that has finished
+   thinking.
+
+   Inset on three sides only by default: the fourth argument to inset is
+   the bottom, and it is 0 rather than matching the top, so on the wide
+   shapes the window runs to the card's own edge there instead of
+   floating clear of it — the same move as the report windows above, and
+   for the same reason. The near-square shape gets the fourth side back
+   too — see the max-aspect-ratio query under "Layout by panel shape" —
+   the same exception the report windows make. */
+.vbd__lib {
+  position: absolute;
+  inset: 7cqh 8cqw 0;
+  display: flex;
+  flex-direction: column;
+  padding: 2.4cqmin 2.4cqmin 0 2.4cqmin;
+  background: var(--vbd-window);
+  overflow: hidden;
+}
+
+.vbd__libhead {
+  display: flex;
+  align-items: center;
+  gap: 1.6cqmin;
+  flex: none;
+  font-weight: var(--fw-semibold);
+  background: var(--vbd-well);
+  border-radius: 4px 4px 0 0;
+  padding: 6px;
+}
+
+.vbd__view {
+  display: flex;
+  gap: 1cqmin;
+  margin-left: auto;
+}
+
+.vbd__view span {
+  width: 3.4cqmin;
+  height: 3.4cqmin;
+  border-radius: 0.6cqmin;
+  background: var(--vbd-pill);
+}
+
+.vbd__view span:first-child {
+  background: var(--vbd-text-dim);
+}
+
+.vbd__clips {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4cqmin;
+  flex: 1 1 auto;
+  min-height: 0;
+  /* On the narrowest panel this reads as a list: cards stacked from the
+     top with room left under the last one, the way the library itself
+     looks in a narrow column. Filling the height instead would stretch
+     two cards to twice the depth they want and crop their stills to a
+     thread. */
+  align-content: start;
+  background: var(--vbd-well);
+  padding: 8px;
+  /* Cuts the second card off at the well's own edge once the row is
+     wider than the window — see the track minimum under "Layout by
+     panel shape". Everything that could overflow lives inside a
+     .vbd__thumb, so nothing but the clip cards is ever clipped. */
+  overflow: hidden;
+}
+
+.vbd__clip {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4cqmin;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+}
+
+/* The second card is a practice upload nobody has asked anything of yet.
+   Dimmed in CSS rather than baked into the image, so the waiting state
+   is expressed once and the thumbnail stays a clean photograph. */
+.vbd__clip--muted {
+  opacity: 0.5;
+}
+
+.vbd__thumb {
+  position: relative;
+  /* Held at the shape of the footage rather than the shape of the slot.
+     The stills are roughly 2:1, so 16/9 costs them a sliver off each end
+     where filling a tall card would throw away two thirds of the width. */
+  flex: none;
+  aspect-ratio: 16 / 9;
+  border-radius: 1.2cqmin;
+  overflow: hidden;
+  background: var(--vbd-well);
+}
+
+.vbd__thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vbd__chip {
+  position: absolute;
+  left: 1.4cqmin;
+  bottom: 1.4cqmin;
+  padding: 0.7cqmin 1.4cqmin;
+  border-radius: 0.8cqmin;
+  font-size: 3.2cqmin;
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.02em;
+  background: rgba(16, 20, 24, 0.86);
+  color: var(--vbd-text);
+}
+
+.vbd__caption {
+  flex: none;
+  font-size: 3.5cqmin;
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Both states of the analysis sit in the same grid cell, stacked, so the
+   swap cannot shift anything around it. */
+.vbd__status {
+  position: absolute;
+  right: 1.4cqmin;
+  bottom: 1.4cqmin;
+  display: grid;
+}
+
+.vbd__status > * {
+  grid-area: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1cqmin;
+}
+
+.vbd__analyzing {
+  padding: 0.7cqmin 1.4cqmin;
+  border-radius: 0.8cqmin;
+  font-size: 3.2cqmin;
+  white-space: nowrap;
+  background: rgba(16, 20, 24, 0.86);
+  color: var(--vbd-text-dim);
+  opacity: 0;
+}
+
+.vbd__progress {
+  width: 9cqmin;
+  height: 1cqmin;
+  border-radius: 1cqmin;
+  overflow: hidden;
+  background: rgba(210, 216, 222, 0.3);
+}
+
+.vbd__progress::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--vbd-text);
+}
+
+.vbd__result span {
+  padding: 0.7cqmin 1.4cqmin;
+  border-radius: 0.8cqmin;
+  font-size: 3.2cqmin;
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+  background: rgba(16, 20, 24, 0.86);
+  color: var(--vbd-text);
+}
+
+.vbd__result .vbd__won {
+  background: var(--vbd-chip-good);
+  color: var(--vbd-chip-check);
+}
+
+/* ---------- Layout by panel shape ----------
+   Everything above draws the narrowest case: one window, one clip card,
+   the fewest controls that still say what the product is. The queries
+   below add back whatever a wider panel has room for. Thresholds are in
+   aspect ratio because that — not width, and not area — decides what
+   can read: the 494x309 thumbnail on projects.html has twice the area
+   of the 507x151 panorama in index.html's lead card and still wants the
+   narrower composition of the two, and the 269x254 panel below has less
+   area than either and wants narrower again.
+
+   The full range the site hands out, measured:
+
+       index.html, lead card @1440       454 x 182   ratio 2.50
+       index.html, lead card @950        269 x 254   ratio 1.06
+       index.html, lead card @820        507 x 151   ratio 3.35
+       index.html, lead card, phone      332 x  99   ratio 3.36
+       projects.html, card thumbnail     494 x 309   ratio 1.60
+
+   The 950 row is the awkward one and the reason the narrow end of this
+   scale is still worth having: just past the 900px breakpoint the lead
+   card splits into two columns, and the media takes the narrower of
+   them at whatever height the copy beside it settles on — a panel that
+   is nearly square while every other context is two to three times as
+   wide as it is tall. */
+
+/* Past 6/5 there is room for a second element beside the first. */
+@container panel (min-aspect-ratio: 6/5) {
+  .vbd__win--trend {
+    display: flex;
+  }
+
+  .vbd__pill--score {
+    display: flex;
+  }
+
+  /* Two cards, and a floor under how narrow each may get. Left to
+     divide the window between them, they end up 184px across a 219px
+     tall slot — portrait, so object-fit throws away most of a still
+     that is roughly 2:1 and leaves a vertical strip of the middle,
+     which is the same crop these scenes were drawn to stop happening.
+     48cqw holds each card near half the panel's width, and the row is
+     then wider than the window it sits in: the second card runs off
+     the right edge and .vbd__clips cuts it there. A library with its
+     next item half in view is what the product looks like anyway —
+     the row scrolls — so the overflow reads as the point rather than
+     as a mistake. */
+  .vbd__clips {
+    grid-template-columns: repeat(2, minmax(48cqw, 1fr));
+    align-content: stretch;
+  }
+
+  /* Side by side there is height to spare, so the stills go back to
+     filling their cards. */
+  .vbd__thumb {
+    flex: 1 1 auto;
+    min-height: 0;
+    aspect-ratio: auto;
   }
 }
 
+/* Past 8/5 the playback chrome stops being a squeeze, and the report
+   windows have the height to spare for their legends.
+
+   Written as 1.58 rather than 8/5 to keep the threshold off a shape
+   that sits exactly on it: .card__media--scene is 16/10, which IS 8/5,
+   so a media box whose used height rounds a hundredth of a pixel either
+   way would tie with this query and drop half the chrome for no visible
+   reason. Nothing else rests in 1.55-1.60 — the lead card only sweeps
+   through it as the viewport widens — so the hundredth costs nothing
+   anywhere else. */
+@container panel (min-aspect-ratio: 1.58) {
+  .vbd__pill--cta,
+  .vbd__pill--time,
+  .vbd__pill--tools,
+  .vbd__pill--av,
+  .vbd__legend,
+  .vbd__chartkey {
+    display: flex;
+  }
+}
+
+/* Past 11/5 — the panorama on the feature card at desktop width — all
+   three report windows fit side by side. */
+@container panel (min-aspect-ratio: 11/5) {
+  .vbd__win--table {
+    display: flex;
+  }
+}
+
+/* Below 6/5 the panel is nearly square or taller than it is wide — the
+   950px band in the table above — so the tab row is trimmed to the
+   active tab: three pills across 269px is a row of unreadable lozenges.
+
+   That shape is also where the report windows and the library get their
+   fourth side of padding and their bottom corners back, undoing the
+   rule near "The window frame" above. Running a window off the bottom
+   edge reads as a deliberate crop of something wider than the frame;
+   on a panel this close to square there is nothing wider to crop, so
+   the same squared-off corner just reads as a mistake. */
+@container panel (max-aspect-ratio: 6/5) {
+  .vbd__tab:not(.is-on) {
+    display: none;
+  }
+
+  .vbd {
+    padding-bottom: 7cqh;
+  }
+
+  .vbd__lib {
+    bottom: 7cqh;
+  }
+
+  .vbd__win,
+  .vbd__lib {
+    border-bottom-left-radius: 2.6cqmin;
+    border-bottom-right-radius: 2.6cqmin;
+  }
+}
+
+/* ---------- Motion ----------
+   Unlike .cmdbar's sweep — which has no finished state, and so sits
+   paused on its first frame — each of these scenes is a thing
+   COMPLETING: the map fills, the line draws, the upload stops analyzing.
+   So the resting state is the finished one, written as the ordinary
+   rules above, and each keyframe below only says where the scene came
+   FROM. A card at rest is a product that has done its work; hovering
+   replays it doing the work.
+
+   That arrangement also means prefers-reduced-motion needs nothing here:
+   the global reset in base.css collapses the duration, which lands
+   straight on the finished state these already rest at.
+
+   The trigger is the individual panel on the triptych, not the card —
+   three scenes replaying at once was too much motion, the same call the
+   mp4s were playing under (setupHoverVideos, main.js). Where a scene is
+   a card's whole thumbnail (.card__media--scene) there is only one of
+   them, so the card carries the hover, matching .cmdbar above. */
+@keyframes vbd-heat-in {
+  0% { opacity: 1; }
+  45%, 100% { opacity: 0; }
+}
+
+@keyframes vbd-wipe {
+  0% { clip-path: inset(0 100% 0 0); }
+  35%, 100% { clip-path: inset(0 0% 0 0); }
+}
+
+@keyframes vbd-analyzing {
+  0%, 46% { opacity: 1; }
+  58%, 100% { opacity: 0; }
+}
+
+@keyframes vbd-progress {
+  from { transform: translateX(-100%); }
+  50%, 100% { transform: none; }
+}
+
+@keyframes vbd-resolved {
+  0%, 50% { opacity: 0; scale: 0.86; }
+  64%, 100% { opacity: 1; scale: 1; }
+}
+
+@media (hover: hover) {
+  /* The heat map and the trend line take turns rather than both running
+     at once. Both share one 6s loop as their animation-duration (not
+     just the time their own motion takes) so the two stay locked to the
+     same period forever instead of drifting apart on every loop, and
+     each keyframe above holds its finished value for the rest of that
+     6s rather than fading towards it forever — see .vbd__cell::after
+     above for why the map's fade is an opacity cover rather than a
+     colour cross-fade. The map fills over the loop's first 2.7s; the
+     line waits until 3.3s, just past that, so it starts as soon as the
+     map is visibly done rather than after a long pause. */
+  .card__panel:hover .vbd__cell::after,
+  .card:hover .card__media--scene .vbd__cell::after {
+    /* One duration for every cell with a per-cell delay, so the map
+       refills in the same order on every loop rather than as nine
+       independent flickers. */
+    animation: vbd-heat-in 6s ease-out var(--vbd-delay, 0s) infinite;
+  }
+
+  .card__panel:hover .vbd__chart svg,
+  .card:hover .card__media--scene .vbd__chart svg {
+    /* Held back until the heat map has settled, so the line only
+       starts drawing once the map is done. */
+    animation: vbd-wipe 6s ease-out 3.3s infinite;
+  }
+
+  .card__panel:hover .vbd__analyzing,
+  .card:hover .card__media--scene .vbd__analyzing {
+    animation: vbd-analyzing 3.2s ease-out infinite;
+  }
+
+  .card__panel:hover .vbd__progress::after,
+  .card:hover .card__media--scene .vbd__progress::after {
+    animation: vbd-progress 3.2s ease-out infinite;
+  }
+
+  .card__panel:hover .vbd__result,
+  .card:hover .card__media--scene .vbd__result {
+    animation: vbd-resolved 3.2s ease-out infinite;
+  }
+}
+
+/* The heat map's refill order: left to right, top to bottom, a
+   sixteenth of a second apart — kept tight so the last cell is still
+   done filling (delay + the keyframe's 2.7s reveal) before the 3.3s
+   mark where the line takes over. */
+.vbd__cell:nth-child(1) { --vbd-delay: 0s; }
+.vbd__cell:nth-child(2) { --vbd-delay: 0.06s; }
+.vbd__cell:nth-child(3) { --vbd-delay: 0.12s; }
+.vbd__cell:nth-child(4) { --vbd-delay: 0.18s; }
+.vbd__cell:nth-child(5) { --vbd-delay: 0.24s; }
+.vbd__cell:nth-child(6) { --vbd-delay: 0.3s; }
+.vbd__cell:nth-child(7) { --vbd-delay: 0.36s; }
+.vbd__cell:nth-child(8) { --vbd-delay: 0.42s; }
+.vbd__cell:nth-child(9) { --vbd-delay: 0.48s; }
+
 /* ---------- Featured series card ----------
-   A series card promoted to the lead slot. At small-card size the part
-   list is a quiet footnote under the excerpt; at feature size it is the
-   point of the card, so the rows get room to breathe, a rule above them
-   marking them off from the excerpt, and type at reading size rather
-   than caption size. */
+   A series card in the lead slot, which since projects.html split its
+   parts into their own cards is the only place one appears. The rules
+   above draw the part list as a quiet footnote under the excerpt; at
+   feature size it is the point of the card, so the rows get room to
+   breathe, a rule above them marking them off from the excerpt, and
+   type at reading size rather than caption size. */
 .card--feature .card__parts {
   margin-top: var(--space-md);
 }
@@ -423,10 +2025,6 @@
   gap: var(--space-sm);
   padding-block: var(--space-xs);
   font-size: var(--fs-base);
-}
-
-.card--feature .card__part-index {
-  font-size: var(--fs-sm);
 }
 
 /* Per-row arrow, mirroring .card__cue on an ordinary feature card:
@@ -453,7 +2051,7 @@
   align-items: center;
   gap: var(--space-3xs);
   margin-top: var(--space-2xs);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-base);
   font-weight: var(--fw-medium);
   color: var(--color-accent);
 }
@@ -472,7 +2070,7 @@
     display: grid;
     /* Media takes the larger share — it's the part that actually sells
        the work; the copy only needs enough room not to feel cramped. */
-    grid-template-columns: 1.15fr 1fr;
+    grid-template-columns: 1fr 1.25fr;
     align-items: stretch;
   }
 
@@ -501,6 +2099,30 @@
 
 .section-heading__title {
   margin: 0;
+  display: inline-block;
+  /* Same hand-tilted treatment as the "Portfolio" wordmark
+     (.hero__title-main in layout.css), so every section header on the
+     site shares that one playful gesture. */
+  transform: rotate(-2deg);
+}
+
+/* The wordmark's fringe, at heading size: the clay slip on the odd
+   letters and the light terracotta on the even ones (.ink-glyph in
+   layout.css supplies the ink the filter sorts them by). #ink-edge-sm is
+   the wordmark's edge stage with its four size numbers scaled to this
+   type — see it in index.html, where it and the fringe's whole
+   construction are set out.
+
+   A modifier rather than the base class, and deliberately not lifted
+   into a shared stylesheet: the filter is defined in index.html's own
+   defs, and a filter: url() pointing at an id that isn't in the document
+   doesn't degrade to no filter — it stops the element rendering
+   altogether. So this may only ever be worn by headings on that page.
+   The tilt above stays on the base class: it applies in the element's
+   own space, so the filter runs first and the fringe tilts with the
+   letters, two degrees off the wordmark's own slip and no further. */
+.section-heading__title--inked {
+  filter: url("#ink-edge-sm");
 }
 
 /* ---------- Form ---------- */
@@ -513,7 +2135,7 @@
 
 .form-field label {
   font-weight: var(--fw-medium);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-base);
 }
 
 .form-field input,
@@ -553,10 +2175,8 @@
 }
 
 .meta-list__label {
-  font-size: var(--fs-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-text-muted);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
 }
 
 /* ---------- Fact grid (case-study hero) ----------
@@ -604,17 +2224,15 @@
 
 .fact__label {
   margin-bottom: var(--space-3xs);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-base);
   font-weight: var(--fw-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
 }
 
 .fact__value {
   /* dd carries a browser default indent that would knock the value out
      of line with its own label. */
   margin: 0;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-base);
   color: var(--color-text-muted);
 }
 
@@ -703,7 +2321,7 @@
 .bento__tile--accent {
   background: var(--color-accent);
   border-color: transparent;
-  color: var(--color-accent-text);
+  color: var(--color-accent);
 }
 
 .bento__tile--accent .bento__label,
@@ -787,11 +2405,8 @@
 
 .bento__label {
   margin: 0;
-  font-size: var(--fs-xs);
+  font-size: var(--fs-base);
   font-weight: var(--fw-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-text-muted);
 }
 
 .bento__title {
@@ -801,16 +2416,15 @@
 
 .bento__text {
   margin: 0;
-  color: var(--color-text-muted);
-  font-size: var(--fs-sm);
+  color: var(--color-text) !important;
+  font-size: var(--fs-base);
   line-height: var(--lh-loose);
 }
 
-/* The bio tile carries the only real prose in the wall; every other
-   tile is a label and a line, and those read better a step down from
-   it. */
+/* The bio tile carries the only real prose in the wall, so it keeps
+   full-strength text color instead of the muted tone every other
+   tile's caption uses. */
 .bento__tile--intro .bento__text {
-  font-size: var(--fs-base);
   color: var(--color-text);
 }
 
@@ -853,7 +2467,7 @@
 .bento__list li {
   padding-block: var(--space-2xs);
   border-top: 1px solid var(--color-border);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-base);
 }
 
 .bento__list li:first-child {
@@ -898,13 +2512,11 @@
 .timeline__company-name {
   margin: 0;
   font-size: var(--fs-base);
+  padding-top: var(--space-2xs);
 }
 
 .timeline__company-range {
-  font-size: var(--fs-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-text-muted);
+  font-size: var(--fs-base);
   white-space: nowrap;
 }
 
@@ -946,12 +2558,12 @@
 }
 
 .timeline__role-title {
+  font-size: var(--fs-base);
   font-weight: 600;
 }
 
 .timeline__role-range {
-  font-size: var(--fs-xs);
-  color: var(--color-text-muted);
+  font-size: var(--fs-base);
 }
 
 /* ---------- Filter bar (Projects page) ---------- */
@@ -967,7 +2579,7 @@
   background: var(--color-bg);
   border-radius: var(--radius-full);
   padding: 0.4em 1em;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-base);
   cursor: pointer;
   transition: background var(--transition-fast), border-color var(--transition-fast);
 }
@@ -1010,7 +2622,7 @@
   border-radius: var(--radius-full);
   background: transparent;
   color: var(--color-text-muted);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-base);
   font-weight: var(--fw-medium);
   cursor: pointer;
   transition: background var(--transition-fast), color var(--transition-fast),
@@ -1166,6 +2778,9 @@
   box-shadow: 0 0 0 3px var(--color-bg), 0 0 0 5px var(--avatar-color);
 }
 
+/* Pinned to the corner of a 56px avatar (--testimonial-avatar above) —
+   sized in em against its own small font-size deliberately, so it stays
+   a badge rather than growing past the circle it's overlapping. */
 .testimonial__badge {
   position: absolute;
   bottom: -0.4em;
@@ -1285,7 +2900,7 @@
   padding: var(--space-2xs) var(--space-md);
   background: var(--color-text);
   color: var(--color-bg);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-base);
   font-weight: var(--fw-medium);
   border-radius: var(--radius-full);
   box-shadow: var(--shadow-lg);
@@ -1322,6 +2937,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
+  font-size: var(--fs-base);
 }
 
 .testimonial__panel[hidden] {
@@ -1418,7 +3034,7 @@
 
 .stat-band__label {
   margin: var(--space-2xs) 0 0;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-base);
   color: var(--color-text-muted);
   max-width: 22ch;
 }
@@ -1499,7 +3115,7 @@
 
 .spectrum__label {
   max-width: 12rem;
-  font-size: var(--fs-xs);
+  font-size: var(--fs-base);
   color: var(--color-text-muted);
   text-align: center;
 }
@@ -1524,10 +3140,8 @@
   display: flex;
   justify-content: space-between;
   margin-top: var(--space-2xs);
-  font-size: var(--fs-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-text-muted);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
 }
 
 /* ---------- Sprint compare (case-study process) ----------
@@ -1558,11 +3172,8 @@
 
 .sprint-compare__track-label {
   margin: 0;
-  font-size: var(--fs-xs);
+  font-size: var(--fs-base);
   font-weight: var(--fw-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-text-muted);
 }
 
 .sprint-compare__week {
@@ -1574,7 +3185,7 @@
 
 .sprint-compare__week-label {
   margin: 0 0 var(--space-3xs);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-base);
   font-weight: var(--fw-semibold);
   color: var(--color-accent);
 }
@@ -1586,7 +3197,7 @@
 
 .sprint-compare__week-note {
   margin: 0;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-base);
   color: var(--color-text-muted);
 }
 
@@ -1618,9 +3229,7 @@
   margin-bottom: var(--space-md);
   color: var(--color-accent);
   font-weight: var(--fw-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: var(--fs-xs);
+  font-size: var(--fs-base);
 }
 
 .moment__kicker::before {
@@ -1640,6 +3249,7 @@
 }
 
 .moment__lead em {
+  font-family: var(--font-body);
   font-style: italic;
   color: var(--color-accent);
 }
@@ -1663,17 +3273,17 @@
 
 .moment__diagram-caption {
   margin: var(--space-sm) 0 0;
-  font-size: var(--fs-xs);
+  font-size: var(--fs-base);
   color: var(--color-text-muted);
   text-align: center;
 }
 
 /* ---------- Glossary (case-study "we had to name this" beat) ----------
    A definition list styled so each term reads as freshly coined rather
-   than looked up — Fraunces italic in the accent color, the same
-   treatment .hero__title em and .moment__lead em use for "the word
-   that matters in this sentence." Two terms per row is enough to imply
-   a small invented lexicon without it sprawling into a reference doc. */
+   than looked up — body-face italic in the accent color, the same
+   treatment .moment__lead em uses for "the word that matters in this
+   sentence." Two terms per row is enough to imply a small invented
+   lexicon without it sprawling into a reference doc. */
 .glossary {
   display: grid;
   grid-template-columns: 1fr;
@@ -1696,7 +3306,7 @@
 
 .glossary__term {
   margin: 0 0 var(--space-3xs);
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-style: italic;
   font-weight: var(--fw-semibold);
   color: var(--color-accent);
@@ -1704,7 +3314,7 @@
 
 .glossary__def {
   margin: 0;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-base);
   color: var(--color-text-muted);
   line-height: var(--lh-normal);
 }
@@ -1777,11 +3387,8 @@
 }
 
 .roadmap__status {
-  font-size: var(--fs-xs);
+  font-size: var(--fs-base);
   font-weight: var(--fw-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-text-muted);
 }
 
 .roadmap__item--shipped .roadmap__status {
@@ -1823,7 +3430,7 @@
   align-items: center;
   gap: var(--space-2xs);
   margin-bottom: var(--space-md);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-base);
   font-weight: var(--fw-medium);
 }
 
@@ -1858,7 +3465,7 @@
   border-radius: var(--radius-full);
   background: var(--color-accent-soft);
   color: var(--color-accent);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-base);
   font-weight: var(--fw-semibold);
   letter-spacing: 0.02em;
 }
@@ -1910,10 +3517,8 @@
 }
 
 .pager__label {
-  font-size: var(--fs-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-text-muted);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
 }
 
 .pager__title {
@@ -1971,7 +3576,7 @@
 .chapter__index {
   counter-increment: chapter;
   font-family: var(--font-display);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-base);
   font-weight: var(--fw-semibold);
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -2005,7 +3610,7 @@
 
 .chapter__text {
   margin: 0;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-base);
   color: var(--color-text-muted);
   line-height: var(--lh-normal);
 }
@@ -2025,7 +3630,7 @@
 
 .swatch__label {
   padding: var(--space-2xs) var(--space-xs);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-base);
   font-family: monospace;
 }
 
@@ -2223,7 +3828,7 @@
 
 .court-demo__hint {
   margin: 0;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-base);
   color: var(--color-text-muted);
   /* Back on, against the figure's blanket pass-through, so the caption
      is still selectable. */
@@ -2293,5 +3898,174 @@
 @media (prefers-reduced-motion: reduce) {
   .court-demo__blob {
     animation: none;
+  }
+}
+
+/* ==========================================================================
+   Hero atmosphere (index.html only)
+   A cursor that turns into a drop of ink inside the hero and back into
+   the system pointer outside it. The liquid itself — the filter, the
+   twin of the cursor that lives inside the headline — is in layout.css
+   with the rest of the .hero block, because it's all one component with
+   the headline. This is just the fixed cursor and the cursor: none scope.
+   Behaviour is in js/hero-atmosphere.js.
+   ========================================================================== */
+
+/* ---- The cursor ----
+   Injected into <body> by js/hero-atmosphere.js, never in the markup, so
+   it can't exist without the script that positions it. Two parts: an
+   arrow the shape of the system pointer, in the headline's ink, that
+   tracks the pointer 1:1 with no easing (it's the actual pointer
+   indicator, and one that trails the true pointer is measurably harder
+   to aim with), and a blob that follows it on a spring. The arrow
+   is what makes the hand-off at the hero's edge quiet: the system
+   pointer is swapped for the same silhouette in the same place, so
+   crossing the boundary reads as the cursor changing substance, not
+   shape. Both parts have twins inside the headline's liquid wrapper (see
+   .hero__blob in layout.css), and those twins are the ones that can
+   merge — they go through the headline's filter, so they stretch into a
+   letter or a sparkle they come near. While a part is inside the
+   filter's region its copy here fades out and the twin is the cursor;
+   outside it there's nothing to merge with and this crisp copy is what
+   shows. The two are the same shape, the same size and — because the
+   script sets both to the same --ink — the same colour, so the swap is
+   invisible. Both parts carry the hero's edge filter (#hero-ink-edge in
+   index.html) for the same reason: the twin has the wordmark's clay
+   line whenever it holds the wordmark's ink, so the fixed copy has to
+   have it under the same key or the line would blink at the boundary.
+   The arrow and the drop hand off independently, since the drop
+   trails.
+
+   At the hero's edge the two parts leave differently, each the way its
+   shape allows. The arrow is the system pointer's silhouette in the
+   same place, so it fades: the system pointer comes back the instant
+   the pointer crosses out (cursor: none goes with .is-pointer-inside)
+   and the arrow thins out over it — the cursor changing substance, not
+   shape. Coming in it appears at once, in the same frame the system
+   pointer goes, for the same reason. The drop has no system
+   counterpart, so it shrinks, and keeps following the pointer while it
+   does (the script). Neither transition is on the wrapper: a fade on
+   the whole thing was what made the exit read as a blink. */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 200;
+  pointer-events: none;
+}
+
+/* Positioned by the script through the translate property, never
+   transform: scale is applied after translate and before transform, so a
+   translation in transform would be scaled too and the part would fly
+   between the pointer and the viewport's corner whenever it grew or
+   shrank. */
+.cursor__blob,
+.cursor__trail,
+.cursor__wake {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: translate, transform;
+  filter: url("#hero-ink-edge");
+}
+
+/* The arrow's tip is the path's origin, so its top-left corner is the
+   pointer — no centring margin, and it scales about the tip. Its
+   resting rule is the exit: opacity 0, reached slowly. */
+.cursor__blob {
+  display: block;
+  width: var(--cursor-size);
+  height: var(--cursor-size);
+  /* base.css caps every svg at its parent's width, and this one's
+     parent is a zero-width fixed point. */
+  max-width: none;
+  overflow: visible;
+  fill: var(--ink, var(--goo-cursor));
+  transform-origin: 0 0;
+  opacity: 0;
+  transition: scale var(--transition-base), opacity var(--cursor-exit);
+}
+
+/* In the hero it's simply there; the quick transition is for the
+   hand-off to its twin (.is-in-ink below), not for the entrance. */
+.cursor.is-visible .cursor__blob {
+  opacity: 1;
+  transition: scale var(--transition-base), opacity var(--transition-fast);
+}
+
+/* Centred on the pointer: the negative margin puts the drop's middle on
+   the element's origin, which is where the translate lands it. Resting
+   rule is the exit again: scale 0, reached slowly. */
+/* Circles, like their twins in layout.css and for the reason given
+   there: the trail's shape comes from the two bodies separating, not
+   from either of them deforming. The script swells them through
+   transform and writes the same value to this copy and the twin in the
+   same frame, for the same reason it sets both to the same --ink. What
+   it does not copy over is --melt: that widens a twin's blur so it
+   reaches into a letter through the goo filter, and there is no goo
+   filter out here for a wider blur to feed. */
+.cursor__trail,
+.cursor__wake {
+  border-radius: 50%;
+  background: var(--ink, var(--goo-cursor));
+  scale: 0;
+  transition: scale var(--cursor-exit), opacity var(--transition-fast);
+}
+
+.cursor__trail {
+  width: var(--cursor-trail-size);
+  height: var(--cursor-trail-size);
+  margin: calc(var(--cursor-trail-size) / -2) 0 0 calc(var(--cursor-trail-size) / -2);
+}
+
+.cursor__wake {
+  width: var(--cursor-wake-size);
+  height: var(--cursor-wake-size);
+  margin: calc(var(--cursor-wake-size) / -2) 0 0 calc(var(--cursor-wake-size) / -2);
+}
+
+.cursor.is-visible .cursor__trail,
+.cursor.is-visible .cursor__wake {
+  scale: 1;
+  transition: scale var(--cursor-enter), opacity var(--transition-fast);
+}
+
+/* Each body hands off on its own: they are regularly far enough apart
+   that one is inside the filter's region and the other isn't. */
+.cursor.is-in-ink .cursor__blob,
+.cursor.is-trail-in-ink .cursor__trail,
+.cursor.is-wake-in-ink .cursor__wake {
+  opacity: 0;
+}
+
+/* On press the arrow tightens. (Over anything clickable it isn't there
+   at all: the script stands the custom cursor down over the hero's
+   buttons, the same hand-off as at the hero's edge, and the system
+   hand shows.) */
+.cursor.is-visible.is-pressed .cursor__blob {
+  scale: 0.8;
+}
+
+/* The system cursor is hidden only while the custom one is in charge —
+   pointer inside the hero and not over a button — and only from JS:
+   shipping cursor: none in a stylesheet would strand anyone whose
+   script failed with no pointer at all. The class goes on .hero itself,
+   so leaving the hero, or reaching a button, restores the native
+   pointer in the same frame the drop starts shrinking.
+
+   `.hero.is-pointer-inside *` is (0,2,0). That second class is
+   load-bearing: several rules in this file set their own cursor: pointer
+   at (0,1,0), and a single-class selector would tie with them and lose on
+   source order, leaving the arrow visible over the hero's buttons. */
+.hero.is-pointer-inside,
+.hero.is-pointer-inside * {
+  cursor: none;
+}
+
+@media print {
+  .hero-goo,
+  .hero__blob,
+  .cursor {
+    display: none;
   }
 }

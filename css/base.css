@@ -42,13 +42,9 @@ h6 {
   font-family: var(--font-display);
   font-weight: var(--fw-semibold);
   line-height: var(--lh-tight);
-  /* Fraunces sets loose by default at display sizes; pulling the
+  /* Baloo 2 sets loose by default at display sizes; pulling the
      tracking in keeps large headings from looking gappy. */
   letter-spacing: -0.015em;
-  /* Fraunces is an optical-size variable font — letting it track the
-     rendered size means large headings get the high-contrast display
-     cut and small ones get the sturdier text cut, automatically. */
-  font-optical-sizing: auto;
 }
 
 h1 {

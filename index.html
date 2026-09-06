@@ -8,7 +8,7 @@
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400..700&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&family=Barlow:wght@400;600&family=DM+Sans:ital,wght@0,400..700;1,400..700&display=swap" />
   <link rel="stylesheet" href="css/tokens.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/layout.css" />
@@ -38,10 +38,51 @@
 
   <div data-include="partials/header.html"></div>
 
-  <main id="main">
-    <section class="hero container">
-      <p class="hero__eyebrow">Hannah Monk</p>
-      <h1 class="hero__title">Senior Product <em>Designer</em></h1>
+  <main id="main" class="has-dot-grid">
+    <section class="hero hero--cute container">
+      <!-- The headline is liquid: the wrapper carries the #hero-liquid
+           filter below, and every shape inside it — the two runs of type,
+           the decorations, and the cursor's twin that
+           js/hero-atmosphere.js drops in beside the h1 — is blurred a
+           little and snapped back to a hard edge by it, so they fuse with
+           whatever they touch. See the .hero__liquid block in layout.css.
+           The h1 itself is plain markup. -->
+      <div class="hero__liquid">
+        <h1 class="hero__title">
+          <span class="hero__pretitle">I'm Hannah Monk.</span>
+          <span class="hero__title-main">
+            <!-- One span per letter, because the fringe alternates
+                 between them: even letters carry --ink-alt instead
+                 of --color-text (see .ink-glyph in layout.css), which
+                 is the only thing the edge stage of #hero-liquid can
+                 sort them by — by that point in the filter there are no
+                 elements left, only pixels. The space rides on the "t"
+                 so it doesn't take a turn in the alternation, and so the
+                 run stays one unbroken ink rect for the cursor's colour
+                 blend, which walks these text nodes
+                 (js/hero-atmosphere.js).
+
+                 Splitting a word into per-letter spans is the one thing
+                 here a screen reader can get wrong — some spell it out —
+                 so the split copy is hidden from the accessibility tree
+                 and the plain string below stands in for it. That copy
+                 sits outside .hero__title-main on purpose: the ink blend
+                 walks everything inside, and a clipped 1px box would
+                 join the wordmark as a stray shape to blend toward. -->
+            <span class="hero__title-text" aria-hidden="true"><span class="ink-glyph">P</span><span class="ink-glyph">r</span><span class="ink-glyph">o</span><span class="ink-glyph">d</span><span class="ink-glyph">u</span><span class="ink-glyph">c</span><span class="ink-glyph">t </span><span class="ink-glyph">D</span><span class="ink-glyph">e</span><span class="ink-glyph">s</span><span class="ink-glyph">i</span><span class="ink-glyph">g</span><span class="ink-glyph">n</span><span class="ink-glyph">e</span><span class="ink-glyph">r</span></span>
+            <svg class="hero__deco hero__deco--star hero__deco--star-a" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+              <path d="M12 0c.8 4.8 2.6 8 6.4 9.6-3.8 1.6-5.6 4.8-6.4 9.6-.8-4.8-2.6-8-6.4-9.6C9.4 8 11.2 4.8 12 0Z" />
+            </svg>
+            <svg class="hero__deco hero__deco--star hero__deco--star-b" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+              <path d="M12 0c.8 4.8 2.6 8 6.4 9.6-3.8 1.6-5.6 4.8-6.4 9.6-.8-4.8-2.6-8-6.4-9.6C9.4 8 11.2 4.8 12 0Z" />
+            </svg>
+            <svg class="hero__deco hero__deco--underline" viewBox="0 0 320 24" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+              <path d="M2 14c40-14 240-14 316 4" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" />
+            </svg>
+          </span>
+          <span class="visually-hidden">Product Designer</span>
+        </h1>
+      </div>
       <div class="hero__meta">
         <p class="hero__lead">
           I turn complex data and messy workflows into experiences that help people find clarity and take action.
@@ -56,9 +97,260 @@
             </a>
             <a class="btn btn--secondary" href="about.html">Read about me</a>
           </div>
-          <p class="hero__note">Currently designing at Hudl</p>
         </div>
       </div>
+
+      <!-- The liquid filter. Same construction as the reference this hero
+           follows (blurred shapes under a hard contrast step), done on the
+           alpha channel instead of on colour so it keeps the site's inks
+           and works over the dot grid in both themes — filter: contrast()
+           would snap clay to pure red and the muted pretitle to black.
+
+           Every shape inside .hero__liquid carries its own CSS blur
+           (layout.css sets one per kind, off the --liquid-blur-* tokens: a
+           hair on the type so it stays crisp, more on the decorations,
+           more on the cursor's drop), which spreads its alpha outward.
+           This filter smooths the composite a touch more and then pushes
+           the alpha through a steep ramp: 0 0 0 10 -4.5 is
+           newAlpha = 10a - 4.5, so everything above half coverage comes
+           out solid and everything below vanishes. Where two shapes sit
+           closer than their blur reach, their spread overlaps, crosses
+           the half line, and comes out as a neck joining them — the goo.
+           The ramp leaves colour alone, so a neck between two inks is the
+           mix of the two, and a cursor that has taken a shape's colour
+           (see the script) joins it seamlessly.
+
+           The slope is the edge's anti-aliasing, and 10 is chosen for
+           the type: a letter's blurred edge climbs about 0.18 alpha per
+           pixel, so a slope of 10 spreads the snap over roughly a device
+           pixel. Steeper (the reference is effectively 50) makes the
+           step narrower than a pixel and the outlines go jagged at 100%
+           zoom — crisp only once zooming in makes device pixels finer.
+
+           Then the edge: the clay line around "Product Designer". The
+           reference gets its coloured fringe by accident — its contrast
+           step over a tinted ground splits the colour channels at every
+           edge, around letters and cursor blob alike, a little off to one
+           side like a misregistered print — and this draws the same thing
+           on purpose, in the accent, and around the same union: it's
+           drawn last, on the gooed result, so a cursor that has merged
+           with a letter shares one continuous line with it, and a cursor
+           on its own carries the line too. What gets the line is keyed by
+           colour rather than by element, since by this point there are no
+           elements, only pixels: the wordmark's ink is the darkest thing
+           in the hero in the light theme and the lightest in the dark
+           one, so the key is a luminance window at each end — the
+           discrete table, ten bins: below 0.4 or from 0.7 up — and the
+           muted pretitle (about 0.4 / 0.6) and the clay decorations
+           (about 0.5) fall outside it.
+
+           The line is built twice from that key and the two are
+           multiplied. The first pass is its geometry: the keyed pixels
+           as a solid shape, eroded by two pixels — shrunk, not grown;
+           see the taper below — and re-snapped after a hair of blur so
+           its edge matches the letters' anti-aliasing. Growing it
+           instead is the one way to put a line on every side of a
+           letter; that was tried and the two colours ran into each
+           other at the corners. The second is its weight: the same
+           key as a ramp instead of a step (the table: full at 0.2, half
+           at 0.3, gone by 0.4, mirrored at the top), grown a pixel wider
+           than the geometry so it covers the geometry's anti-aliased
+           edge, and used as the line's opacity. So the line doesn't
+           blink on and off at the key's threshold; it fades over a
+           stretch of colour. That matters for the cursor, whose ink is a
+           continuous blend of whatever it's near (see the script): as it
+           slides from the letters down to the underline its colour runs
+           dark to clay, and the line thins out as it goes, so by the
+           time it's clay and merged with the clay line there's no rim
+           left to fight the merge. The weight has to be multiplied in
+           against a white flood because feComposite arithmetic works on
+           premultiplied colour — the product of the geometry with a
+           black-with-alpha weight would be a black line.
+
+           Then the line is split between the two inks, letter by
+           letter: the accent on the odd letters, the lighter terracotta
+           on the even ones, one ink per letter rather than both on each.
+           Which letter a pixel belongs to is not a question this stage
+           can ask — there are no elements by now, only pixels — so the
+           letters are marked in their own ink instead: the even ones are
+           set in --ink-alt, four levels off --color-text in red and
+           blue and level with it in luminance (see .ink-glyph in
+           layout.css). That leaves the wordmark reading as one colour
+           and still inside the luminance window above, while giving this
+           stage a key it can sort on — blue minus red, steeply ramped,
+           with the threshold set midway between the two inks. The base
+           ink is warm in both themes and the alt is neutral, so the same
+           numbers hold in light and dark. The key is intersected with
+           rim-faded for the even letters' share and subtracted from it
+           for the odd letters' — one key, two complementary masks, so no
+           pixel can take both inks and none can be missed. The subtract
+           is arithmetic on premultiplied alpha, which is what makes the
+           complement exact.
+
+           Last, the two inked shapes are merged and shifted together,
+           5 pixels down and right, under the letters — the
+           misregistration. Each is a filled copy, so what shows of it is
+           only what the shift pushes out from under the letter: a band
+           along the lower right, flush against the letter, and absent on
+           the far side. The erosion is the taper. Along an edge the band
+           is as wide as the shift's component across that edge, less the
+           erosion: about two and a half pixels where the edge faces the
+           shift squarely — the corner — one and a half along a plain
+           vertical or horizontal edge, and gone once the edge has turned
+           a little past sixty degrees from the shift, so each letter's
+           band still dies out around its own sides rather than running
+           on into its neighbour's. The shift is the only number here that sets the
+           band's weight; the erosion sets where it tapers out, so raising
+           one without the other widens the band and wraps it a little
+           further round the letter.
+
+           The floods' colours are set in layout.css (.hero-goo__edge-ink
+           and -light), where they can read the accent tokens and follow
+           the theme.
+
+           Load-bearing details: color-interpolation-filters="sRGB"
+           (linearRGB is the default, costs two conversions a frame, and
+           darkens merged edges; the luminance key is tuned to sRGB
+           values too); the widened region, since the decorations hang
+           outside the wrapper's box and the cursor's twin roams the whole
+           of it — the script reads these fractions to know where the
+           twin can stand in for the fixed cursor. These are literals
+           because filter primitives take attributes, not CSS properties,
+           so none of them can read a token. The edge stage is repeated in
+           the two filters below — #hero-ink-edge for the fixed cursor and
+           #ink-edge-sm, scaled, for the section headings, a filter being
+           unable to reference another — so a change to one is a change to
+           all three. -->
+      <svg class="hero-goo" aria-hidden="true" focusable="false">
+        <defs>
+          <filter id="hero-liquid" x="-12%" y="-30%" width="124%" height="160%" color-interpolation-filters="sRGB">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="1" result="blur" />
+            <feColorMatrix in="blur" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 10 -4.5" result="shape" />
+            <feColorMatrix in="shape" type="luminanceToAlpha" result="lum" />
+            <feComponentTransfer in="lum" result="hard-key">
+              <feFuncA type="discrete" tableValues="1 1 1 1 0 0 0 1 1 1" />
+            </feComponentTransfer>
+            <feComposite in="hard-key" in2="shape" operator="in" result="inked" />
+            <feMorphology in="inked" operator="erode" radius="2" result="grown" />
+            <feGaussianBlur in="grown" stdDeviation="0.7" result="spread" />
+            <feColorMatrix in="spread" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 10 -4.5" result="rim" />
+            <feComponentTransfer in="lum" result="soft-key">
+              <feFuncA type="table" tableValues="1 1 1 0.5 0 0 0 0 0.5 1 1" />
+            </feComponentTransfer>
+            <feComposite in="soft-key" in2="shape" operator="in" result="weighted" />
+            <feMorphology in="weighted" operator="dilate" radius="2" result="weight" />
+            <feFlood flood-color="#ffffff" result="white" />
+            <feComposite in="white" in2="weight" operator="in" result="weight-white" />
+            <feComposite in="rim" in2="weight-white" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="rim-faded" />
+            <feColorMatrix in="shape" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -100 0 100 0 1.76" result="alt-key" />
+            <feComposite in="alt-key" in2="rim-faded" operator="in" result="rim-alt" />
+            <feComposite in="rim-faded" in2="rim-alt" operator="arithmetic" k1="0" k2="1" k3="-1" k4="0" result="rim-base" />
+            <feFlood class="hero-goo__edge-ink" result="ink" />
+            <feComposite in="ink" in2="rim-base" operator="in" result="edge" />
+            <feFlood class="hero-goo__edge-ink-light" result="ink-light" />
+            <feComposite in="ink-light" in2="rim-alt" operator="in" result="edge-light" />
+            <feMerge result="edge-both">
+              <feMergeNode in="edge" />
+              <feMergeNode in="edge-light" />
+            </feMerge>
+            <feOffset dx="5" dy="5" result="edge-offset" />
+            <feMerge>
+              <feMergeNode in="edge-offset" />
+              <feMergeNode in="shape" />
+            </feMerge>
+          </filter>
+          <!-- The same edge for the fixed cursor (components.css), which
+               lives outside the hero's filter: the twin inside carries the
+               line to the degree it holds the wordmark's ink, and the
+               hand-off between the two has to be invisible, so the fixed
+               copy has to carry it under the same key. No goo stage —
+               nothing out there to merge with — and a wider region, since
+               the parts are small and the line grows past their boxes. -->
+          <filter id="hero-ink-edge" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
+            <feColorMatrix in="SourceGraphic" type="luminanceToAlpha" result="lum" />
+            <feComponentTransfer in="lum" result="hard-key">
+              <feFuncA type="discrete" tableValues="1 1 1 1 0 0 0 1 1 1" />
+            </feComponentTransfer>
+            <feComposite in="hard-key" in2="SourceGraphic" operator="in" result="inked" />
+            <feMorphology in="inked" operator="erode" radius="2" result="grown" />
+            <feGaussianBlur in="grown" stdDeviation="0.7" result="spread" />
+            <feColorMatrix in="spread" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 10 -4.5" result="rim" />
+            <feComponentTransfer in="lum" result="soft-key">
+              <feFuncA type="table" tableValues="1 1 1 0.5 0 0 0 0 0.5 1 1" />
+            </feComponentTransfer>
+            <feComposite in="soft-key" in2="SourceGraphic" operator="in" result="weighted" />
+            <feMorphology in="weighted" operator="dilate" radius="2" result="weight" />
+            <feFlood flood-color="#ffffff" result="white" />
+            <feComposite in="white" in2="weight" operator="in" result="weight-white" />
+            <feComposite in="rim" in2="weight-white" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="rim-faded" />
+            <feColorMatrix in="SourceGraphic" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -100 0 100 0 1.76" result="alt-key" />
+            <feComposite in="alt-key" in2="rim-faded" operator="in" result="rim-alt" />
+            <feComposite in="rim-faded" in2="rim-alt" operator="arithmetic" k1="0" k2="1" k3="-1" k4="0" result="rim-base" />
+            <feFlood class="hero-goo__edge-ink" result="ink" />
+            <feComposite in="ink" in2="rim-base" operator="in" result="edge" />
+            <feFlood class="hero-goo__edge-ink-light" result="ink-light" />
+            <feComposite in="ink-light" in2="rim-alt" operator="in" result="edge-light" />
+            <feMerge result="edge-both">
+              <feMergeNode in="edge" />
+              <feMergeNode in="edge-light" />
+            </feMerge>
+            <feOffset dx="5" dy="5" result="edge-offset" />
+            <feMerge>
+              <feMergeNode in="edge-offset" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <!-- And the same edge again, scaled, for the landing page's
+               section headings (.section-heading__title--inked in
+               components.css). Same construction, same key, same two
+               inks; only the four numbers that set the line's size come
+               down, because a fringe is read against the stroke it sits
+               on and the headings are a little over a third of the
+               wordmark's size. At the wordmark the band along a plain
+               edge is the shift less the erosion, 5 less 2, against a
+               stroke of about thirteen pixels — a touch under a quarter
+               of it. The headings' stroke is nearer five, so the band has
+               to come down to about one: shift 2, erosion 1, and the blur
+               that re-snaps the eroded edge and the dilation that carries
+               the weight over it halved to match. The taper lands about
+               where it does on the wordmark, two-thirds of a right angle
+               off the shift, because both numbers moved together. -->
+          <filter id="ink-edge-sm" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
+            <feColorMatrix in="SourceGraphic" type="luminanceToAlpha" result="lum" />
+            <feComponentTransfer in="lum" result="hard-key">
+              <feFuncA type="discrete" tableValues="1 1 1 1 0 0 0 1 1 1" />
+            </feComponentTransfer>
+            <feComposite in="hard-key" in2="SourceGraphic" operator="in" result="inked" />
+            <feMorphology in="inked" operator="erode" radius="1" result="grown" />
+            <feGaussianBlur in="grown" stdDeviation="0.4" result="spread" />
+            <feColorMatrix in="spread" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 10 -4.5" result="rim" />
+            <feComponentTransfer in="lum" result="soft-key">
+              <feFuncA type="table" tableValues="1 1 1 0.5 0 0 0 0 0.5 1 1" />
+            </feComponentTransfer>
+            <feComposite in="soft-key" in2="SourceGraphic" operator="in" result="weighted" />
+            <feMorphology in="weighted" operator="dilate" radius="1" result="weight" />
+            <feFlood flood-color="#ffffff" result="white" />
+            <feComposite in="white" in2="weight" operator="in" result="weight-white" />
+            <feComposite in="rim" in2="weight-white" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="rim-faded" />
+            <feColorMatrix in="SourceGraphic" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -100 0 100 0 1.76" result="alt-key" />
+            <feComposite in="alt-key" in2="rim-faded" operator="in" result="rim-alt" />
+            <feComposite in="rim-faded" in2="rim-alt" operator="arithmetic" k1="0" k2="1" k3="-1" k4="0" result="rim-base" />
+            <feFlood class="hero-goo__edge-ink" result="ink" />
+            <feComposite in="ink" in2="rim-base" operator="in" result="edge" />
+            <feFlood class="hero-goo__edge-ink-light" result="ink-light" />
+            <feComposite in="ink-light" in2="rim-alt" operator="in" result="edge-light" />
+            <feMerge result="edge-both">
+              <feMergeNode in="edge" />
+              <feMergeNode in="edge-light" />
+            </feMerge>
+            <feOffset dx="2" dy="2" result="edge-offset" />
+            <feMerge>
+              <feMergeNode in="edge-offset" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+      </svg>
     </section>
 
     <!-- Selected work: one featured case study, then the rest 2-up.
@@ -70,7 +362,16 @@
          per-part links. -->
     <section id="projects" class="section container">
       <div class="section-heading">
-        <h2 class="section-heading__title">Selected work</h2>
+        <!-- Split into letters so the fringe can alternate between them,
+             the same way the wordmark above is — see .ink-glyph in
+             layout.css. aria-label rather than the wordmark's hidden
+             stand-in copy: the whole heading is the split run here, so
+             naming it outright is both shorter and exact, and it keeps
+             the letters out of the name without depending on aria-hidden
+             being honoured inside a name computed from content, which it
+             is not. The visible letters still spell the label, so the two
+             can't drift apart. -->
+        <h2 class="section-heading__title section-heading__title--inked" aria-label="Selected work"><span class="ink-glyph">S</span><span class="ink-glyph">e</span><span class="ink-glyph">l</span><span class="ink-glyph">e</span><span class="ink-glyph">c</span><span class="ink-glyph">t</span><span class="ink-glyph">e</span><span class="ink-glyph">d </span><span class="ink-glyph">w</span><span class="ink-glyph">o</span><span class="ink-glyph">r</span><span class="ink-glyph">k</span></h2>
         <a class="back-link back-link--forward" href="projects.html">
           See all projects
           <svg class="back-link__icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
@@ -82,30 +383,226 @@
       <!-- One project split across three case studies, in the lead slot.
            The triptych media and the numbered part rows are what carry
            the "three in one" read; see .card--feature .card__parts and
-           .card__media--triptych in components.css. -->
+           .card__media--triptych in components.css. projects.html breaks
+           the same three parts out into three ordinary cards so each can
+           be filtered on; this is the only place they are shown as one. -->
       <article class="card card--project card--feature card--series" data-project-card data-tags="research,web">
         <div class="card__media card__media--triptych">
-          <span class="card__panel">
-            <video data-hover-video muted loop playsinline preload="none" poster="assets/video/volleyball-reports-poster.jpg">
-              <source src="assets/video/volleyball-reports.mp4" type="video/mp4" />
-            </video>
-          </span>
-          <span class="card__panel">
-            <video data-hover-video muted loop playsinline preload="none" poster="assets/video/volleyball-playback-poster.jpg">
-              <source src="assets/video/volleyball-playback.mp4" type="video/mp4" />
-            </video>
-          </span>
-          <span class="card__panel">
-            <video data-hover-video muted loop playsinline preload="none" poster="assets/video/volleyball-submission-poster.jpg">
-              <source src="assets/video/volleyball-submission.mp4" type="video/mp4" />
-            </video>
-          </span>
+          <!-- The three panels, drawn rather than filmed: see "VOLLEYBALL
+     PRODUCT DEMOS" in css/components.css. Each one picks its
+     layout from the panel's aspect ratio, which is why the same
+     markup works stacked three-high here and alone in a card's
+     thumbnail on projects.html.
+
+     Each panel doubles as the link to that part's own case
+     study, so .card__panel is an <a> rather than a span —
+     aria-label stands in as the link's accessible name, so the
+     drawn content underneath is never read node by node. Kept
+     to spans, images and svg all the same: an anchor is
+     transparent content, so nothing beyond ordinary flow
+     content is required here, but nothing beyond it is used
+     either. -->
+          <a class="card__panel" href="case-study-volleyball-reports.html" aria-label="Hudl's volleyball reporting: a rotation stats table, a setter-tendency heat map, and a trend chart">
+            <span class="vbd vbd--reports">
+              <span class="vbd__win vbd__win--table">
+                <span class="vbd__head"><span class="vbd__avatar"></span><span class="vbd__team">Farmingham</span></span>
+                <span class="vbd__tabs"><span class="vbd__tab is-on">Team Stats</span><span class="vbd__tab">Setter Tendencies</span><span class="vbd__tab">Trends</span></span>
+                <span class="vbd__reportTitle"><span>Team Stats by Rotation</span></span>
+                <span class="vbd__tablegroup">
+                  <span class="vbd__tablehead"><span>Team Stats</span><span>Side Out</span></span>
+                  <span class="vbd__table">
+                    <span class="vbd__tr vbd__tr--head"><span>Rotation</span><span>W</span><span>L</span><span>SO%</span></span>
+                    <span class="vbd__tr"><span>Rotation 1</span><span class="vbd__cell-hi">10</span><span>5</span><span class="vbd__pos">66.67%</span></span>
+                    <span class="vbd__tr"><span>Rotation 2</span><span>9</span><span>4</span><span class="vbd__pos">69.23%</span></span>
+                    <span class="vbd__tr"><span>Rotation 3</span><span>8</span><span>7</span><span>53.33%</span></span>
+                    <span class="vbd__tr"><span>Rotation 4</span><span>8</span><span>12</span><span class="vbd__neg">40.00%</span></span>
+                    <span class="vbd__tr"><span>Rotation 5</span><span>8</span><span>9</span><span>47.06%</span></span>
+                    <span class="vbd__tr"><span>Rotation 6</span><span>7</span><span>10</span><span class="vbd__neg">41.55%</span></span>
+                    <span class="vbd__tr vbd__tr--total"><span>Overall</span><span>50</span><span>47</span><span>51.55%</span></span>
+                  </span>
+                </span>
+              </span>
+
+              <span class="vbd__win vbd__win--heat">
+                <span class="vbd__head"><span class="vbd__avatar"></span><span class="vbd__team">Farmingham</span></span>
+                <span class="vbd__tabs"><span class="vbd__tab">Team Stats</span><span class="vbd__tab is-on">Setter Tendencies</span><span class="vbd__tab">Trends</span></span>
+                <span class="vbd__reportTitle"><span>Setter Tendencies</span></span>
+                <span class="vbd__heat">
+                  <span class="vbd__cell vbd__cell--mid"><span class="vbd__cell-v">38%</span><span class="vbd__cell-n">32 Att</span></span>
+                  <span class="vbd__cell vbd__cell--hot"><span class="vbd__cell-v">32%</span><span class="vbd__cell-n">19 Att</span></span>
+                  <span class="vbd__cell vbd__cell--hot"><span class="vbd__cell-v">50%</span><span class="vbd__cell-n">16 Att</span></span>
+                  <span class="vbd__cell vbd__cell--none"><span class="vbd__cell-n">0 Att</span></span>
+                  <span class="vbd__cell vbd__cell--cool"><span class="vbd__cell-v">0%</span><span class="vbd__cell-n">5 Att</span></span>
+                  <span class="vbd__cell vbd__cell--mid"><span class="vbd__cell-v">0%</span><span class="vbd__cell-n">1 Att</span></span>
+                  <span class="vbd__cell vbd__cell--none"><span class="vbd__cell-n">0 Att</span></span>
+                  <span class="vbd__cell vbd__cell--none"><span class="vbd__cell-n">0 Att</span></span>
+                  <span class="vbd__cell vbd__cell--none"><span class="vbd__cell-n">0 Att</span></span>
+                </span>
+                <span class="vbd__legend">
+                  Low A%
+                  <span class="vbd__scale"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span>
+                  High A%
+                </span>
+              </span>
+
+              <span class="vbd__win vbd__win--trend">
+                <span class="vbd__head"><span class="vbd__avatar"></span><span class="vbd__team">Farmingham</span></span>
+                <span class="vbd__tabs"><span class="vbd__tab">Team Stats</span><span class="vbd__tab">Setter Tendencies</span><span class="vbd__tab is-on">Trends</span></span>
+                <span class="vbd__reportTitle"><span>Trends by Athlete</span></span>
+                <span class="vbd__chart">
+                  <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+                    <path class="vbd__trendline" pathLength="100" d="M3 33 C7 33 9 32 12 27 C15 22 17 18 21 19 C25 20 26 25 30 26 C34 27 37 26 41 24 C45 22 47 17 52 16 C57 15 60 10 66 9 C72 8 77 8 84 8 C90 8 94 9 97 9" />
+                  </svg>
+                </span>
+                <span class="vbd__chartkey"><span class="vbd__dot"></span>#1 Hannah Monk</span>
+              </span>
+            </span>
+          </a>
+
+          <a class="card__panel" href="case-study-volleyball-playback.html" aria-label="A volleyball rally playing in Hudl's video player, the ball's flight traced over the court as it goes">
+            <span class="vbd vbd--playback">
+              <!-- The player window. Inset so the stage it floats on stays
+                   visible around it, and bezelled, the way the product
+                   frames a clip. -->
+              <span class="vbd__player">
+                <!-- The rally is real footage; only what the product drew on
+                     top of it is drawn here. The clip is the source mp4 with
+                     its burnt-in overlay painted out and its burnt-in chrome
+                     cropped off, so the trace below can be redrawn to fit
+                     whatever shape the panel is. -->
+                <video
+                  class="vbd__court"
+                  data-hover-video
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                  poster="assets/img/volleyball-court.webp"
+                >
+                  <source src="assets/video/volleyball-rally.mp4" type="video/mp4" />
+                </video>
+                <!-- The ball's flight. data-ball-track holds its MEASURED
+                     position at every frame of the clip (see setupBallTracks
+                     in main.js, which redraws these paths against the video's
+                     own clock) — so the end of the line is where the ball is,
+                     not an approximation of it. Empty until the clip plays.
+                     Same crop rule as the video above it (slice ~ cover), so
+                     the trace stays registered to the court at any shape. -->
+                <svg
+                  class="vbd__arcs"
+                  viewBox="0 0 800 310"
+                  preserveAspectRatio="xMidYMid slice"
+                  data-ball-track='[[4,[519.9,103.2],[516.4,89.5],[516.4,89.5],[511.3,73.1],[504.4,55.6],[500.3,47.2],[495.4,39.2],[495.4,39.2],[492.8,35.3],[483.6,24.8],[478.8,20.8],[475.0,18.1],[475.0,18.1],[470.9,16.0],[457.2,12.8],[454.1,13.1],[452.6,13.3],[452.6,13.3],[451.1,13.6],[446.5,14.5],[434.3,21.4],[430.9,24.6],[430.9,24.6],[430.9,24.6],[419.4,39.3],[418.5,40.6],[418.5,40.6],[413.3,50.2],[410.1,57.3],[404.5,71.9],[402.1,79.4],[399.1,89.9],[399.1,89.9],[397.0,99.0],[394.4,114.6],[391.7,130.1],[389.1,145.6],[386.5,161.2],[383.9,176.7]],[45,[373.4,179.3],[368.6,163.2],[363.7,147.2],[358.8,131.1],[353.9,115.1],[350.0,97.9],[341.4,67.3],[337.5,53.2],[335.5,47.0],[333.6,40.7],[328.1,21.5],[322.7,2.3],[319.9,-3.7],[317.1,-9.7],[314.3,-15.7],[311.5,-21.7],[308.7,-27.7],[306.0,-33.8],[303.2,-39.8],[300.4,-45.8],[297.6,-51.8],[294.8,-57.8],[292.0,-63.8],[289.3,-69.9],[286.5,-75.9],[283.7,-81.9],[280.9,-87.9],[278.1,-93.9],[275.4,-87.5],[272.7,-81.1],[269.9,-74.7],[267.2,-68.3],[264.5,-61.9],[261.7,-55.5],[259.0,-49.1],[256.2,-42.7],[253.5,-36.3],[250.8,-29.8],[248.0,-23.4],[245.3,-17.0],[242.6,-10.6],[239.8,-4.2],[237.1,2.2],[234.4,8.6],[232.0,18.8],[231.2,23.9],[230.5,29.0],[229.7,39.9],[228.1,50.9],[225.8,73.6],[225.0,79.8],[224.2,86.1],[223.4,101.8],[222.7,117.4]]]'
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path class="vbd__arc" />
+                  <path class="vbd__arc" />
+                </svg>
+                <span class="vbd__chrome">
+                  <span class="vbd__bar-top">
+                    <span class="vbd__pill">2 / 128<span class="vbd__chevron" aria-hidden="true">›</span></span>
+                    <span class="vbd__pill vbd__pill--score"><span class="vbd__score-half"><span class="vbd__logo"></span>0</span><span class="vbd__score-half"><span>1</span><span class="vbd__logo"></span></span></span>
+                    <span class="vbd__end">
+                      <span class="vbd__pill vbd__pill--tools">
+                        <svg class="vbd__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M14 5 7 12l7 7" />
+                        </svg>
+                        <svg class="vbd__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M19 12a7 7 0 1 1-2.1-5" />
+                          <path d="M19 4v4.5h-4.5" />
+                        </svg>
+                        <svg class="vbd__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <rect x="4" y="6" width="16" height="10" rx="2.5" />
+                          <path d="M9 16v3.2L12 16" />
+                        </svg>
+                      </span>
+                      <span class="vbd__pill vbd__pill--cta">+ Create Clip</span>
+                    </span>
+                  </span>
+                  <span class="vbd__bar-bot">
+                    <span class="vbd__scrub"><span class="vbd__scrub-fill"></span></span>
+                    <span class="vbd__controls">
+                      <span class="vbd__pill">
+                        <svg class="vbd__transport" viewBox="0 0 30 12" fill="currentColor" aria-hidden="true" focusable="false">
+                          <path d="M1 2h1.4v8H1zm2.6 4L9 2v8z" />
+                          <path d="M12 2l6 4-6 4z" />
+                          <path d="M21 2l5.4 4L21 10zm6.6 0H29v8h-1.4z" />
+                        </svg>
+                      </span>
+                      <span class="vbd__pill vbd__pill--time"><b data-clock-now>0:00</b> / <span data-clock-total>0:05</span></span>
+                      <span class="vbd__pill vbd__pill--av">
+                        <svg class="vbd__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M19 12a7 7 0 1 1-2.1-5" />
+                          <path d="M19 4v4.5h-4.5" />
+                        </svg>
+                        <svg class="vbd__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M8 7 9.3 5h5.4L16 7" />
+                          <rect x="3" y="7" width="18" height="12" rx="2.5" />
+                          <circle cx="12" cy="13" r="3.4" />
+                        </svg>
+                        <svg class="vbd__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M4 9v6h4l5 4V5L8 9H4z" />
+                          <path d="m16 9 5 6M21 9l-5 6" />
+                        </svg>
+                        <svg class="vbd__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
+                        </svg>
+                      </span>
+                    </span>
+                  </span>
+                </span>
+              </span>
+            </span>
+          </a>
+
+          <a class="card__panel" href="case-study-volleyball-submission.html" aria-label="Hudl's clip library: an uploaded game finishing analysis while a practice upload waits its turn">
+            <span class="vbd vbd--library">
+              <span class="vbd__lib">
+                <span class="vbd__libhead">Library<span class="vbd__view"><span></span><span></span></span></span>
+                <span class="vbd__clips">
+                  <span class="vbd__clip">
+                    <span class="vbd__thumb">
+                      <img
+                        src="assets/img/volleyball-clip-game.webp"
+                        alt=""
+                        width="520"
+                        height="240"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <span class="vbd__chip">GAME</span>
+                      <span class="vbd__status">
+                        <span class="vbd__analyzing"><span class="vbd__progress"></span>Analyzing&hellip;</span>
+                        <span class="vbd__result"><span class="vbd__won">&check; 3</span><span>W 3&ndash;1</span></span>
+                      </span>
+                    </span>
+                    <span class="vbd__caption">Monday Game</span>
+                  </span>
+                  <span class="vbd__clip vbd__clip--muted">
+                    <span class="vbd__thumb">
+                      <img
+                        src="assets/img/volleyball-clip-practice.webp"
+                        alt=""
+                        width="440"
+                        height="269"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <span class="vbd__chip">Practice</span>
+                    </span>
+                    <span class="vbd__caption">Weekend Practice</span>
+                  </span>
+                </span>
+              </span>
+            </span>
+          </a>
         </div>
         <div class="card__body">
           <p class="card__flag">Featured case study &middot; 3 parts</p>
           <div class="card__tags">
-            <span class="tag">UX Research</span>
-            <span class="tag tag--neutral">Web App</span>
+            <span class="tag">Web + Mobile</span>
+            <span class="tag tag--neutral">New Components</span>
           </div>
           <h3 class="card__title"><a href="case-study-volleyball-consolidation.html">Merging a tangle of products into one</a></h3>
           <p class="card__excerpt">
@@ -134,17 +631,61 @@
 
       <div class="grid grid--2up mt-lg">
         <article class="card card--project" data-project-card data-tags="ai,web">
-          <div class="card__media card__media--video">
-            <video
-              data-hover-video
-              muted
-              loop
-              playsinline
-              preload="none"
-              poster="assets/video/ai-command-bar-poster.jpg"
-            >
-              <source src="assets/video/ai-command-bar.mp4" type="video/mp4" />
-            </video>
+          <div class="card__media card__media--demo">
+            <!-- The AI command bar, drawn rather than filmed: see
+                 "AI COMMAND BAR DEMO" in css/components.css. The only
+                 image left in it is the match frame at the bottom. -->
+            <div class="cmdbar" role="img" aria-label="Hudl's AI command bar searching a volleyball match, its search field ringed by a sweeping gradient">
+              <div class="cmdbar__panel">
+                <div class="cmdbar__row">
+                  <span class="cmdbar__btn">
+                    <svg class="cmdbar__icon cmdbar__icon--btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                      <path d="M3.5 5h17l-6.6 7.8v6.4l-3.8-2.1v-4.3z" />
+                    </svg>
+                    0 Filters
+                  </span>
+
+                  <span class="cmdbar__field">
+                    <svg class="cmdbar__icon cmdbar__icon--search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false">
+                      <circle cx="10.5" cy="10.5" r="7" />
+                      <path d="m15.6 15.6 5 5" />
+                    </svg>
+                    <svg class="cmdbar__icon cmdbar__icon--spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                      <path d="M9 3 Q10.3 7.7 15 9 Q10.3 10.3 9 15 Q7.7 10.3 3 9 Q7.7 7.7 9 3 Z" />
+                      <path d="M17.5 13 Q18.3 15.7 21 16.5 Q18.3 17.3 17.5 20 Q16.7 17.3 14 16.5 Q16.7 15.7 17.5 13 Z" />
+                      <path d="M18 3.5 Q18.5 5.5 20.5 6 Q18.5 6.5 18 8.5 Q17.5 6.5 15.5 6 Q17.5 5.5 18 3.5 Z" />
+                    </svg>
+                    <span class="cmdbar__placeholder">Finding moments</span>
+                    <svg class="cmdbar__icon cmdbar__icon--clear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false">
+                      <path d="M5.5 5.5 18.5 18.5M18.5 5.5 5.5 18.5" />
+                    </svg>
+                    <span class="cmdbar__divider"></span>
+                    <svg class="cmdbar__icon cmdbar__icon--mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                      <rect x="9" y="2" width="6" height="11" rx="3" />
+                      <path d="M5 11a7 7 0 0 0 14 0" />
+                      <path d="M12 18v3.2M9.2 21.2h5.6" />
+                    </svg>
+                  </span>
+
+                  <span class="cmdbar__btn">
+                    <svg class="cmdbar__icon cmdbar__icon--btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                      <path d="M3.5 5h17l-6.6 7.8v6.4l-3.8-2.1v-4.3z" />
+                    </svg>
+                    Share
+                  </span>
+                </div>
+
+                <img
+                  class="cmdbar__footage"
+                  src="assets/img/ai-command-bar-footage.webp"
+                  alt=""
+                  width="900"
+                  height="375"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+            </div>
           </div>
           <div class="card__body">
             <div class="card__tags">
@@ -163,7 +704,7 @@
           <div class="card__body">
             <div class="card__tags">
               <span class="tag">Internal Tools</span>
-              <span class="tag tag--neutral">UX Research</span>
+              <span class="tag tag--neutral">Kindof Technical</span>
             </div>
             <h3 class="card__title"><a href="case-study-video-alignment.html">Tagging a game once &mdash; $500K saved a year</a></h3>
             <p class="card__excerpt">A math trick found in a video editor cut duplicate analyst work in half and saved $500K a year.</p>
@@ -174,7 +715,7 @@
 
     <section id="about-me" class="section container">
       <div class="section-heading">
-        <h2 class="section-heading__title">About me</h2>
+        <h2 class="section-heading__title section-heading__title--inked" aria-label="About me"><span class="ink-glyph">A</span><span class="ink-glyph">b</span><span class="ink-glyph">o</span><span class="ink-glyph">u</span><span class="ink-glyph">t </span><span class="ink-glyph">m</span><span class="ink-glyph">e</span></h2>
         <a class="back-link back-link--forward" href="about.html">
           Read my full story
           <svg class="back-link__icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
@@ -190,9 +731,9 @@
           <p>I love the kind of problems that don't have obvious answers, the ones that require curiosity, experimentation, and a lot of whiteboarding before the interface ever takes shape.
           </p>
           <div class="cluster">
-            <span class="tag tag--contrast">Systems Thinking</span>
-            <span class="tag tag--contrast">Prototyping</span>
-            <span class="tag tag--contrast">AI and ML Solutions</span>
+            <span class="tag tag--neutral">Systems Thinking</span>
+            <span class="tag tag--neutral">Prototyping</span>
+            <span class="tag tag--neutral">AI and ML Solutions</span>
           </div>
         </div>
 
@@ -209,5 +750,7 @@
 
   <script src="js/include.js"></script>
   <script src="js/main.js"></script>
+  <!-- Only the landing page has a hero to animate, so it isn't in main.js. -->
+  <script src="js/hero-atmosphere.js"></script>
 </body>
 </html>
