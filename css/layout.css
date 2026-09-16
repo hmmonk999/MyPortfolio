@@ -75,7 +75,8 @@
 
 @media (min-width: 600px) {
   .grid--2up,
-  .grid--3up {
+  .grid--3up,
+  .grid--4up {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -86,6 +87,9 @@
   }
   .grid--2up {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .grid--4up {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
@@ -1623,6 +1627,30 @@ main > section:first-of-type > .hero__liquid {
   height: 100%;
   aspect-ratio: 16 / 10;
   object-fit: cover;
+}
+
+/* Media slot holding a drawn diagram rather than a photograph. Two
+   things the base rule gets wrong for a figure: object-fit: cover
+   crops it, and a diagram run to the edge of its panel reads as a
+   screenshot of something rather than as an illustration. So it gets
+   margins and is never cropped. Unlike --demo below, it stays centred
+   and padded at every width. */
+.case-hero__media--figure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+}
+
+@media (max-width: 699px) {
+  .case-hero__media--figure {
+    padding: var(--space-sm);
+  }
+}
+
+.case-hero__media--figure svg {
+  width: 100%;
+  height: auto;
 }
 
 /* Media slot holding an interactive piece rather than a photo (see

@@ -11,6 +11,13 @@ function initSite() {
   setupContactMenu();
   setupHoverVideos();
   setupBallTracks();
+  setupJumpNav();
+  setupReportSizes();
+  setupMatchTiles();
+  setupReportTabs();
+  setupMatchSelects();
+  setupReportPanels();
+  setupSidePanels();
 }
 
 /* include.js fetches the header/footer partials asynchronously and
@@ -505,6 +512,631 @@ function setupBallTracks() {
     video.addEventListener("seeked", draw);
     video.addEventListener("loadedmetadata", draw);
     draw();
+  });
+}
+
+/* The sticky .jump-nav bar (case studies only) minimizes itself once it
+   is actually stuck to the viewport top, rather than staying full size
+   for the whole scroll. [data-jump-nav-sentinel] is a zero-height
+   marker sitting immediately before the bar: the bar is stuck exactly
+   when that marker has passed above the line the bar parks on, which is
+   the bar's own `top` offset. Watching the marker rather than the bar
+   is what makes "stuck" detectable at all — a sticky element never
+   leaves the viewport on its own, so its own position tells you nothing.
+
+   Deliberately a scroll listener and not an IntersectionObserver, which
+   this used to be: an observer only reports when intersection *changes*,
+   and the marker is zero-height, so any jump that clears it in a single
+   frame — End key, dragging the scrollbar, landing on the page at a
+   #hash — takes it from "below the viewport, not intersecting" straight
+   to "above the viewport, not intersecting" without ever firing. The
+   bar would then sit at the top of the screen still full size. Reading
+   the position outright can't miss a transition it never saw. */
+function setupJumpNav() {
+  const nav = document.querySelector("[data-jump-nav]");
+  const sentinel = document.querySelector("[data-jump-nav-sentinel]");
+  if (!nav || !sentinel) return;
+
+  let stickTop = 0;
+  let queued = false;
+
+  const update = () => {
+    queued = false;
+    nav.classList.toggle(
+      "is-stuck",
+      sentinel.getBoundingClientRect().top < stickTop
+    );
+  };
+
+  // Coalesced to one read per frame: scroll fires far more often than
+  // the page can paint, and this measures layout.
+  const queue = () => {
+    if (queued) return;
+    queued = true;
+    window.requestAnimationFrame(update);
+  };
+
+  // The offset is a CSS value (var(--space-sm)), so it's read from the
+  // element rather than repeated here, and re-read on resize in case a
+  // breakpoint changes it.
+  const measure = () => {
+    stickTop = parseFloat(window.getComputedStyle(nav).top) || 0;
+    queue();
+  };
+
+  measure();
+  window.addEventListener("scroll", queue, { passive: true });
+  window.addEventListener("resize", measure, { passive: true });
+}
+
+/* Width switcher over the rebuilt report (case-study-volleyball-reports).
+   The report is a size container: every layout rule in it answers to the
+   width of its own window rather than the viewport's, so setting that
+   width is the whole of it — the bar collapses, the canvas changes shape,
+   and nobody has to pick up a phone to see the phone layout. */
+function setupReportSizes() {
+  const toggle = document.querySelector("[data-rdemo-sizes]");
+  const demo = document.querySelector("[data-report-demo]");
+  if (!toggle || !demo) return;
+
+  const options = toggle.querySelectorAll("[data-rdemo-size]");
+
+  toggle.addEventListener("click", (event) => {
+    const size = event.target
+      .closest("[data-rdemo-size]")
+      ?.getAttribute("data-rdemo-size");
+
+    if (!size) return;
+
+    demo.setAttribute("data-size", size);
+    options.forEach((option) => {
+      const isActive = option.getAttribute("data-rdemo-size") === size;
+      option.setAttribute("aria-pressed", String(isActive));
+    });
+  });
+}
+
+/* The report's two side panels — filters on the left, video on the
+   right — and the controls that open and shut them.
+
+   Which is open lives on the window as data-left / data-right, so the
+   stylesheet owns the whole of what open LOOKS like — a column beside
+   the report on the desktop, a bottom sheet over it on touch — and this
+   owns only the state. The one thing the shape changes here is how many
+   can be open at once; see sheetMode below. The bar's funnel button is the left panel's trigger
+   because in the product that is what the funnel does; the right panel
+   gets a button of its own at the far end of the bar.
+
+   Content is not built here. A panel opening fires rdemo:side-open on
+   the window with the side in its detail, which is the hook for loading
+   something into [data-rdemo-side-body] — the same "mount it when it is
+   visible, not before" shape the report panels and their charts use, and
+   for the same reason: whatever lands in there can measure itself once
+   the panel actually has a width. */
+function setupSidePanels() {
+  const demo = document.querySelector("[data-report-demo]");
+  if (!demo) return;
+
+  const toggles = [...demo.querySelectorAll("[data-rdemo-side-toggle]")];
+  if (!toggles.length) return;
+
+  const stateAttribute = (side) => `data-${side}`;
+
+  const setSide = (side, open) => {
+    demo.setAttribute(stateAttribute(side), open ? "open" : "closed");
+
+    toggles
+      .filter((toggle) => toggle.getAttribute("data-rdemo-side-toggle") === side)
+      .forEach((toggle) => toggle.setAttribute("aria-expanded", String(open)));
+
+    if (open) {
+      demo.dispatchEvent(new CustomEvent("rdemo:side-open", { detail: { side } }));
+    }
+  };
+
+  const isOpen = (side) => demo.getAttribute(stateAttribute(side)) === "open";
+  const sides = ["left", "right"];
+
+  // On a phone or a tablet these are bottom sheets rather than columns,
+  // and two sheets stacked over the same report is nonsense — the second
+  // would simply hide the first. Opening one there closes the other. On
+  // the desktop they are columns on opposite sides of the canvas and
+  // both can be open at once, which is the point of having two.
+  const sheetMode = () => demo.getAttribute("data-size") !== "web";
+
+  toggles.forEach((toggle) => {
+    const side = toggle.getAttribute("data-rdemo-side-toggle");
+    toggle.addEventListener("click", () => {
+      const open = !isOpen(side);
+      if (open && sheetMode()) {
+        sides.filter((other) => other !== side).forEach((other) => setSide(other, false));
+      }
+      setSide(side, open);
+    });
+  });
+
+  const closeAll = () => sides.forEach((side) => setSide(side, false));
+
+  const scrim = demo.querySelector("[data-rdemo-scrim]");
+  if (scrim) scrim.addEventListener("click", closeAll);
+
+  // Escape, because a sheet covers what is behind it and every other
+  // overlay on the web closes this way.
+  demo.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || !sides.some(isOpen)) return;
+    closeAll();
+    const trigger = toggles.find((toggle) =>
+      toggle.getAttribute("data-rdemo-side-toggle") === "left"
+    );
+    if (trigger) trigger.focus();
+  });
+
+  demo.querySelectorAll("[data-rdemo-side-close]").forEach((close) => {
+    const side = close.getAttribute("data-rdemo-side-close");
+    close.addEventListener("click", () => {
+      setSide(side, false);
+      // Focus would otherwise be left on a button that has just become
+      // invisible, which strands a keyboard user mid-window. It goes back
+      // to whatever opened the panel.
+      const trigger = toggles.find(
+        (toggle) => toggle.getAttribute("data-rdemo-side-toggle") === side
+      );
+      if (trigger) trigger.focus();
+    });
+  });
+
+  // Both shut to begin with, written from here rather than left to the
+  // markup so the attributes the stylesheet keys off always exist.
+  setSide("left", false);
+  setSide("right", false);
+}
+
+/* ---------- Report charts ----------
+   The trends card's chart is Recharts, which means React — neither of
+   which this site otherwise uses. That is a deliberate trade: the
+   product's charts ARE Recharts, and a case study claiming to rebuild
+   the report rather than picture it should draw them the way the report
+   draws them, tooltips and axis behaviour included.
+
+   The cost is paid as late as possible. Four scripts, ~165KB gzipped,
+   fetched only when someone opens the Trends tab — so every other page
+   on this site, and this page for anyone who never opens that tab, loads
+   none of it.
+
+   prop-types is the one that looks wrong and isn't: Recharts' UMD build
+   lists react AND prop-types as externals, so without it the bundle
+   evaluates to an empty object and every chart silently renders
+   nothing. */
+const CHART_SCRIPTS = [
+  "https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js",
+  "https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js",
+  "https://cdn.jsdelivr.net/npm/prop-types@15.8.1/prop-types.min.js",
+  "https://cdn.jsdelivr.net/npm/recharts@2.15.4/umd/Recharts.min.js",
+];
+
+let chartLibrary;
+
+function loadChartLibrary() {
+  // Serial rather than parallel: Recharts' UMD wrapper reads window.React
+  // and window.PropTypes as it evaluates, so it cannot be racing them.
+  chartLibrary =
+    chartLibrary ||
+    CHART_SCRIPTS.reduce(
+      (chain, src) =>
+        chain.then(
+          () =>
+            new Promise((resolve, reject) => {
+              const script = document.createElement("script");
+              script.src = src;
+              script.onload = resolve;
+              script.onerror = () => reject(new Error("could not load " + src));
+              document.head.appendChild(script);
+            })
+        ),
+      Promise.resolve()
+    );
+
+  return chartLibrary;
+}
+
+/* Colours come out of the stylesheet rather than being repeated here, so
+   the product's palette stays in tokens.css where the rest of it lives.
+   Recharts wants plain strings, not var() references. */
+function chartPalette(host) {
+  const styles = window.getComputedStyle(host);
+  const token = (name) => styles.getPropertyValue(name).trim();
+  return {
+    line: token("--vbd-trend"),
+    grid: token("--vbd-line"),
+    text: token("--vbd-text-dim"),
+    surface: token("--vbd-bezel"),
+    strong: token("--vbd-text"),
+  };
+}
+
+/* The season as the tiles have it. They are laid out most recent first
+   and a trend reads oldest to newest, so this reverses them — and it
+   takes the numbers off the tiles rather than keeping a second copy
+   here, which is the only way the chart and the timeline above it can't
+   drift apart.
+
+   `picked` is the same number again, or null where the match isn't in
+   the current selection. Two keys over one set of points is what lets
+   the chart draw the whole season faintly and the selected matches
+   brightly on top of it, from a single pass over the markup. */
+function seasonFromTiles(demo) {
+  return [...demo.querySelectorAll("[data-rdemo-match]")]
+    .map((tile) => {
+      const sideout = Number(tile.getAttribute("data-sideout"));
+      const picked = tile.getAttribute("aria-pressed") === "true";
+      return {
+        match: tile.querySelector(".rdemo__tileopp")?.textContent.trim(),
+        date: tile.querySelector(".rdemo__tiledate")?.textContent.trim(),
+        sideout,
+        picked: picked ? sideout : null,
+      };
+    })
+    .filter((point) => Number.isFinite(point.sideout))
+    .reverse();
+}
+
+/* The trends chart, as a function of the current selection.
+
+   Plotting only the selected matches was the obvious reading of "the
+   report counts what you picked", and it is wrong here: the default
+   selection is one match, and a trend across one match is a dot. So the
+   season is always drawn, faintly, and the selection is drawn brightly
+   over it. One match reads as a point against a season; Last 5 as a
+   bright tail; All Season as the whole line lit. The picker is visibly
+   doing something at every setting, which a filtered series could only
+   manage at some of them.
+
+   The dashed line stays the season average either way — it is what
+   "better or worse" is measured against, so it can't move when the
+   selection does. */
+function buildTrendsChart(host, demo) {
+  const R = window.Recharts;
+  const {
+    ResponsiveContainer,
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    ReferenceLine,
+  } = R || {};
+  if (!ResponsiveContainer) throw new Error("Recharts did not initialise");
+
+  const data = seasonFromTiles(demo);
+  const colors = chartPalette(host);
+  const average = data.reduce((sum, point) => sum + point.sideout, 0) / data.length;
+  const picked = data.filter((point) => point.picked !== null).length;
+  // With one match selected there is no line to draw — the path Recharts
+  // emits is a single point — so the dot is the entire mark and a 2.5px
+  // speck won't do. It grows to carry that on its own.
+  const dotRadius = picked === 1 ? 5 : 2.5;
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const axis = { stroke: colors.grid, tick: { fill: colors.text, fontSize: 11 } };
+
+  const chart = React.createElement(
+    ResponsiveContainer,
+    { width: "100%", height: "100%" },
+    React.createElement(
+      LineChart,
+      { data, margin: { top: 8, right: 12, bottom: 0, left: -12 } },
+      React.createElement(CartesianGrid, { stroke: colors.grid, vertical: false }),
+      // Labels get dropped rather than overlapped: the same chart holds 17
+      // matches on a desktop card and on a phone's.
+      React.createElement(XAxis, Object.assign({ dataKey: "date", minTickGap: 14 }, axis)),
+      React.createElement(
+        YAxis,
+        Object.assign(
+          {
+            domain: [30, 60],
+            ticks: [30, 40, 50, 60],
+            tickFormatter: (value) => value + "%",
+          },
+          axis
+        )
+      ),
+      React.createElement(Tooltip, {
+        contentStyle: {
+          background: colors.surface,
+          border: "1px solid " + colors.grid,
+          borderRadius: 8,
+          fontSize: 12,
+        },
+        labelStyle: { color: colors.strong },
+        itemStyle: { color: colors.line },
+        formatter: (value) => [value + "%", "Side out"],
+      }),
+      // What "better or worse" is measured against — the question the
+      // trends report exists to answer.
+      React.createElement(ReferenceLine, {
+        y: average,
+        stroke: colors.text,
+        strokeDasharray: "4 4",
+        label: {
+          value: "Season " + average.toFixed(1) + "%",
+          position: "insideTopLeft",
+          fill: colors.text,
+          fontSize: 11,
+        },
+      }),
+      React.createElement(Legend, {
+        verticalAlign: "top",
+        align: "right",
+        height: 22,
+        iconType: "plainline",
+        iconSize: 14,
+        wrapperStyle: { fontSize: 11, color: colors.text },
+      }),
+      // The season, underneath and quiet. It owns the tooltip — every
+      // match has a number whether or not it is selected, and one row on
+      // hover beats two rows saying the same thing.
+      React.createElement(Line, {
+        type: "monotone",
+        dataKey: "sideout",
+        name: "All matches",
+        stroke: colors.text,
+        strokeOpacity: 0.4,
+        strokeWidth: 1.5,
+        dot: false,
+        activeDot: { r: 3, fill: colors.text },
+        isAnimationActive: !still,
+      }),
+      // The selection, on top. connectNulls stays off on purpose: a gap
+      // in the bright line is a match the coach left out, and bridging it
+      // would draw a trend through data that isn't in the report.
+      React.createElement(Line, {
+        type: "monotone",
+        dataKey: "picked",
+        name: "Selected",
+        stroke: colors.line,
+        strokeWidth: 2,
+        connectNulls: false,
+        dot: { r: dotRadius, fill: colors.line, strokeWidth: 0 },
+        activeDot: { r: 4 },
+        tooltipType: "none",
+        // Never animated, unlike the season line under it. Recharts
+        // re-runs its entry animation on every data change and hides the
+        // dots until it finishes — so an animated selection series both
+        // lagged a click by a second and a half and, in the default
+        // one-match state where the dot IS the mark, showed nothing at
+        // all until the animation it had no line to draw completed.
+        isAnimationActive: false,
+      })
+    )
+  );
+
+  return chart;
+}
+
+/* Charts mount on first view, never on load: Recharts measures the box it
+   is given, and a panel that is still `hidden` measures zero — so a chart
+   built up front comes out an invisible nothing that only fixes itself on
+   the next resize. setupReportTabs calls this as it shows a panel, and it
+   runs once for whichever panel starts selected. */
+function mountReportPanel(panel) {
+  const host = panel && panel.querySelector("[data-rdemo-chart]");
+  if (!host || host.dataset.mounted) return;
+
+  const demo = panel.closest("[data-report-demo]");
+  host.dataset.mounted = "true";
+
+  loadChartLibrary()
+    .then(() => {
+      const root = ReactDOM.createRoot(host);
+      const draw = () => root.render(buildTrendsChart(host, demo));
+
+      draw();
+      // Redrawn from the markup on every change to the selection, rather
+      // than handed a copy of it: the tiles' aria-pressed is the state,
+      // and reading it back each time means the chart can't hold a stale
+      // idea of what the report contains. (See setupMatchSelects, which
+      // fires this.)
+      demo.addEventListener("rdemo:selection", draw);
+    })
+    .catch(() => {
+      host.dataset.mounted = "";
+      host.innerHTML =
+        '<p class="rdemo__chartnote">Trend chart couldn’t load.</p>';
+    });
+}
+
+function setupReportPanels() {
+  const selected = document.querySelector(
+    '[data-report-demo] [role="tab"][aria-selected="true"]'
+  );
+  const panel = selected && document.getElementById(selected.getAttribute("aria-controls"));
+  if (panel) mountReportPanel(panel);
+}
+
+/* The rebuilt report's match selection: the quick selects, the tiles
+   they pick, and the count that says how many are in the report.
+
+   This is the interaction the whole reports project turned on. A coach
+   doesn't read one match, they ask a question of a set of them — the
+   last five, everything at home, every loss — and the shortcut row is
+   how they say which set without picking matches off a timeline one at
+   a time. So the shortcuts here actually select: each one is a rule
+   over the tiles, and choosing it presses exactly the tiles it matches.
+
+   The rules read recency from document order (the tiles are laid out
+   most recent first) and everything else off each tile's own data
+   attributes, so adding a match to the markup needs nothing here. */
+const MATCH_RULES = {
+  recent: (match) => match.index === 0,
+  last5: (match) => match.index < 5,
+  season: () => true,
+  tournaments: (match) => match.tournament,
+  home: (match) => match.venue === "home",
+  away: (match) => match.venue === "away",
+  wins: (match) => match.result === "w",
+  losses: (match) => match.result === "l",
+};
+
+function setupMatchSelects() {
+  const demo = document.querySelector("[data-report-demo]");
+  if (!demo) return;
+
+  const chips = [...demo.querySelectorAll("[data-rdemo-quick]")];
+  const tiles = [...demo.querySelectorAll("[data-rdemo-match]")];
+  const count = demo.querySelector("[data-rdemo-count]");
+  if (!chips.length || !tiles.length) return;
+
+  const matches = tiles.map((tile, index) => ({
+    tile,
+    index,
+    venue: tile.getAttribute("data-venue"),
+    result: tile.getAttribute("data-result"),
+    tournament: tile.hasAttribute("data-tournament"),
+  }));
+
+  const selectedCount = () =>
+    tiles.filter((tile) => tile.getAttribute("aria-pressed") === "true").length;
+
+  const tally = () => {
+    if (count) count.textContent = `${selectedCount()} Selected`;
+    // Anything drawn from the selection listens for this rather than
+    // being called directly, so the picker doesn't have to know which
+    // report is open or what it does with a match list.
+    demo.dispatchEvent(new CustomEvent("rdemo:selection"));
+  };
+
+  const apply = (key) => {
+    const rule = MATCH_RULES[key];
+    if (!rule) return;
+
+    matches.forEach((match) => {
+      match.tile.setAttribute("aria-pressed", String(Boolean(rule(match))));
+    });
+
+    chips.forEach((chip) => {
+      const isActive = chip.getAttribute("data-rdemo-quick") === key;
+      chip.setAttribute("aria-pressed", String(isActive));
+    });
+
+    tally();
+  };
+
+  chips.forEach((chip) => {
+    chip.addEventListener("click", () => apply(chip.getAttribute("data-rdemo-quick")));
+  });
+
+  // Picking matches by hand is the other half of the row: the tiles are
+  // where a coach lands when no shortcut describes what they want. Once
+  // they touch one, no shortcut describes the set any more, so the
+  // pressed chip is released rather than left claiming a selection it
+  // no longer matches.
+  tiles.forEach((tile) => {
+    tile.addEventListener("click", () => {
+      const wasOn = tile.getAttribute("aria-pressed") === "true";
+      tile.setAttribute("aria-pressed", String(!wasOn));
+      chips.forEach((chip) => chip.setAttribute("aria-pressed", "false"));
+      tally();
+    });
+  });
+
+  // The markup ships with Most Recent pressed and its one tile selected,
+  // so there is nothing to correct on load — only to count, in case a
+  // future edit to the tiles leaves the two out of step.
+  tally();
+}
+
+/* The rebuilt report's tab row. Five report types, one panel each, and
+   the panels are where each report's content will live — so this is the
+   switch the rest of that work hangs off.
+
+   Written to the ARIA tab pattern rather than as five buttons that swap
+   a class: the row IS a tablist, and the pattern's keyboard behaviour is
+   the part people notice when it's missing. Arrow keys move along the
+   row (wrapping at both ends), Home and End jump to either extreme, and
+   only the selected tab is in the page's tab order — one Tab press
+   reaches the row, then the arrows work it, which is what a tablist is
+   supposed to feel like.
+
+   Which tab starts selected is the markup's business, not this
+   function's: whichever tab carries aria-selected="true" is the one
+   whose panel is showing (Athlete Stats today), so the page renders
+   correct before the script runs and this only has to keep it that way. */
+function setupReportTabs() {
+  const list = document.querySelector('[data-report-demo] [role="tablist"]');
+  if (!list) return;
+
+  const tabs = [...list.querySelectorAll('[role="tab"]')];
+  if (!tabs.length) return;
+
+  // The row scrolls on a narrow window, so a tab reached by keyboard can
+  // be off-screen. Scrolled by hand rather than with scrollIntoView,
+  // which would also scroll the page to bring the whole window into view.
+  const keepInView = (tab) => {
+    const overflowLeft = tab.offsetLeft - list.scrollLeft;
+    const overflowRight = overflowLeft + tab.offsetWidth - list.clientWidth;
+    if (overflowLeft < 0) list.scrollLeft += overflowLeft;
+    else if (overflowRight > 0) list.scrollLeft += overflowRight;
+  };
+
+  const select = (tab, { focus = false } = {}) => {
+    tabs.forEach((other) => {
+      const isActive = other === tab;
+      other.setAttribute("aria-selected", String(isActive));
+      // Roving tabindex: the selected tab is the row's one tab stop.
+      other.setAttribute("tabindex", isActive ? "0" : "-1");
+      const panel = document.getElementById(other.getAttribute("aria-controls"));
+      if (panel) {
+        panel.hidden = !isActive;
+        // Now that it has a size, anything in it that needs measuring can
+        // be built — see mountReportPanel.
+        if (isActive) mountReportPanel(panel);
+      }
+    });
+
+    if (focus) tab.focus();
+    keepInView(tab);
+  };
+
+  list.addEventListener("click", (event) => {
+    const tab = event.target.closest('[role="tab"]');
+    if (tab) select(tab);
+  });
+
+  list.addEventListener("keydown", (event) => {
+    const current = tabs.indexOf(event.target.closest('[role="tab"]'));
+    if (current < 0) return;
+
+    const step = { ArrowRight: 1, ArrowLeft: -1 }[event.key];
+    const next = step
+      ? (current + step + tabs.length) % tabs.length
+      : event.key === "Home"
+        ? 0
+        : event.key === "End"
+          ? tabs.length - 1
+          : -1;
+
+    if (next < 0) return;
+
+    event.preventDefault();
+    select(tabs[next], { focus: true });
+  });
+}
+
+/* The match tiles' show/hide in the rebuilt report's header — the
+   product's own control, and so far the one piece of the report that
+   actually does something. The button's aria-expanded is the state:
+   the label swap keys off it directly, and data-tiles on the window is
+   what the tiles themselves read (both in components.css). */
+function setupMatchTiles() {
+  const toggle = document.querySelector("[data-rdemo-tiles]");
+  const demo = toggle?.closest("[data-report-demo]");
+  if (!toggle || !demo) return;
+
+  toggle.addEventListener("click", () => {
+    const shown = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!shown));
+    demo.setAttribute("data-tiles", shown ? "hidden" : "shown");
   });
 }
 

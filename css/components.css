@@ -145,6 +145,17 @@
   color: var(--color-text-muted);
 }
 
+/* A row of .tag chips labelling a block of body copy — in a case study,
+   which of the project's stated priorities a given decision was serving.
+   Spaced to match the heading above it, so title, chips and prose read
+   as one unit rather than three stacked things. */
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3xs);
+  margin-bottom: var(--space-sm);
+}
+
 /* ---------- Card ---------- */
 .card {
   display: flex;
@@ -327,47 +338,48 @@
   content: "";
   position: absolute;
   border-radius: inherit;
-  /* One turn of the ramp per revolution, not two: amber holds two thirds
-     of the circle flat, falls through plum to touch indigo once, and
-     comes back. Indigo is a cusp rather than a plateau — the ramp reaches
-     it at a single angle and leaves.
+  /* Two indigo cusps, not one, sitting at diametrically opposite points
+     (raw 0deg and 180deg) rather than a single cusp with amber holding
+     the rest of the circle. Indigo is still a cusp rather than a plateau
+     at each — the ramp reaches it at a single angle and leaves — for the
+     same reason as the single-cusp version: the field is close to ten
+     times wider than tall, so the conic angle is very nearly STATIONARY
+     around the corners and sweeps a large angle through the middle of
+     each long edge. A colour that lands on a corner covers a long run of
+     ring however narrow its slice of the circle, and every colour lands
+     on a corner sooner or later as the sweep turns — so each cusp keeps
+     the same 18deg-in/18deg-out shape the original had. Duplicating the
+     whole motif at +180deg is what changed here, not the motif itself;
+     amber now holds two 60deg arcs flat instead of one 120deg arc on
+     each side of the ring.
 
-     Both of those are there to keep the indigo quiet, and the field's
-     shape is why it needs the help. The box is about ten times wider than
-     it is tall, so the conic angle is very nearly STATIONARY around the
-     corners and sweeps the whole ramp through the middle few percent of
-     each long edge: walk one edge corner to corner and the angle moves
-     8deg over the first third of its length, then 140deg over the next
-     fifth. A colour that lands on a corner therefore covers a long run of
-     ring however narrow its slice of the circle, and with the sweep
-     turning, every colour lands on a corner sooner or later.
+     The field's own 180deg point symmetry is what makes a straight copy
+     safe: whatever is true of one cusp's position relative to a corner
+     is simultaneously true of the other's relative to its opposite
+     corner, so the two cusps can share one motif, one width, and one
+     offset rather than needing separate tuning — and because both are
+     driven by the same --cmdbar-sweep value, they turn at identical,
+     synchronized speed with nothing to fall out of phase.
 
-     So the number that matters is not indigo's share of the circle but
-     its share of the ring at its WORST rotation, and that is what these
-     stops are tuned against. Measured over a full turn: worst phase 26%
-     of the ring distinctly indigo, 6% on average — against 64% and 17%
-     for the two-turn ramp this replaces. Halving the turns halves how
-     often indigo meets a corner at all; the 18deg cusp is what keeps it
-     brief when it does.
-
-     Narrowing the cusp further does keep going — 8deg would hold the
-     worst phase near 14% — but the transition then crosses in about three
-     pixels where the sweep is fastest, which is a glint rather than a
-     gradient. 18deg is the tightest that still reads as a fade.
-
-     The 60deg offset parks the resting frame with the cusp mid-edge,
-     where the angle moves fastest and the least length is spent on it:
-     4% indigo at rest, 93% of the ring warm. It is also the smoothest
-     phase of the cycle. */
+     The 60deg offset still parks both cusps mid-edge at rest with no
+     retuning: the original single cusp sat at raw 180deg, offset to
+     absolute 240deg, deliberately placed mid-edge; the new second cusp
+     sits at raw 0deg, offset to absolute 60deg — the point exactly
+     opposite 240deg, which the shape's symmetry guarantees is an equally
+     clear mid-edge spot on the other side. */
   background: conic-gradient(
     from calc(var(--cmdbar-sweep) + 60deg),
-    var(--cmdbar-amber) 0deg,
+    var(--cmdbar-indigo) 0deg,
+    var(--cmdbar-plum) 18deg,
+    var(--cmdbar-amber) 60deg,
     var(--cmdbar-amber) 120deg,
     var(--cmdbar-plum) 162deg,
     var(--cmdbar-indigo) 180deg,
     var(--cmdbar-plum) 198deg,
     var(--cmdbar-amber) 240deg,
-    var(--cmdbar-amber) 360deg
+    var(--cmdbar-amber) 300deg,
+    var(--cmdbar-plum) 342deg,
+    var(--cmdbar-indigo) 360deg
   );
   /* Same ramp interpolated in oklab, where it is supported: sRGB drags
      amber into plum through a brown midpoint, which is the one place the
@@ -376,13 +388,17 @@
      than dropping the ring entirely. */
   background: conic-gradient(
     in oklab from calc(var(--cmdbar-sweep) + 60deg),
-    var(--cmdbar-amber) 0deg,
+    var(--cmdbar-indigo) 0deg,
+    var(--cmdbar-plum) 18deg,
+    var(--cmdbar-amber) 60deg,
     var(--cmdbar-amber) 120deg,
     var(--cmdbar-plum) 162deg,
     var(--cmdbar-indigo) 180deg,
     var(--cmdbar-plum) 198deg,
     var(--cmdbar-amber) 240deg,
-    var(--cmdbar-amber) 360deg
+    var(--cmdbar-amber) 300deg,
+    var(--cmdbar-plum) 342deg,
+    var(--cmdbar-indigo) 360deg
   );
   /* Both are rings, not filled boxes: paint the gradient over the whole
      area, then mask out everything but a band of it. The padding is the
@@ -441,49 +457,28 @@
   z-index: 1;
 }
 
-/* Not a plain 0deg-to-360deg turn. A conic-gradient's angle advances at a
-   constant rate, but the field it is wrapped around does not: at 45.9cqw
-   by 6.64cqw the ring is roughly seven times wider than it is tall, so a
-   constant angular speed spends most of its time barely creeping along
-   the two long edges and then lunges around the short ones — the color
-   band reads as a purple blob darting round a static orange field rather
-   than one continuous glow. These stops correct for that: each was solved
-   so that equal steps of animation time move the gradient's reference
-   angle by equal steps of ARC LENGTH around the field's actual rectangle
-   instead of equal degrees, so the ring now turns at one visual speed the
-   whole way round. Regenerate this table if the field's own proportions
-   change (button width, gap, or field height above). */
+/* A plain 0deg-to-360deg turn, on purpose. An earlier version of this
+   table tried to correct for the field's shape — at 45.9cqw by 6.64cqw
+   the ring is roughly seven times wider than it is tall, so a constant
+   ANGULAR speed spends most of its time barely creeping along the two
+   long edges and then lunges around the short ones — by solving for
+   constant ARC-LENGTH speed instead: equal steps of animation time move
+   the gradient's reference angle by equal steps of distance around the
+   field's actual rounded rectangle rather than equal degrees.
+
+   That was correct arithmetic for what it was solving, but wrong for
+   what it looked like: fixing the ring to one physical speed meant its
+   ANGULAR speed had to swing hard to compensate — on this shape, close
+   to a 40x range between slowest (through the corners) and fastest
+   (dead center of a long edge) — and that swing is exactly what reads as
+   the ring slowing to a near-stop and then bolting, not smoothly
+   speeding up and down. A single steady turn rate has none of that: no
+   segment to slow through, nothing to catch up on. The two indigo cusps
+   (opposite corners in the gradient below) stay perfectly paired either
+   way, since both ride the same --cmdbar-sweep value regardless of how
+   it is timed. */
 @keyframes cmdbar-sweep {
   0% { --cmdbar-sweep: 0deg; }
-  3.33% { --cmdbar-sweep: 10.27deg; }
-  6.67% { --cmdbar-sweep: 15.42deg; }
-  10% { --cmdbar-sweep: 18.46deg; }
-  13.33% { --cmdbar-sweep: 20.47deg; }
-  16.67% { --cmdbar-sweep: 22.54deg; }
-  20% { --cmdbar-sweep: 31.25deg; }
-  23.33% { --cmdbar-sweep: 38.48deg; }
-  26.67% { --cmdbar-sweep: 40.04deg; }
-  30% { --cmdbar-sweep: 42.27deg; }
-  33.33% { --cmdbar-sweep: 45.76deg; }
-  36.67% { --cmdbar-sweep: 51.90deg; }
-  40% { --cmdbar-sweep: 64.92deg; }
-  43.33% { --cmdbar-sweep: 99.31deg; }
-  46.67% { --cmdbar-sweep: 154.11deg; }
-  50% { --cmdbar-sweep: 180.01deg; }
-  53.33% { --cmdbar-sweep: 190.27deg; }
-  56.67% { --cmdbar-sweep: 195.42deg; }
-  60% { --cmdbar-sweep: 198.46deg; }
-  63.33% { --cmdbar-sweep: 200.47deg; }
-  66.67% { --cmdbar-sweep: 202.54deg; }
-  70% { --cmdbar-sweep: 211.25deg; }
-  73.33% { --cmdbar-sweep: 218.48deg; }
-  76.67% { --cmdbar-sweep: 220.04deg; }
-  80% { --cmdbar-sweep: 222.27deg; }
-  83.33% { --cmdbar-sweep: 225.76deg; }
-  86.67% { --cmdbar-sweep: 231.90deg; }
-  90% { --cmdbar-sweep: 244.92deg; }
-  93.33% { --cmdbar-sweep: 279.31deg; }
-  96.67% { --cmdbar-sweep: 334.11deg; }
   100% { --cmdbar-sweep: 360deg; }
 }
 
@@ -1962,9 +1957,14 @@
      each keyframe above holds its finished value for the rest of that
      6s rather than fading towards it forever — see .vbd__cell::after
      above for why the map's fade is an opacity cover rather than a
-     colour cross-fade. The map fills over the loop's first 2.7s; the
-     line waits until 3.3s, just past that, so it starts as soon as the
-     map is visibly done rather than after a long pause. */
+     colour cross-fade. The map's own keyframe doesn't reach 0 opacity
+     until 45% (2.7s), but ease-out front-loads that fade so the cells
+     read as done well before the literal end — by the time the last
+     cell (0.48s delay) is a couple seconds in, it has crawled to a
+     sliver of opacity too faint to register. The line's delay is tuned
+     to THAT perceived finish, not the keyframe's literal one, so it
+     starts as soon as the map looks done rather than after a long
+     pause once it technically is. */
   .card__panel:hover .vbd__cell::after,
   .card:hover .card__media--scene .vbd__cell::after {
     /* One duration for every cell with a per-cell delay, so the map
@@ -1977,7 +1977,7 @@
   .card:hover .card__media--scene .vbd__chart svg {
     /* Held back until the heat map has settled, so the line only
        starts drawing once the map is done. */
-    animation: vbd-wipe 6s ease-out 3.3s infinite;
+    animation: vbd-wipe 6s ease-out 2.5s infinite;
   }
 
   .card__panel:hover .vbd__analyzing,
@@ -2009,6 +2009,1508 @@
 .vbd__cell:nth-child(7) { --vbd-delay: 0.36s; }
 .vbd__cell:nth-child(8) { --vbd-delay: 0.42s; }
 .vbd__cell:nth-child(9) { --vbd-delay: 0.48s; }
+
+/* VOLLEYBALL REPORT, BUILT
+   The shipped reports experience at the foot of the reports case study,
+   rebuilt as something a reader can operate rather than a strip of
+   screenshots. The two product drawings above in this file — .cmdbar
+   and .vbd — are pictures of Hudl's UI; this one is meant to be the
+   report, so what the case study claims about tabs, cells and filters
+   can be clicked instead of described.
+
+   It follows those two where it should: the product's own colours
+   (--vbd-*, tokens.css), which hold their value in both themes, so the
+   report stays dark on a light page the way the thumbnails do, and
+   --font-mockup, so the chrome reads as another product's type rather
+   than borrowing this site's voice.
+
+   Sizing is the deliberate difference. The thumbnails are measured in
+   container units because they are compositions that have to survive
+   any shape of slot. This is a UI someone operates, so it is measured
+   in rem: type holds a readable size, honours the reader's own zoom,
+   and the bar reflows at a container query rather than scaling its own
+   labels down towards illegibility. Figures come off the shipped app at
+   1296px wide, near enough to the case body's own measure that they
+   transfer about 1:1.
+
+   Built in stages. Here so far: the report's own navigation bar and the
+   empty canvas under it. The report itself goes in that canvas next,
+   and the chrome that turns out to need behaviour (the filter field,
+   the match switcher) becomes buttons at that point — until then the
+   bar is a drawing, marked aria-hidden, described by the figure's
+   caption. */
+.rdemo {
+  container-type: inline-size;
+  /* The containing block for the bottom sheets, which are laid out
+     against the window rather than the row the report sits in. */
+  position: relative;
+  /* Set as a length rather than left auto so the switcher above can
+     transition between the three sizes; see .rdemo-sizes below. The
+     max-width is what keeps a device from ever outgrowing the page it
+     is being shown on, whatever the widths below work out to. */
+  width: 100%;
+  max-width: 100%;
+  /* The screen the report is running on, not a box the report happens
+     to fill: every size sets a real device's proportions and the report
+     gets whatever room that leaves. Web is the design frame's own
+     1280x720; the other two are under .rdemo-sizes below. */
+  aspect-ratio: 16 / 9;
+  margin-inline: auto;
+  padding-bottom: 0.75rem;
+  overflow: hidden;
+  /* Column, so the canvas can take the height the bar doesn't want —
+     which is what makes the device shape reach the report instead of
+     stopping at the window's edge. */
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-md);
+  font-family: var(--font-mockup);
+  color: var(--vbd-text);
+  background: var(--vbd-bezel);
+  /* The window is dark in both of the site's themes, so the browser's
+     own furniture inside it has to be told: without this the match
+     tiles' scrollbar comes out of a light-mode UA as a pale bar across
+     the foot of a near-black panel. */
+  color-scheme: dark;
+  /* The same two-part lift the .vbd windows get: a shadow to sit the
+     window on the page, and a hairline of light so its edge stays
+     defined where the page behind it is dark too. */
+  box-shadow:
+    var(--shadow-lg),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  transition: width var(--transition-nav), aspect-ratio var(--transition-nav);
+}
+
+/* ---------- Device switcher ----------
+   The whole point of building the report against container queries is
+   that it answers to the box it is in rather than to the window, so the
+   case study can show the tablet and the phone layout without anyone
+   leaving their desk: give the window the device's proportions and
+   every query inside it re-runs against them.
+
+   Both halves of each device matter, so both are set here:
+
+     web     1280x720   the design frame's own size, 16:9
+     tablet   768x1024  an iPad held upright, 3:4
+     mobile   390x844   a phone, 9:19.5
+
+   The ratios are fixed; the widths are not, and they can't be. A flat
+   768px tablet is no narrower than the web view on any page whose body
+   is 768px or less — which is every laptop below about 1000px wide, so
+   the switcher's middle setting would look identical to its first and
+   the whole control would read as broken.
+
+   So each width is a share of the page that the one before it, capped
+   at the real device's size and floored so it can't shrink past being
+   legible: clamp(floor, share, device). On a roomy page they land on
+   the true 768 and 390; on a tighter one they stay in proportion to
+   each other, which is what the switcher is actually claiming. Web is
+   always the whole measure, so the order holds at every page width
+   down to a phone — where all three collapse towards the same
+   full-width report, which is the honest answer there.
+
+   The ratio is what makes the difference land: a tablet's report is a
+   tall column and a phone's a narrow one, and how much report you get
+   before scrolling is most of what changes between them.
+
+   The control itself is the site's, not the product's: it is the
+   portfolio talking about the report, so it is built out of
+   .theme-toggle's parts, in the site's own type and colours, rather
+   than drawn in Hudl's. */
+.rdemo[data-size="tablet"] {
+  width: clamp(26rem, 64%, 48rem);
+  aspect-ratio: 3 / 4;
+}
+
+.rdemo[data-size="mobile"] {
+  width: clamp(18rem, 33%, 24.375rem);
+  aspect-ratio: 9 / 19.5;
+}
+
+.rdemo-sizes {
+  /* Centred over the window rather than ranged left with the prose: at
+     tablet and phone width the window is centred too, and a control
+     sitting off to one side of what it is resizing reads as unrelated
+     to it. */
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  gap: var(--space-3xs);
+  margin-inline: auto;
+  margin-bottom: var(--space-2xs);
+  padding: var(--space-3xs);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+.rdemo-sizes__option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  padding: var(--space-3xs) var(--space-2xs);
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast),
+    box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.rdemo-sizes__option:hover {
+  color: var(--color-text);
+}
+
+.rdemo-sizes__option:active {
+  transform: scale(0.94);
+}
+
+.rdemo-sizes__option[aria-pressed="true"] {
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+}
+
+.rdemo-sizes__icon {
+  flex: none;
+}
+
+/* ---------- The report's navigation bar ----------
+   Back out of the report, which match it is, the filters over it, and
+   the three things a coach does with one: ask for help, send it to
+   someone, take it away as a file.
+
+   One row on a wide container, two on a narrow one — the field wraps to
+   its own line rather than squeezing, since it is the one control here
+   whose width is doing work. */
+.rdemo__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: var(--fw-medium);
+  letter-spacing: -0.01em;
+  line-height: 1;
+  color: var(--vbd-text);
+  /* Chrome, not content: nothing in the bar should come away with a
+     drag-select of the report under it. */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.rdemo__group {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+/* Narrow: the two groups take a row of their own — pushed apart, one
+   to each edge — and the field takes the row under it, so the one
+   control whose width is doing work isn't the one that gets squeezed.
+
+   The row exists for that layout alone. On a wide container it goes
+   display: contents, which hands its two groups up to the bar as flex
+   items in their own right, and the bar draws all three of them on the
+   single row the product has. Wrapping the bar instead would put the
+   groups on rows of their own the moment the three don't fit — the
+   groups are what must stay together, and it's the field that should
+   move. */
+.rdemo__row {
+  order: 0;
+  flex: 1 1 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+/* On a touch device the bar keeps the one label that says which report
+   this is — the match — and drops the other three to their icons. This
+   keys off the DEVICE rather than the rendered width, and that
+   distinction is load-bearing: the page's own measure is under 48rem on
+   any laptop below about 1000px, so a width rule stripped the web
+   view's labels too and the switcher's first two settings came out
+   looking alike. What screen you are on is the reason the labels go, so
+   the screen is what the rule asks about. */
+.rdemo[data-size="tablet"] .rdemo__label,
+.rdemo[data-size="mobile"] .rdemo__label {
+  display: none;
+}
+
+/* The floor under all of it. At some point there is genuinely no room,
+   whatever device is being claimed, and the labels go along with the
+   panel menu — which names nothing, and so is the first thing to spend
+   — because the alternative is a third row of chrome above the
+   report. */
+@container (width < 30rem) {
+  .rdemo__label,
+  .rdemo__dots {
+    display: none;
+  }
+}
+
+/* The filter field. Outlined and empty — it is the product's own "type
+   to apply filters" affordance, and an outline is what tells a coach
+   this is the one place in the bar that takes typing. */
+.rdemo__field {
+  order: 1;
+  flex: 1 1 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  height: 2.125rem;
+  padding-inline: 0.625rem;
+  border: 1px solid var(--vbd-line);
+  border-radius: var(--radius-md);
+}
+
+/* Wide: one row, the field filling everything the three groups don't
+   want. 46rem is where the single row stops being cramped — below it
+   the field is narrower than its own placeholder. */
+@container (width >= 46rem) {
+  .rdemo__row {
+    display: contents;
+  }
+
+  /* With the row dissolved, the bar holds its three items in source
+     order — lead, trail, field — so the field's order: 1 would leave it
+     last. These two put it back in the middle. */
+  .rdemo__group--trail {
+    order: 2;
+  }
+
+  .rdemo__field {
+    flex: 1 1 auto;
+    margin-inline: 0.5rem;
+  }
+}
+
+.rdemo__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  height: 2rem;
+  padding-inline: 0.5rem;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+.rdemo__btn--icon {
+  justify-content: center;
+  width: 2rem;
+  padding-inline: 0;
+}
+
+.rdemo__icon {
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+}
+
+/* The panel menu, drawn rather than shipped as a glyph: one dot
+   repeated down a third of the box at a time, which is three dots
+   centred in it and stays centred at any type size. */
+.rdemo__dots {
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  color: var(--vbd-text-dim);
+  background-image: radial-gradient(circle at 50% 50%, currentColor 1px, transparent 1.3px);
+  background-size: 100% 33.33%;
+  background-repeat: repeat-y;
+}
+
+.rdemo__field .rdemo__icon,
+.rdemo__placeholder {
+  color: var(--vbd-text-dim);
+}
+
+.rdemo__placeholder {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ---------- The report canvas ----------
+   Everything the report draws lands in here. Inset from the window on
+   three sides the way the app insets it, so the bar above reads as
+   chrome belonging to the window rather than a strip of the report.
+
+   Its height is whatever the device's shape leaves after the bar, which
+   is the point of setting that shape on the window: on a phone the
+   canvas is a tall column, on a tablet a squarer one, and how much
+   report fits before a coach scrolls is the thing the three sizes are
+   there to show. (It carried a ratio of its own until the window
+   started carrying one — two ratios in a column only fight.) */
+.rdemo__canvas {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  border-radius: var(--radius-md);
+  background: var(--vbd-window);
+  overflow: hidden;
+  padding: 8px;
+}
+
+/* ---------- The stage: panels beside, or under, the report ----------
+   The two side panels are the product's answer to the loop the research
+   kept surfacing — a coach who leaves the report to reach a filter or a
+   clip loses their place, so both arrive alongside the report rather
+   than instead of it.
+
+   What "alongside" means depends on the screen, and the two answers are
+   different enough to be worth stating plainly:
+
+     web              a column beside the canvas. It takes width FROM the
+                      report, so nothing shifts out from under anyone —
+                      the report narrows, it doesn't move.
+     tablet, mobile   a bottom sheet over the report. At 390px there is
+                      no "beside" to take width from, so the panel comes
+                      up from the bottom edge, covers the lower half, and
+                      leaves the report visible above it.
+
+   Sheet is the base form and the desktop column is the override, which
+   is the same mobile-first order the rest of this stylesheet is written
+   in. Closed is the default either way: the report is the subject, and a
+   panel is something you ask for. */
+.rdemo__stage {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  padding-inline: 0.75rem;
+}
+
+/* ---- Touch: a bottom sheet ----
+   Slid rather than resized: a sheet's whole gesture is that it arrives
+   from the bottom edge, and a transform is also the cheaper thing to
+   animate over a panel that may be holding a video. The visibility that
+   travels with it keeps a shut sheet out of the tab order and off the
+   accessibility tree, which a transform alone would not do. */
+.rdemo__side {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  height: 58%;
+  border: 1px solid var(--vbd-line);
+  border-width: 1px 0 0;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--vbd-window);
+  visibility: hidden;
+  transform: translateY(100%);
+  transition: transform var(--transition-nav), visibility var(--transition-nav);
+}
+
+.rdemo[data-left="open"] .rdemo__side--left,
+.rdemo[data-right="open"] .rdemo__side--right {
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* The grabber. Doesn't drag — it says which edge the thing came from,
+   and it is the one piece of chrome that marks this as a sheet rather
+   than a panel that happens to be at the bottom. */
+.rdemo__grabber {
+  flex: none;
+  width: 2.25rem;
+  height: 0.25rem;
+  margin: 0.4375rem auto 0;
+  border-radius: var(--radius-full);
+  background: var(--vbd-line);
+}
+
+/* Dimming what the sheet covers, and a tap target for getting out of it.
+   The close button in the sheet's own header is the accessible path —
+   this is the shortcut everyone reaches for first, so it is aria-hidden
+   rather than announced twice. */
+.rdemo__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(4, 7, 10, 0.55);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-nav), visibility var(--transition-nav);
+}
+
+.rdemo:not([data-size="web"])[data-left="open"] .rdemo__scrim,
+.rdemo:not([data-size="web"])[data-right="open"] .rdemo__scrim {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ---- Web: a column beside the report ---- */
+.rdemo[data-size="web"] .rdemo__side {
+  position: static;
+  z-index: auto;
+  flex: none;
+  width: 0;
+  height: auto;
+  overflow: hidden;
+  border-width: 0;
+  border-radius: var(--radius-md);
+  transform: none;
+  transition: width var(--transition-nav), visibility var(--transition-nav);
+}
+
+.rdemo[data-size="web"] .rdemo__grabber {
+  display: none;
+}
+
+.rdemo[data-size="web"][data-left="open"] .rdemo__side--left,
+.rdemo[data-size="web"][data-right="open"] .rdemo__side--right {
+  width: 14rem;
+  border-width: 1px;
+}
+
+/* The gutter belongs to the panel, not to the row: a flex gap would hold
+   its 12px open even when the panel is shut. */
+.rdemo[data-size="web"][data-left="open"] .rdemo__side--left {
+  margin-right: 0.75rem;
+}
+
+.rdemo[data-size="web"][data-right="open"] .rdemo__side--right {
+  margin-left: 0.75rem;
+}
+
+/* ---- Shared panel furniture ---- */
+.rdemo__sidehead {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: none;
+  padding: 0.625rem 0.5rem 0.625rem 0.75rem;
+  border-bottom: 1px solid var(--vbd-line);
+}
+
+.rdemo__sidetitle {
+  font-size: 0.8125rem;
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rdemo__sideclose {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--vbd-text-dim);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.rdemo__sideclose:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--vbd-text);
+}
+
+.rdemo__sideclose:focus-visible,
+.rdemo__btn--live:focus-visible {
+  outline: 2px solid var(--vbd-blue);
+  outline-offset: 2px;
+}
+
+/* Where a panel's content is loaded. Scrolls on its own, so whatever
+   arrives can be taller than the report beside it. */
+.rdemo__sidebody {
+  flex: 1;
+  min-height: 0;
+  padding: 0.75rem;
+  overflow: auto;
+}
+
+/* The two bar buttons that drive the panels are real buttons among a row
+   of drawn ones, so they need the reset the drawn spans never did. */
+.rdemo__btn--live {
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: var(--fw-medium);
+  color: var(--vbd-text);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.rdemo__btn--live:hover,
+.rdemo__btn--live[aria-expanded="true"] {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ---------- The report header ----------
+   What every report in the system opens with, and the part the case
+   study argues hardest about: the team you're looking at, the report
+   types across the top, and the matches the numbers come from. All
+   three old products put this information in roughly this order, which
+   is the whole reason a coach could open the new one and not hunt.
+
+   It is drawn from the shipped app rather than composed here, down to
+   the orange rule under the tab row — the product's loudest piece of
+   brand, and the thing that says "Hudl" before any of the type does. */
+.rdemo__report {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* The report has to declare this: left alone it inherits the page's
+     reading line-height, and every row in here came out a third taller
+     than the design — the match tiles worst of all, at 61px against
+     the frame's 48. Product UI sets text in tight line boxes. */
+  line-height: 1.2;
+}
+
+.rdemo__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.875rem 2px 0.75rem;
+}
+
+/* The team's mark. Barlow is loaded at 400 and 600 only, so the weight
+   stops at semibold; the slight lean is what carries the rest of the
+   athletic-crest read that a heavier cut would have given it. */
+.rdemo__crest {
+  flex: none;
+  font-size: 2.75rem;
+  font-weight: var(--fw-semibold);
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  color: var(--vbd-accent);
+  transform: skewX(-8deg);
+}
+
+.rdemo__team {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.rdemo__teamname {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 1.0625rem;
+  font-weight: var(--fw-semibold);
+}
+
+/* "Scout a different team" — the product's blue, because in the app
+   this is the one piece of the header that navigates. */
+.rdemo__scout {
+  font-size: 0.8125rem;
+  color: var(--vbd-blue);
+}
+
+.rdemo__chev {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.rdemo__collapse {
+  margin-left: auto;
+  color: var(--vbd-text-dim);
+}
+
+/* ---------- Report tabs ----------
+   Text, not pills. The drawn thumbnails (.vbd__tab) show these as pills
+   because at thumbnail size a pill is the only thing that still reads
+   as a control; at full size the product draws them as the app does —
+   plain labels, the current one brighter and heavier, with the orange
+   rule under the whole row rather than around any one of them.
+
+   Five labels don't fit a phone. They scroll there instead of
+   truncating, since a tab whose name is cut off is a tab a coach can't
+   recognise. */
+.rdemo__tabs {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 0.375rem;
+  padding: 0 2px 0.5rem;
+  border-bottom: 2px solid var(--vbd-accent);
+  font-size: 0.8125rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.rdemo__tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.rdemo__tabsicon {
+  flex: none;
+  margin-right: 0.25rem;
+  color: var(--vbd-text-dim);
+}
+
+.rdemo__tab {
+  padding: 0.3125rem 0.75rem;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: none;
+  font: inherit;
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  color: var(--vbd-text);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.rdemo__tab:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* The current report, filled — the same treatment the drawn thumbnails
+   give it (.vbd__tab.is-on), which is where that near-black text colour
+   comes from: the pill is close enough to white that --vbd-text on it
+   would be unreadable.
+
+   Driven off aria-selected rather than a class of its own: the tabs are
+   real tabs, that attribute has to be right for assistive tech anyway,
+   and one source of truth can't drift out of step with itself. */
+.rdemo__tab[aria-selected="true"] {
+  background: var(--vbd-pill-active);
+  color: #12181d;
+  font-weight: var(--fw-semibold);
+}
+
+.rdemo__tab[aria-selected="true"]:hover {
+  background: var(--vbd-pill-active);
+}
+
+/* ---------- Report panels ----------
+   One per tab, and the report's own content goes in here. Takes the
+   height the header leaves, and scrolls rather than spilling: on a
+   phone the header is most of the screen, so whatever report lands in
+   here has to be able to run past the bottom edge.
+
+   The hidden ones are hidden with the `hidden` attribute rather than a
+   class, so a panel is invisible to assistive tech and to layout in
+   one move — and stays that way if the script never runs. */
+.rdemo__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* Height is handed down the whole chain by flex, not by percentages.
+   min-height: 100% on the panel looked equivalent and wasn't: a
+   min-height leaves the box's own height auto, so a layout asking for
+   height: 100% inside it resolved against auto, every card collapsed to
+   its content, and a chart measuring its container came out zero tall.
+   Flex items with min-height: 0 give each level a definite height to
+   divide up, which is what a chart needs to measure at all. */
+/* Grows into the room it is given, but never shrinks below what it is
+   holding: on a narrow page the header can leave the body 30px, and a
+   panel that shrank to fit that squashed the card to a 24px sliver and
+   the chart inside it to nothing. Refusing to shrink makes the body
+   scroll instead, which is the honest behaviour — the report is taller
+   than the screen, so the screen scrolls. */
+.rdemo__panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+}
+
+/* The display above has to give way to `hidden`, or it silently wins:
+   the attribute's UA rule is a bare [hidden] selector, so any class
+   beats it, and every report panel renders at once — five of them
+   dividing the body's height between them, which is why a card in a
+   1/3 + 2/3 layout came out 200px tall instead of filling the report. */
+.rdemo__panel[hidden] {
+  display: none;
+}
+
+/* The site's global focus ring is drawn for a light page; inside a
+   near-black window it reads as a stray orange box. Every control in
+   here takes the product's blue instead — the panels included, since
+   the tab pattern wants a panel reachable from its tab and focus
+   landing on one shouldn't look like a fault. */
+.rdemo__tab:focus-visible,
+.rdemo__chip:focus-visible,
+.rdemo__tile:focus-visible,
+.rdemo__tilestoggle:focus-visible {
+  outline: 2px solid var(--vbd-blue);
+  outline-offset: 2px;
+}
+
+.rdemo__panel:focus-visible {
+  outline: 2px solid var(--vbd-blue);
+  outline-offset: -2px;
+}
+
+/* ---------- Report layouts and cards ----------
+   The layout system the case study argues for, in the small: a report
+   is not a page someone drew, it is components dropped into a layout,
+   and the layout handles the spacing and the reflow. So the panel above
+   holds a layout, the layout holds cards, and a card holds one
+   component — which is exactly the division that let other squads build
+   their own reports without redesigning one.
+
+   Four layouts shipped for volleyball, and two of them are here: one
+   full-height card, and a 1/3 + 2/3 pair. They differ by one line each
+   — the grid's tracks — which is the whole argument for building a
+   layout system rather than laying out reports. The two still to come
+   (full-width/fit-content, and thirds) are the same again.
+
+   min-width/min-height: 0 on the card is load-bearing — a grid item
+   defaults to min-content, and a chart inside one will happily refuse
+   to shrink below the width of its own axis labels and push the card
+   out past the panel. */
+.rdemo__layout {
+  display: grid;
+  gap: 0.75rem;
+  flex: 1;
+  /* The floor a card is still worth drawing at. Below this the layout
+     stops shrinking and the panel above it scrolls. */
+  min-height: 14rem;
+  /* Cards sit inside the canvas rather than against its edge — the same
+     12px the canvas is inset from the window. */
+  padding: 0.75rem;
+}
+
+.rdemo__layout--full {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+}
+
+/* 1/3 + 2/3, both full height — the setter and attack tendency reports.
+   The narrow card is the one that reads down a list (a rotation, a set
+   of zones) and the wide one is what that list is about, which is why
+   the ratio is fixed rather than something either card negotiates. */
+.rdemo__layout--split {
+  grid-template-columns: 1fr 2fr;
+  grid-template-rows: 1fr;
+}
+
+/* A phone doesn't get thirds. At 390px the narrow card would be 120px
+   wide, so the pair stacks. Keyed off the device, like the rest of the
+   touch behaviour in this file — what changes is the screen, not how
+   much of the page this window happens to fill.
+
+   The first row is a measured band rather than `auto`, because auto
+   means "as tall as the content" and a court is an absolutely
+   positioned SVG with no content height to give: the row collapsed to
+   nothing and the card came out 44px of legend. 15rem is a court a
+   coach can still read on a phone; the row under it keeps the rest. */
+.rdemo[data-size="mobile"] .rdemo__layout--split {
+  grid-template-columns: 1fr;
+  grid-template-rows: 15rem 1fr;
+}
+
+/* Full width, fit to content — the athlete and team stat reports. The
+   only layout whose card doesn't fill the panel: a stats table is as
+   tall as its roster and no taller, and a card stretched past the last
+   row puts an empty black field under the totals that reads as missing
+   data. `auto` rows plus align-content: start is the whole difference
+   from --full above; the panel keeps its own height and scrolls, the
+   card just stops where the table does. */
+.rdemo__layout--fit {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+  align-content: start;
+}
+
+/* .rdemo__tablewrap is built to take up the slack in a full-height
+   card. In here there is no slack to take. */
+.rdemo__layout--fit .rdemo__tablewrap {
+  flex: 0 0 auto;
+}
+
+.rdemo__card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
+  background: var(--vbd-card);
+  overflow: hidden;
+}
+
+/* ---------- Court visualisations ----------
+   The location chart, which is the component that earns its place by
+   showing what a column of numbers can't: where the ball actually went.
+   Two forms, one per report, and both are drawn in court metres — the
+   viewBox is centimetres of real court, so the attack line sits 3m off
+   the net because that is where it sits, not because a number looked
+   right. A reader who knows volleyball should be able to recognise the
+   court before they read a label.
+
+     attack tendencies   the full court, 18m x 9m, with each attack
+                         traced from where it was hit to where it landed
+     setter tendencies   one half, 9m x 9m, divided into the six zones a
+                         setter distributes to and shaded by how often
+
+   The half court's grid is 3 x 2 rather than 3 x 3 because that is the
+   real geometry: the front zones occupy the 3m attack area and the back
+   zones the 6m behind it, so the back row is twice as deep. A tidy 3x3
+   would be a prettier drawing of a court that doesn't exist. */
+/* The box the court is drawn into, and the reason it is positioned: an
+   inline SVG carries an intrinsic size from its viewBox, so a full
+   court (1:1.9) sitting in flow asked for 660px of height inside a
+   361px card and pushed the report into a scroll. Taking it out of flow
+   means the card's height decides the court's, never the reverse. */
+.rdemo__court {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+/* SVG does the letterboxing itself, from the viewBox — no aspect-ratio
+   box to fight with the card's height. */
+.rdemo__court svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.rdemo__courtline {
+  fill: none;
+  stroke: var(--vbd-text-dim);
+  stroke-opacity: 0.5;
+  stroke-width: 7;
+}
+
+.rdemo__courtsurface {
+  fill: var(--vbd-well);
+  stroke: var(--vbd-text-dim);
+  stroke-opacity: 0.55;
+  stroke-width: 8;
+}
+
+/* The net, which is the one line on a volleyball court that isn't paint
+   — so it is drawn as the object it is rather than as a court marking. */
+.rdemo__courtnet {
+  stroke: var(--vbd-text);
+  stroke-opacity: 0.75;
+  stroke-width: 12;
+  stroke-dasharray: 26 14;
+}
+
+/* An attack, from contact to landing. Kills and errors are told apart by
+   colour rather than by style: a coach is scanning for the shape of the
+   pattern, and a dashed line reads as "less real" instead of "out". */
+.rdemo__shot {
+  fill: none;
+  stroke-width: 9;
+  stroke-linecap: round;
+  stroke-opacity: 0.9;
+}
+
+.rdemo__shot--kill {
+  stroke: var(--vbd-good);
+}
+
+.rdemo__shot--err {
+  stroke: var(--vbd-bad);
+}
+
+.rdemo__shotend--kill {
+  fill: var(--vbd-good);
+}
+
+.rdemo__shotend--err {
+  fill: var(--vbd-bad);
+}
+
+/* Set distribution, on the four-stop scale the drawn thumbnails use
+   (--vbd-heat-*, tokens.css) so the two read as the same product. */
+.rdemo__zone--hot { fill: var(--vbd-heat-hot); }
+.rdemo__zone--mid { fill: var(--vbd-heat-mid); }
+.rdemo__zone--cool { fill: var(--vbd-heat-cool); }
+.rdemo__zone--none { fill: var(--vbd-heat-empty); }
+
+.rdemo__zoneframe {
+  fill: none;
+  stroke: var(--vbd-card);
+  stroke-width: 8;
+}
+
+.rdemo__zonevalue {
+  font-size: 78px;
+  font-weight: var(--fw-semibold);
+  text-anchor: middle;
+}
+
+.rdemo__zonelabel {
+  font-size: 54px;
+  text-anchor: middle;
+  opacity: 0.75;
+}
+
+/* Dark type on the pale middle of the scale, light on the saturated
+   ends — the one place in here where the text colour has to follow the
+   cell under it. */
+.rdemo__zonetext--dark { fill: #12181d; }
+.rdemo__zonetext--light { fill: #ffffff; }
+.rdemo__zonetext--dim { fill: var(--vbd-text-dim); }
+
+/* What the colours mean, under the court. Small and quiet: the table
+   beside it carries the numbers, so this only has to stop the colours
+   being a puzzle. */
+.rdemo__courtkey {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: none;
+  margin-top: 0.5rem;
+  font-size: 0.625rem;
+  color: var(--vbd-text-dim);
+}
+
+.rdemo__keyitem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3125rem;
+}
+
+.rdemo__keyline {
+  width: 0.875rem;
+  height: 0.125rem;
+  border-radius: var(--radius-full);
+}
+
+.rdemo__keyline--kill { background: var(--vbd-good); }
+.rdemo__keyline--err { background: var(--vbd-bad); }
+
+.rdemo__keyscale {
+  display: flex;
+  gap: 2px;
+}
+
+.rdemo__keyscale span {
+  width: 0.5rem;
+  height: 0.375rem;
+  border-radius: 1px;
+}
+
+.rdemo__keyscale span:nth-child(1) { background: var(--vbd-heat-empty); }
+.rdemo__keyscale span:nth-child(2) { background: var(--vbd-heat-cool); }
+.rdemo__keyscale span:nth-child(3) { background: var(--vbd-heat-mid); }
+.rdemo__keyscale span:nth-child(4) { background: var(--vbd-heat-hot); }
+
+/* ---------- The data table ----------
+   The component the case study spends the most words on: the same stats
+   in the same shape coaches already read, with every count a door into
+   the video behind it. Counts are underlined for that reason — in the
+   product they are the click that opens a clip — and computed columns
+   (A%, Ast/Set) are not, because there is no clip behind an average.
+
+   Drawn as a real <table>. The stats have a row and column meaning and
+   a total, screen readers announce that structure for free, and the
+   alternative — a grid of divs — throws all of it away for styling this
+   doesn't need.
+
+   Two header rows: the group bar (Athlete / Attacks) and the column
+   labels under it, which is how all three old products headed these
+   tables and therefore how coaches read them. */
+.rdemo__tablewrap {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.rdemo__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+  /* Numbers wrapping would be worse than scrolling for them. */
+  white-space: nowrap;
+}
+
+.rdemo__table th,
+.rdemo__table td {
+  padding: 0.4375rem 0.5rem;
+  /* Figures right-align so the digits line up down the column; only the
+     athlete's name reads left. */
+  text-align: right;
+  font-weight: var(--fw-regular);
+}
+
+.rdemo__table th {
+  color: var(--vbd-text-dim);
+  font-weight: var(--fw-medium);
+}
+
+.rdemo__table th:first-child,
+.rdemo__table td:first-child {
+  padding-left: 0;
+  text-align: left;
+}
+
+/* The group bar, and the rule that runs under it. */
+.rdemo__table thead tr:first-child th {
+  color: var(--vbd-text);
+  font-weight: var(--fw-semibold);
+  border-bottom: 1px solid var(--vbd-line);
+}
+
+.rdemo__table thead tr:last-child th {
+  border-bottom: 1px solid var(--vbd-line);
+}
+
+/* The line between who the row is about and what it did — the same
+   split the group bar names. */
+.rdemo__table th:nth-child(3),
+.rdemo__table td:nth-child(3) {
+  border-right: 1px solid var(--vbd-line);
+}
+
+/* Dotted between rows, solid under the head and above the total: the
+   product's own hierarchy, and it stops a long roster reading as one
+   block. */
+.rdemo__table tbody tr + tr {
+  border-top: 1px dotted var(--vbd-line);
+}
+
+.rdemo__table tfoot td {
+  border-top: 1px solid var(--vbd-line);
+  font-weight: var(--fw-semibold);
+  color: var(--vbd-text);
+}
+
+/* A count you can click through to video, in the product. Underlined
+   here to say so; it isn't wired up yet, so it stays text rather than
+   becoming a button that does nothing. */
+.rdemo__cell {
+  text-decoration: underline;
+  text-decoration-color: var(--vbd-text-dim);
+  text-underline-offset: 2px;
+}
+
+/* No attempts at all, rather than a zero: a coach reads "-" as "didn't
+   happen" and 0 as "tried and failed", and the difference matters when
+   the column is errors. */
+.rdemo__nil {
+  color: var(--vbd-text-dim);
+}
+
+.rdemo__tableteam {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+/* The crest again, at the size a table row can hold — same lean as the
+   header's, so the two read as the same mark. */
+.rdemo__tablecrest {
+  font-size: 1rem;
+  font-weight: var(--fw-semibold);
+  line-height: 1;
+  color: var(--vbd-accent);
+  transform: skewX(-8deg);
+}
+
+/* ---------- Sectioned stats table (athlete & team reports) ----------
+   The data table above, cut into stat groups: who the row is about,
+   then attacks, serves, receptions, sets, blocks. Each group is a real
+   <table> of its own rather than one table with colgroups, because the
+   two shapes this has to take are not the same table reflowed — on a
+   phone each group becomes a card that has to carry its own row
+   headers, and a single table can't hand its first column to five
+   places at once.
+
+   Side by side they have to read as one connected table anyway, which
+   is the whole trick here: separate tables, one seam. */
+.rdemo__stats {
+  display: flex;
+  align-items: flex-start;
+  /* Fills the card when the groups are narrow enough and overflows the
+     wrap's scroller when they aren't — never squeezes a column. */
+  min-width: 100%;
+  width: max-content;
+}
+
+.rdemo__statgroup {
+  /* Grow into spare width, never shrink below the numbers. */
+  flex: 1 0 auto;
+}
+
+/* The roster is as wide as the longest name and no wider; the spare
+   width belongs to the stat groups. */
+.rdemo__statgroup--id {
+  flex: 0 0 auto;
+}
+
+/* The seam. One rule between groups is the only thing marking them as
+   separate sections once they're shoulder to shoulder — the same line
+   the old products drew, and the reason the group bar above it can be
+   a plain label rather than a boxed header. */
+.rdemo__statgroup + .rdemo__statgroup {
+  margin-left: 0.75rem;
+  padding-left: 0.75rem;
+  border-left: 1px solid var(--vbd-line);
+}
+
+.rdemo__stats .rdemo__table {
+  width: 100%;
+}
+
+/* Rows only line up across the seam if each one is exactly as tall as
+   its neighbour, and content can't be trusted to deliver that — the
+   total row carries a crest at a larger size than everything above it,
+   and a group with no decimals in it sets a shorter line box. So the
+   heights are stated rather than measured. */
+.rdemo__stats .rdemo__table th,
+.rdemo__stats .rdemo__table td {
+  height: 2.125rem;
+}
+
+.rdemo__stats .rdemo__table thead th {
+  height: 2rem;
+}
+
+/* The base table draws its one divider after the third column, where
+   "who" ends and "what they did" begins. Cut into groups that split is
+   what the seam above is for, and the inherited rule lands in the
+   middle of a stat group. */
+.rdemo__stats .rdemo__table th:nth-child(3),
+.rdemo__stats .rdemo__table td:nth-child(3) {
+  border-right: 0;
+}
+
+/* Every stat group repeats the roster column so it can stand alone
+   when the groups stack. Side by side that would be five identical
+   columns of names, so all but the first collapse to nothing — width
+   and padding off, the label itself clipped rather than display:none'd.
+   Removing it outright would leave a screen reader reading five tables
+   of bare numbers with nothing saying whose they are. */
+.rdemo:not([data-size="mobile"]) .rdemo__statgroup--stat .rdemo__statname {
+  width: 0;
+  padding: 0;
+}
+
+.rdemo:not([data-size="mobile"]) .rdemo__statgroup--stat .rdemo__statname > span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+/* A phone gets one group at a time, stacked, and each one becomes a
+   card in its own right — its group bar is now a heading rather than a
+   column label, and the roster column it was hiding comes back to say
+   which row is whose. This is the reflow the layout system was for:
+   the report didn't get redesigned for mobile, the groups just stopped
+   sitting in a row. */
+.rdemo[data-size="mobile"] .rdemo__stats {
+  flex-direction: column;
+  /* Stretch, not flex-start: stacked, these are cards, and a column of
+     cards each as wide as its own widest number reads as a mistake. */
+  align-items: stretch;
+  gap: 0.75rem;
+  width: auto;
+}
+
+.rdemo[data-size="mobile"] .rdemo__statgroup {
+  padding: 0.625rem 0.75rem;
+  border-radius: var(--radius-md);
+  background: var(--vbd-well);
+  /* Each card carries its own sideways scroll. A phone can't hold six
+     reception columns at once, and the scroll has to belong to the card
+     you're reading — one scroller around the whole stack drags the
+     other five cards along with it, which is how a stat you weren't
+     looking at ends up half off the screen. */
+  overflow-x: auto;
+}
+
+/* ...which means the wrap stops being a scroller here. Two nested
+   horizontal scrollers on a touch screen is one too many, and the
+   outer one has nothing left to scroll. */
+.rdemo[data-size="mobile"] .rdemo__tablewrap {
+  overflow: visible;
+}
+
+.rdemo[data-size="mobile"] .rdemo__statgroup + .rdemo__statgroup {
+  margin-left: 0;
+  padding-left: 0.75rem;
+  border-left: 0;
+}
+
+/* The box a chart is handed. Recharts measures its own container, so
+   this has to be a settled size before the chart mounts — hence the
+   flex/min-height pair rather than a height of its own, and hence
+   mounting only once the panel is actually shown (setupReportPanels in
+   main.js): measured while hidden, the chart comes out 0 tall. */
+.rdemo__chart {
+  flex: 1;
+  min-height: 0;
+}
+
+/* If the chart's scripts don't arrive — offline, or an extension that
+   blocks CDNs — the card says so quietly rather than sitting there
+   looking broken. */
+.rdemo__chartnote {
+  margin: auto;
+  font-size: 0.75rem;
+  color: var(--vbd-text-dim);
+}
+
+/* ---------- Match picker ----------
+   The row that says what the report is counting: how many matches are
+   in it, the season they're from, and the shortcuts a coach actually
+   uses to change that — most recent, last five, the whole season, and
+   the four cuts they ask for by name. */
+.rdemo__picker {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  flex: none;
+  gap: 0.375rem 0.5rem;
+  padding: 0.75rem 2px;
+  font-size: 0.75rem;
+}
+
+.rdemo__count {
+  font-size: 0.9375rem;
+  font-weight: var(--fw-semibold);
+  min-width: 75px;
+}
+
+/* Same size and brightness as the count it follows: in the design these
+   two read as one sentence — "1 Selected, 2025-26 Matches:" — and only
+   the count is weighted. */
+.rdemo__scope {
+  font-size: 0.9375rem;
+}
+
+/* Unchosen quick selects carry no chip at all in the design — grey
+   labels on the panel, with only the active one boxed. The border is
+   there but transparent, so the row doesn't shift by 2px when the
+   selection moves. */
+.rdemo__chip {
+  padding: 0.3125rem 0.5rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: none;
+  font: inherit;
+  font-weight: var(--fw-medium);
+  color: var(--vbd-text-dim);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--transition-fast), background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.rdemo__chip:hover {
+  color: var(--vbd-text);
+}
+
+.rdemo__chip[aria-pressed="true"] {
+  border-color: var(--vbd-blue);
+  background: var(--vbd-select);
+  color: var(--vbd-text);
+}
+
+.rdemo__more {
+  margin-left: 0.25rem;
+  color: var(--vbd-blue);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+}
+
+/* The one control in here that works, so it is the one that's a real
+   button. aria-expanded carries the state: the label below and the
+   tiles' own visibility both follow from it (setupMatchTiles in
+   main.js sets it, and data-tiles on the window, which is what the
+   tiles read). */
+.rdemo__tilestoggle {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--vbd-text-dim);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.rdemo__tilestoggle:hover {
+  color: var(--vbd-text);
+}
+
+.rdemo__tilestoggle[aria-expanded="true"] .rdemo__tileslabel--show,
+.rdemo__tilestoggle[aria-expanded="false"] .rdemo__tileslabel--hide {
+  display: none;
+}
+
+/* ---------- Match tiles ----------
+   One tile per match, the season running off the right-hand edge — the
+   product's own overflow, and the reason the row scrolls rather than
+   wraps: a coach reads these as a timeline, and a timeline that wraps
+   stops being one. Each tile is the three things they scan for: who,
+   when, and how it went. */
+.rdemo__tiles {
+  display: flex;
+  flex: none;
+  gap: 0.25rem;
+  padding: 0 2px 0.875rem;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.rdemo[data-tiles="hidden"] .rdemo__tiles {
+  display: none;
+}
+
+.rdemo__tile {
+  flex: none;
+  width: 3.75rem;
+  padding: 0.25rem 0.375rem 0.3125rem;
+  border: 1px solid var(--vbd-line);
+  border-radius: var(--radius-sm);
+  background: var(--vbd-well);
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.rdemo__tile:hover {
+  border-color: var(--vbd-text-dim);
+}
+
+/* In the report, a chosen match. aria-pressed rather than a class for
+   the same reason the tabs use aria-selected: the state has to be on
+   the element for assistive tech anyway, and two copies of it would
+   only disagree eventually. */
+.rdemo__tile[aria-pressed="true"] {
+  border-color: var(--vbd-blue);
+  background: var(--vbd-select);
+}
+
+.rdemo__tile[aria-pressed="true"]:hover {
+  border-color: var(--vbd-blue);
+}
+
+.rdemo__tileopp {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: var(--fw-semibold);
+}
+
+.rdemo__tiledate {
+  display: block;
+  font-size: 0.625rem;
+  color: var(--vbd-text-dim);
+}
+
+.rdemo__tileresult {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.125rem;
+  font-size: 0.625rem;
+}
+
+/* W or L, chipped rather than coloured text: the letter is the first
+   thing a coach's eye lands on down this row, and it has to survive
+   being 11px on a dark card. */
+.rdemo__wl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 2px;
+  font-size: 0.5625rem;
+  font-weight: var(--fw-semibold);
+}
+
+.rdemo__wl--w {
+  background: var(--vbd-chip-good);
+  color: var(--vbd-chip-check);
+}
+
+.rdemo__wl--l {
+  background: var(--vbd-chip-bad);
+  color: var(--vbd-bad);
+}
+
+/* Tablet and phone also lose the season label and the quick selects,
+   which leaves the row saying how many matches are in the report and
+   offering the one control that can change it. Eight chips is a
+   desktop luxury: on a phone they wrapped to three rows and turned the
+   picker into the tallest thing on the screen, and everything they do
+   is inside "Select other matches" anyway. That link takes the right
+   edge once it is the only thing out there. */
+.rdemo[data-size="tablet"] .rdemo__scope,
+.rdemo[data-size="tablet"] .rdemo__chip,
+.rdemo[data-size="mobile"] .rdemo__scope,
+.rdemo[data-size="mobile"] .rdemo__chip {
+  display: none;
+}
+
+.rdemo[data-size="tablet"] .rdemo__more,
+.rdemo[data-size="mobile"] .rdemo__more {
+  margin-left: auto;
+}
+
+/* Tablet and phone lose the tiles, and the button that hides them with
+   them. The row is a desktop affordance: it wants a season of matches
+   side by side and a pointer to drag them past, and on a touch report
+   the same job belongs to "Select other matches" — which is why that
+   link stays on every device. Keyed off the device for the same reason
+   the labels above are: this is a fact about the screen in someone's
+   hands, not about how much of this page the window happens to fill. */
+.rdemo[data-size="tablet"] .rdemo__tiles,
+.rdemo[data-size="tablet"] .rdemo__tilestoggle,
+.rdemo[data-size="mobile"] .rdemo__tiles,
+.rdemo[data-size="mobile"] .rdemo__tilestoggle {
+  display: none;
+}
+
+/* A captioned artifact standing on its own at full measure, rather than
+   paired with prose in a .figure-row — the demo above stands in one, and
+   so does any single wide diagram or screenshot. figure's default browser
+   margin is dropped and the caption is matched to .figure-row's, which is
+   the voice every captioned artifact in a case study speaks in. */
+.figure-solo,
+.rdemo-fig {
+  margin: 0;
+}
+
+.figure-solo figcaption,
+.rdemo-fig figcaption {
+  margin-top: var(--space-2xs);
+  font-size: var(--fs-base);
+  color: var(--color-text-muted);
+}
+
+/* Same framing .figure-row puts on its images. */
+.figure-solo img {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
 
 /* ---------- Featured series card ----------
    A series card in the lead slot, which since projects.html split its
@@ -2231,6 +3733,32 @@
 .fact__value {
   /* dd carries a browser default indent that would knock the value out
      of line with its own label. */
+  margin: 0;
+  font-size: var(--fs-base);
+  color: var(--color-text-muted);
+}
+
+/* ---------- Pillars (case-study body content) ----------
+   A row of short criteria or principles — e.g. what a design optimized
+   for — as equal rounded boxes rather than a bullet list, so each one
+   reads as its own idea instead of one item in a series. Pair with
+   .grid.grid--4up; same raised-card treatment as .fact, just not
+   locked to a 2x2 block. */
+.pillar {
+  padding: var(--space-md);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.pillar__title {
+  margin-bottom: var(--space-3xs);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+}
+
+.pillar__text {
   margin: 0;
   font-size: var(--fs-base);
   color: var(--color-text-muted);
@@ -3039,173 +4567,405 @@
   max-width: 22ch;
 }
 
-/* ---------- Solution spectrum (case-study framing) ----------
-   A single track running from "least technical" to "most technical",
-   with each option the team considered plotted as a point along it.
-   The point/track metaphor does the job a paragraph of "we considered
-   X, Y, and Z" would do more slowly — position on the line *is* the
-   comparison. */
-.spectrum {
-  margin-top: var(--space-lg);
-}
-
-.spectrum__track {
-  position: relative;
-  height: 2px;
-  background: var(--color-border);
-  margin-inline: var(--space-2xs);
-}
-
-.spectrum__points {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.spectrum__point {
-  position: relative;
-  flex: 1;
-  display: flex;
-  justify-content: center;
-}
-
-.spectrum__point:first-child {
-  justify-content: flex-start;
-}
-
-.spectrum__point:last-child {
-  justify-content: flex-end;
-}
-
-.spectrum__dot {
-  position: absolute;
-  top: calc(-1 * var(--space-lg) - 5px);
-  width: 12px;
-  height: 12px;
-  border-radius: var(--radius-full);
-  background: var(--color-bg);
-  border: 2px solid var(--color-text-muted);
-}
-
-.spectrum__point:first-child .spectrum__dot {
-  left: 0;
-}
-
-.spectrum__point:last-child .spectrum__dot {
-  right: 0;
-  left: auto;
-}
-
-.spectrum__point:not(:first-child):not(:last-child) .spectrum__dot {
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.spectrum__point--chosen .spectrum__dot {
-  width: 16px;
-  height: 16px;
-  top: calc(-1 * var(--space-lg) - 7px);
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 4px var(--color-accent-soft);
-}
-
-.spectrum__label {
-  max-width: 12rem;
-  font-size: var(--fs-base);
-  color: var(--color-text-muted);
-  text-align: center;
-}
-
-.spectrum__point:first-child .spectrum__label,
-.spectrum__point:last-child .spectrum__label {
-  text-align: left;
-  max-width: 8rem;
-}
-
-.spectrum__point:last-child .spectrum__label {
-  text-align: right;
-  margin-left: auto;
-}
-
-.spectrum__point--chosen .spectrum__label {
-  color: var(--color-text);
-  font-weight: var(--fw-semibold);
-}
-
-.spectrum__ends {
-  display: flex;
-  justify-content: space-between;
-  margin-top: var(--space-2xs);
-  font-size: var(--fs-base);
-  font-weight: var(--fw-semibold);
-}
-
-/* ---------- Sprint compare (case-study process) ----------
-   Two parallel tracks (one per sub-team) run down the page instead of
-   across it — each already reads top-to-bottom as "week 1 then week
-   2", so laying the pair side by side turns that sequence into a
-   single glance: same row = same week, different column = different
-   bet. A .stack of paragraphs would bury that alignment in prose. */
-.sprint-compare {
+/* ---------- Bet grid (case-study parallel experiments) ----------
+   Bets raced against each other inside one sprint, so they're laid out
+   as a grid of equals rather than a sequence — nothing about the order
+   of the cards should imply one came before another. Only the winner
+   is marked, which is the whole reason to show all four: the bet that
+   shipped isn't the one anyone would pick off the list cold. */
+.bet-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-md);
+  gap: var(--space-sm);
   margin-top: var(--space-lg);
 }
 
 @media (min-width: 700px) {
-  .sprint-compare {
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-lg);
+  .bet-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-md);
   }
 }
 
-.sprint-compare__track {
+.bet {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
-}
-
-.sprint-compare__track-label {
-  margin: 0;
-  font-size: var(--fs-base);
-  font-weight: var(--fw-semibold);
-}
-
-.sprint-compare__week {
+  gap: var(--space-3xs);
   padding: var(--space-sm) var(--space-md);
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
 }
 
-.sprint-compare__week-label {
-  margin: 0 0 var(--space-3xs);
+.bet__label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs);
+  margin: 0;
   font-size: var(--fs-base);
   font-weight: var(--fw-semibold);
   color: var(--color-accent);
 }
 
-.sprint-compare__week-title {
-  margin: 0 0 var(--space-3xs);
+.bet__flag {
+  padding: 0.2em 0.7em;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  color: var(--color-accent-text);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.bet__title {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
   font-weight: var(--fw-semibold);
 }
 
-.sprint-compare__week-note {
+.bet__note {
   margin: 0;
   font-size: var(--fs-base);
   color: var(--color-text-muted);
 }
 
-/* Marks the bet that won, without needing a second color vocabulary —
-   same accent border the chosen .spectrum point uses. */
-.sprint-compare__week--won {
+/* The bet that shipped. One accent ring and no second colour
+   vocabulary — .bet__flag already says "winner" in words, so the
+   border only has to make it findable at a glance. */
+.bet--won {
   border-color: var(--color-accent);
   box-shadow: 0 0 0 1px var(--color-accent);
+}
+
+/* ---------- Deep dive (case-study long aside) ----------
+   One chapter that runs long enough to need its own room — a two-week
+   experiment sprint, an investigation, a detour. Lifting it onto the
+   card colour sets it apart from the main narrative without demoting
+   it to a pull-quote the way .moment does.
+
+   Everything nested inside inverts: cards that sit on --color-bg out
+   in the body have to step down to --color-surface in here, or they
+   disappear into the panel. */
+.deep-dive {
+  padding: var(--space-xl) var(--space-lg);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  margin-block: var(--space-xl);
+}
+
+@media (max-width: 599px) {
+  .deep-dive {
+    padding: var(--space-lg) var(--space-sm);
+  }
+}
+
+.deep-dive > :first-child {
+  margin-top: 0;
+}
+
+.deep-dive .bet,
+.deep-dive .glossary__item,
+.deep-dive .pillar {
+  background: var(--color-surface);
+}
+
+/* ---------- Rejected flow (case-study "we asked, they said no") ----------
+   A three-step flow struck through, for the cheap solution that
+   research killed. The cross is the only place --color-danger appears
+   in a case study, and it's carrying "we tried this and it failed"
+   rather than an error state. */
+.rejected-flow {
+  padding: var(--space-md);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+/* ---------- Figure with side text (case-study body content) ----------
+   An artifact (screenshot, diagram) paired with a caption underneath it
+   and a paragraph running alongside — e.g. a research artifact next to
+   the observation it prompted. Stacks to one column on narrow screens,
+   image on top, text below. */
+.figure-row {
+  display: grid;
+  gap: var(--space-lg);
+  align-items: start;
+}
+
+@media (min-width: 700px) {
+  .figure-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.figure-row figure {
+  margin: 0;
+}
+
+.figure-row img {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.figure-row figcaption {
+  margin-top: var(--space-2xs);
+  font-size: var(--fs-base);
+  color: var(--color-text-muted);
+}
+
+/* ---------- Lede (untitled framing statement) ----------
+   A short statement bracketed by rules, sitting above a case study's
+   named sections rather than as one of them — no h2, so it never shows
+   up as a chapter of its own. Centered and quieter typography is what
+   marks it as scene-setting rather than the start of the next section. */
+.lede {
+  padding-block: var(--space-lg);
+  text-align: center;
+}
+
+.lede__title {
+  max-width: 60ch;
+  margin: var(--space-lg) auto var(--space-sm);
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.015em;
+}
+
+.lede__text {
+  max-width: 60ch;
+  margin: 0 auto;
+}
+
+/* ---------- Jump nav (case-study quick links) ----------
+   Skips a reader straight to research, components, or final designs in
+   a long case study instead of making them scroll past everything
+   between. Pill buttons that stick to the top of the viewport as the
+   page scrolls.
+
+   Centered (margin-inline: auto on a fit-content box) rather than
+   pinned to the container's left edge, which is where the fixed
+   .site-nav__toggle sits on tablet/desktop (see left: 204px on that
+   rule) — left-aligned, this bar would end up right behind it.
+
+   [data-jump-nav-sentinel] is a zero-height marker placed right before
+   this bar; setupJumpNav() in main.js watches its position and adds
+   .is-stuck once it passes above the `top` offset below, which is
+   exactly when this bar has gone from "in flow" to "stuck." That flips
+   the bar to the minimized rules below instead of leaving it
+   permanently at full size once stuck.
+
+   Both the sentinel and this bar are direct children of .case-body
+   (not wrapped in their own div): position: sticky only holds an
+   element in place for as long as its own containing block is still
+   in view, so wrapping this bar in a div barely taller than itself
+   left almost no room to actually stick — it would unstick again
+   within a few px of scroll. .case-body spans the whole case study, so
+   the bar now stays stuck for the full read. .stack's automatic gap
+   would otherwise land between the sentinel and this bar (it's the
+   stack's second child), throwing off exactly when .is-stuck should
+   flip — zeroed below so the two sit flush. */
+.stack > .jump-nav {
+  margin-top: 0;
+}
+
+/* Two elements, and the split is what keeps the page still: .jump-nav
+   is an invisible shell that only reserves flow space, and
+   .jump-nav__inner is the visible card that actually changes size.
+
+   Shrinking the sticky element itself is what made this feel broken:
+   its box is still part of the flow, so the ~21px it gave up on
+   minimizing yanked the whole rest of the page up by 21px — mid-scroll,
+   while someone was reading it. min-height here holds the at-rest
+   height no matter what the card inside is doing, so nothing below ever
+   moves. The value is the card's own at-rest height (~100px measured)
+   plus a few px of headroom, in rem so it scales with the reader's text
+   size the way the card it's reserving for does. It has to stay at or
+   above that height — undershoot it and the shell shrinks under the
+   minimized card, which is the jump all over again. min- rather than a
+   fixed height so an unusually tall render grows the shell instead of
+   overflowing it. */
+.jump-nav {
+  position: sticky;
+  top: var(--space-sm);
+  z-index: 40;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 6.5rem;
+  /* The shell spans the column and is mostly empty air once minimized —
+     without this it would swallow clicks and text selection in the
+     strip of prose beneath it. */
+  pointer-events: none;
+}
+
+/* At rest a titled card — "Jump to" over a row of filled buttons.
+   Stuck, it drops the title and thins out into a quiet glass pill (see
+   .is-stuck below): at that point it's floating over the words someone
+   is reading, so it has to stop competing with them. Every property
+   that differs between the two states is transitioned on
+   --transition-nav, the same slow-settle curve the nav rail morphs on,
+   so the change reads as one movement rather than a flicker. */
+.jump-nav__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2xs);
+  max-width: 100%;
+  padding: var(--space-2xs) var(--space-sm) var(--space-sm);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  pointer-events: auto;
+  transition: padding var(--transition-nav), gap var(--transition-nav),
+    border-radius var(--transition-nav), box-shadow var(--transition-nav),
+    background var(--transition-nav), border-color var(--transition-nav);
+}
+
+/* Collapses by animating its own height away rather than display:none,
+   which would pop the card's height down in a single frame. */
+.jump-nav__label {
+  max-height: 2rem;
+  margin: 0;
+  overflow: hidden;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  transition: max-height var(--transition-nav), opacity var(--transition-fast);
+}
+
+.jump-nav__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2xs);
+}
+
+/* Solid fill, a border, and a lifted hover — reads as a clickable
+   button rather than a passive label the way a flat accent-soft tag
+   would (compare .tag, which is deliberately not interactive). */
+.jump-nav__link {
+  padding: 0.6em 1.2em;
+  background: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-full);
+  color: var(--color-accent-text);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+  /* Hover feedback stays quick; the two properties that change with the
+     minimize (padding, font-size) ride the card's slower curve so the
+     whole bar resizes as one piece. */
+  transition: background var(--transition-fast), color var(--transition-fast),
+    border-color var(--transition-fast), transform var(--transition-fast),
+    padding var(--transition-nav), font-size var(--transition-nav);
+}
+
+.jump-nav__link:hover {
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+  color: var(--color-accent-text);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+/* ---- Minimized (stuck) ---------------------------------------------
+   Same glass treatment the mobile tab bar uses, so a floating bar over
+   scrolling content looks like the rest of the site's floating chrome.
+   The buttons drop their fill entirely and become quiet text until
+   hovered — three solid terracotta pills parked over body copy is the
+   thing that read as too loud. See the sentinel note above for how
+   .is-stuck gets set. */
+.jump-nav.is-stuck .jump-nav__inner {
+  gap: 0;
+  padding: var(--space-3xs);
+  border-radius: var(--radius-full);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border-color: var(--glass-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.jump-nav.is-stuck .jump-nav__label {
+  max-height: 0;
+  opacity: 0;
+}
+
+.jump-nav.is-stuck .jump-nav__links {
+  gap: var(--space-3xs);
+}
+
+.jump-nav.is-stuck .jump-nav__link {
+  padding: 0.35em 0.8em;
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+}
+
+.jump-nav.is-stuck .jump-nav__link:hover {
+  background: var(--color-accent-soft);
+  border-color: transparent;
+  color: var(--color-accent);
+  transform: none;
+}
+
+/* ---- Phones ---------------------------------------------------------
+   A fit-content cluster wraps into a ragged two-line blob at this
+   width. Full-bleed instead, with the three buttons as equal segments
+   of one row — the same shape as the site's own mobile tab bar, which
+   is the thing on screen it sits closest to. */
+@media (max-width: 699px) {
+  /* Its own reserve: the full-bleed card here is a different height
+     (~86px measured) than the desktop one. Same job as the desktop
+     value — hold the flow still while the card inside minimizes. */
+  .jump-nav {
+    min-height: 5.5rem;
+  }
+
+  .jump-nav__inner {
+    width: 100%;
+    padding: var(--space-3xs) var(--space-2xs) var(--space-2xs);
+  }
+
+  .jump-nav__links {
+    width: 100%;
+    flex-wrap: nowrap;
+    gap: var(--space-3xs);
+  }
+
+  /* Equal thirds are narrower than the longest label, so the labels
+     wrap inside their own segment rather than spilling past the pill
+     edge the way the desktop rule's nowrap would. Stretch keeps all
+     three the same height when only one of them wraps. */
+  .jump-nav__link {
+    flex: 1;
+    min-width: 0;
+    padding: 0.5em 0.3em;
+    font-size: var(--fs-xs);
+    line-height: 1.2;
+    text-align: center;
+    white-space: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .jump-nav.is-stuck .jump-nav__inner {
+    padding: var(--space-3xs);
+  }
+
+  .jump-nav.is-stuck .jump-nav__link {
+    padding: 0.45em 0.3em;
+    font-size: var(--fs-xs);
+  }
 }
 
 /* ---------- Moment (case-study standout beat) ----------
@@ -3507,6 +5267,55 @@
   border-color: var(--color-accent);
   text-decoration: none;
   transform: translateY(-2px);
+}
+
+/* Variant for links that carry a thumbnail (e.g. related case studies)
+   instead of standing alone as plain prev/next text. */
+.pager__link--with-thumb {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.pager__thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.pager__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+
+/* ---------- Vision statement (untitled, rule-framed case-study beat) ----------
+   For a short mission/vision statement that shouldn't read as just another
+   numbered section: no heading, only top/bottom rules to set it apart from
+   the sections around it. */
+.vision-statement {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-xl) 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.vision-statement__label {
+  margin: 0;
+  font-weight: var(--fw-bold);
+}
+
+.vision-statement__line {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--color-text-muted);
+  line-height: var(--lh-loose);
 }
 
 /* Pushes a lone "next" into the right-hand cell when there's no
@@ -4068,4 +5877,227 @@
   .cursor {
     display: none;
   }
+}
+
+/* ---------- Annotated shot (case-study "here's what I designed") ----------
+   A product screenshot with numbered pins dropped onto it and a legend
+   underneath. A bare screenshot proves the thing exists; it doesn't say
+   which parts of it were a decision. The pins do that, and the legend
+   carries the reasoning at a readable size rather than as labels
+   floating over UI that is already dense with its own type.
+
+   Pins are placed as percentages through inline --x/--y, so moving one
+   is an edit in the markup rather than a new rule in here, and they
+   hold their position as the image reflows. The legend is the
+   accessible copy of the same information, not a caption repeating it:
+   the pins are aria-hidden and every number is spelled out below, so
+   nothing here depends on being able to see where a dot landed. */
+.annotated {
+  margin: 0;
+}
+
+.annotated__frame {
+  position: relative;
+  display: block;
+  line-height: 0;
+}
+
+.annotated__frame img {
+  width: 100%;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+/* The ring is --color-bg rather than a shadow so the pin stays legible
+   on a screenshot of a dark product UI and on a light one, without
+   either theme needing its own rule. */
+.annotated__pin {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  color: var(--color-accent-text);
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  line-height: 1;
+  box-shadow: 0 0 0 3px var(--color-bg);
+}
+
+.annotated__legend {
+  display: grid;
+  gap: var(--space-sm);
+  margin: var(--space-md) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 700px) {
+  .annotated__legend {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-md);
+  }
+}
+
+.annotated__legend li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: var(--space-2xs);
+  font-size: var(--fs-base);
+  color: var(--color-text-muted);
+}
+
+.annotated__num {
+  display: grid;
+  place-items: center;
+  width: 1.375rem;
+  height: 1.375rem;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  color: var(--color-accent-text);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  line-height: 1;
+}
+
+/* ---------- Folded deep dive (case-study optional detail) ----------
+   The same panel as .deep-dive, closed by default.
+
+   A case study is read by two people with incompatible needs: someone
+   deciding in ninety seconds whether to keep reading, and someone
+   already interested who wants the working. Cutting the detail serves
+   the first and fails the second. Folding it serves both — the
+   argument runs end to end above, and everything supporting it is one
+   click away instead of in the scroll.
+
+   <details> does the work, so it opens with no JavaScript, prints
+   open, and is findable by in-page search in browsers that expand a
+   closed panel to reveal a hit. */
+.deep-dive--folded {
+  padding: 0;
+}
+
+.deep-dive__summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-md) var(--space-lg);
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  border-radius: var(--radius-lg);
+  transition: color var(--transition-fast);
+}
+
+/* The UA marker is removed in both spellings it ships under, so the
+   chevron below is the only disclosure indicator and it can sit on the
+   side the design wants rather than the side the browser picks. */
+.deep-dive__summary::-webkit-details-marker {
+  display: none;
+}
+
+.deep-dive__summary {
+  list-style: none;
+}
+
+.deep-dive__summary:hover {
+  color: var(--color-accent);
+}
+
+.deep-dive__summary:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.deep-dive__chevron {
+  flex: none;
+  color: var(--color-accent);
+  transition: rotate var(--transition-fast);
+}
+
+.deep-dive--folded[open] .deep-dive__chevron {
+  rotate: 90deg;
+}
+
+.deep-dive__hint {
+  margin-left: auto;
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-regular);
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 599px) {
+  .deep-dive__summary {
+    padding: var(--space-sm);
+    font-size: var(--fs-base);
+  }
+
+  .deep-dive__hint {
+    display: none;
+  }
+}
+
+/* The panel's own padding moves to this wrapper when folded, so the
+   summary can span the full width of the card and the body keeps the
+   inset .deep-dive normally has. */
+.deep-dive__inner {
+  padding: 0 var(--space-lg) var(--space-xl);
+}
+
+@media (max-width: 599px) {
+  .deep-dive__inner {
+    padding: 0 var(--space-sm) var(--space-lg);
+  }
+}
+
+.deep-dive__inner > :first-child {
+  margin-top: 0;
+}
+
+/* The diagram slot is full-width, but the artifact in it often isn't -
+   a meme, a small chart. Centred and capped so a narrow image reads as
+   placed in the panel rather than abandoned in its top-left corner,
+   which is where a bare <img> lands. */
+.moment__diagram img {
+  display: block;
+  margin-inline: auto;
+  max-width: min(100%, 34rem);
+  border-radius: var(--radius-sm);
+}
+
+/* Phone: the pin is sized against the reader, not the screenshot, so on
+   a 390px-wide render of a 1792px-wide product UI three full-size dots
+   swamp the thing they're pointing at. The legend below carries the
+   detail at these widths regardless. */
+@media (max-width: 599px) {
+  .annotated__pin {
+    width: 1.25rem;
+    height: 1.25rem;
+    font-size: var(--fs-xs);
+    box-shadow: 0 0 0 2px var(--color-bg);
+  }
+}
+
+/* A small export (these two are 550px wide) dropped into a full-measure
+   .figure-solo renders at its natural size and hugs the left edge,
+   which reads as a mistake rather than a choice. This caps the figure
+   near the artifact's own resolution and centres the whole thing -
+   image and caption together - so the empty space either side is
+   obviously deliberate. Re-export at 2x and the modifier comes off. */
+.figure-solo--small {
+  max-width: 36rem;
+  margin-inline: auto;
+}
+
+.figure-solo--small img {
+  width: 100%;
 }

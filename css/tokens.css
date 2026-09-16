@@ -97,13 +97,14 @@
      sits deliberately bluer than that halfway blend to steer the turn
      clear of it. These three are specified rather than sampled; the stop
      positions in components.css still come off the clip. */
-  --cmdbar-amber: #fd7203;
-  --cmdbar-plum: #7c3067;
-  --cmdbar-indigo: #23039d;
+  --cmdbar-amber: #F06800;
+  --cmdbar-plum: #FD8E3A;
+  --cmdbar-indigo: #FCA833;
 
   /* ---- Color: volleyball product demos ----
-     Used only by .vbd (components.css), the three drawn-in-CSS panels on
-     the volleyball consolidation card. Same deal as the command bar
+     Used by .vbd (components.css), the three drawn-in-CSS panels on the
+     volleyball consolidation card, and by .rdemo, the working report
+     rebuilt in the reports case study. Same deal as the command bar
      above: these are the product's colors, not the site's, so they hold
      the same value in both themes. Sampled off the three mp4s the
      component replaced.
@@ -145,11 +146,24 @@
   --vbd-heat-mid: #9fa5c3;
   --vbd-heat-cool: #40578b;
   --vbd-heat-empty: #262c33;
+  /* A report card: the surface a chart or a table is drawn on, inside
+     the report canvas. Very slightly darker and greyer than
+     --vbd-window behind it, which is all the separation the product
+     gives it — see .rdemo__card. */
+  --vbd-card: #161b20;
   --vbd-trend: #7f7fb5;
   --vbd-good: #7fb069;
   --vbd-bad: #d9694f;
   --vbd-chip-good: #1d4a12;
   --vbd-chip-check: #63c74d;
+  /* A loss's chip, the counterpart to --vbd-chip-good above: the same
+     treatment in --vbd-bad's hue, dark enough that the red reads as a
+     result rather than an error. */
+  --vbd-chip-bad: #4a1512;
+  /* Chosen, in the product's blue rather than its orange — the orange is
+     brand, the blue is "you picked this". Carries the fill of a selected
+     match tile or quick-select chip, with --vbd-blue as its edge. */
+  --vbd-select: #10365c;
 
   /* ---- Typography ----
      Baloo 2 (display) against DM Sans (body) — a rounded, chunky
@@ -206,7 +220,7 @@
   --space-3xl: 6rem;     /* 96px */
 
   /* ---- Layout ---- */
-  --container-width: 1120px;
+  --container-width: 1320px;
   --container-padding: var(--space-xl);
   --nav-width: 220px;
   --nav-width-collapsed: 76px;

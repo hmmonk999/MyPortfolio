@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Video Alignment Tool — Hannah Monk</title>
-  <meta name="description" content="Case study: how a scrappy discovery in a video editor let coaches tag one game once instead of twice, saving $500K a year." />
+  <meta name="description" content="Case study: Hudl was paying to tag the same game twice. Coach research, four bets in two weeks, one reframe, and a tool that saves $500K a year." />
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -31,6 +31,32 @@
 
   <div data-include="partials/header.html"></div>
 
+  <!--
+    TWO NUMBERS TO CONFIRM BEFORE THIS GOES OUT
+
+    1. The cost math. The page asserts $500K without showing the
+       arithmetic, which is the one thing a hiring manager can't check.
+       If you have the duplicate-game count, add a single sentence to
+       "Paying twice for the same game" in this shape:
+         "~2 analyst hours a video, doubled across N duplicate games a
+          season - about $500K a year in work we paid for twice."
+       That sentence is worth more than any figure on this page.
+
+    2. The tag-time chart (assets/img/alignment-tag-time-chart.png).
+       Its x-axis tops out at 21m+, but the copy says the job came down
+       to 78 minutes - the two can't describe the same measurement. If
+       the chart is the ALIGNMENT STEP and 78 min is the WHOLE TAGGING
+       JOB, say so in the caption; it currently reads as a
+       contradiction. The y-axis is also labelled "Median Tag Time"
+       while plotting job counts - it wants to say "Jobs".
+
+    STRUCTURE: "Research" is one H2 covering three strands, in the order
+    they happened - what coaches said, the four bets, and what analysts
+    hit in the prototype. The reframe sits between the bets and the
+    testing because that is where it landed. Everything in the fold at
+    the foot of the page is supporting evidence for one of those three.
+  -->
+
   <main id="main">
     <section class="case-hero">
       <div class="case-hero__intro">
@@ -41,48 +67,109 @@
           <span data-back-link-label>Back to all projects</span>
         </a>
 
-        <h1 class="case-hero__title">Tagging a game once &mdash; $500K saved a year</h1>
-        <p class="case-hero__tagline">A math trick found in a video editor cut duplicate analyst work in half</p>
-        <p class="case-hero__client">Hudl Assist &mdash; Video Alignment Tool</p>
+        <h1 class="case-hero__title">Video Alignment Tool</h1>
+        <p class="case-hero__tagline">Tag a game only once &mdash; $500K saved, year over year</p>
+        <p class="case-hero__client">Hudl Assist</p>
 
         <p class="case-hero__summary">
-          When both coaches in a game filmed and submitted their own copy, our analysts tagged the same game
-          twice &mdash; about 4 hours of redundant work per game. I found a way to mathematically align the two
-          videos using metadata already sitting in the file, which let us reuse one team's tags on the other's
-          footage. It shipped as the Video Alignment Tool and saved $500K a year with no drop in analyst
-          accuracy or coach satisfaction.
+          When both teams film the same game, Hudl pays analysts to break down both recordings
+          &mdash; two passes, two hours each, for one set of data that should come out identical.
         </p>
       </div>
 
-      <div class="case-hero__media">
-        <img src="https://placehold.co/1200x900?text=Video+Alignment+Tool+%E2%80%94+UI" alt="Video Alignment Tool interface showing two synced game film angles" />
+      <div class="case-hero__media case-hero__media--figure">
+        <svg viewBox="0 0 520 372" role="img" aria-labelledby="heroFigTitle heroFigDesc">
+          <title id="heroFigTitle">Two recordings of the same game, before and after a fixed offset is applied</title>
+          <desc id="heroFigDesc">Video A pauses between plays and Video B records continuously, so the same four tagged events land in different places on each timeline. Inserting one calculated block of dead time in front of Video A lines all four events up.</desc>
+
+          <!-- BEFORE -->
+          <text x="0" y="12" font-size="10" font-weight="600" letter-spacing="1.2" fill="var(--color-text-muted)">TWO SUBMISSIONS, SAME GAME</text>
+
+          <text x="0" y="50" font-size="13" font-weight="600" fill="var(--color-text)">Video A</text>
+          <text x="0" y="65" font-size="10" fill="var(--color-text-muted)">paused</text>
+          <rect x="76" y="42" width="142" height="18" rx="5" fill="var(--color-border)" />
+          <rect x="228" y="42" width="108" height="18" rx="5" fill="var(--color-border)" />
+          <g stroke="var(--color-accent)" stroke-width="2" fill="var(--color-accent)">
+            <line x1="96" y1="36" x2="96" y2="66" /><circle cx="96" cy="32" r="3" stroke="none" />
+            <line x1="164" y1="36" x2="164" y2="66" /><circle cx="164" cy="32" r="3" stroke="none" />
+            <line x1="246" y1="36" x2="246" y2="66" /><circle cx="246" cy="32" r="3" stroke="none" />
+            <line x1="306" y1="36" x2="306" y2="66" /><circle cx="306" cy="32" r="3" stroke="none" />
+          </g>
+
+          <g stroke="var(--color-text-muted)" stroke-width="1" stroke-dasharray="2 4" opacity="0.7">
+            <line x1="96" y1="68" x2="144" y2="110" />
+            <line x1="164" y1="68" x2="212" y2="110" />
+            <line x1="246" y1="68" x2="294" y2="110" />
+            <line x1="306" y1="68" x2="354" y2="110" />
+          </g>
+
+          <text x="0" y="126" font-size="13" font-weight="600" fill="var(--color-text)">Video B</text>
+          <text x="0" y="141" font-size="10" fill="var(--color-text-muted)">continuous</text>
+          <rect x="124" y="118" width="280" height="18" rx="5" fill="var(--color-border)" />
+          <g stroke="var(--color-accent)" stroke-width="2" fill="var(--color-accent)">
+            <line x1="144" y1="112" x2="144" y2="142" /><circle cx="144" cy="108" r="3" stroke="none" />
+            <line x1="212" y1="112" x2="212" y2="142" /><circle cx="212" cy="108" r="3" stroke="none" />
+            <line x1="294" y1="112" x2="294" y2="142" /><circle cx="294" cy="108" r="3" stroke="none" />
+            <line x1="354" y1="112" x2="354" y2="142" /><circle cx="354" cy="108" r="3" stroke="none" />
+          </g>
+
+          <line x1="0" y1="172" x2="520" y2="172" stroke="var(--color-border)" />
+
+          <!-- AFTER -->
+          <text x="0" y="202" font-size="10" font-weight="600" letter-spacing="1.2" fill="var(--color-accent)">ONE CALCULATED OFFSET LATER</text>
+
+          <text x="0" y="240" font-size="13" font-weight="600" fill="var(--color-text)">Video A</text>
+          <text x="0" y="255" font-size="10" fill="var(--color-text-muted)">+ dead time</text>
+          <rect x="76" y="232" width="42" height="18" rx="5" fill="none" stroke="var(--color-accent)" stroke-dasharray="3 3" />
+          <rect x="124" y="232" width="142" height="18" rx="5" fill="var(--color-border)" />
+          <rect x="276" y="232" width="108" height="18" rx="5" fill="var(--color-border)" />
+          <g stroke="var(--color-accent)" stroke-width="2" fill="var(--color-accent)">
+            <line x1="144" y1="226" x2="144" y2="256" /><circle cx="144" cy="222" r="3" stroke="none" />
+            <line x1="212" y1="226" x2="212" y2="256" /><circle cx="212" cy="222" r="3" stroke="none" />
+            <line x1="294" y1="226" x2="294" y2="256" /><circle cx="294" cy="222" r="3" stroke="none" />
+            <line x1="354" y1="226" x2="354" y2="256" /><circle cx="354" cy="222" r="3" stroke="none" />
+          </g>
+
+          <g stroke="var(--color-accent)" stroke-width="1.5" stroke-dasharray="3 3">
+            <line x1="144" y1="258" x2="144" y2="302" />
+            <line x1="212" y1="258" x2="212" y2="302" />
+            <line x1="294" y1="258" x2="294" y2="302" />
+            <line x1="354" y1="258" x2="354" y2="302" />
+          </g>
+
+          <text x="0" y="316" font-size="13" font-weight="600" fill="var(--color-text)">Video B</text>
+          <text x="0" y="331" font-size="10" fill="var(--color-text-muted)">continuous</text>
+          <rect x="124" y="308" width="280" height="18" rx="5" fill="var(--color-border)" />
+          <g stroke="var(--color-accent)" stroke-width="2" fill="var(--color-accent)">
+            <line x1="144" y1="302" x2="144" y2="332" /><circle cx="144" cy="298" r="3" stroke="none" />
+            <line x1="212" y1="302" x2="212" y2="332" /><circle cx="212" cy="298" r="3" stroke="none" />
+            <line x1="294" y1="302" x2="294" y2="332" /><circle cx="294" cy="298" r="3" stroke="none" />
+            <line x1="354" y1="302" x2="354" y2="332" /><circle cx="354" cy="298" r="3" stroke="none" />
+          </g>
+
+          <text x="76" y="362" font-size="11" fill="var(--color-text-muted)">Same four events. One shared timeline. Tag it once.</text>
+        </svg>
       </div>
 
+      <!-- Outcome first. This grid used to carry goals, timeline and team
+           - all inputs, in the most valuable four cells on the page.
+           Role and timeline still matter, so they share a cell. -->
       <dl class="fact-grid">
         <div class="fact">
-          <dt class="fact__label">Experience goal</dt>
-          <dd class="fact__value">
-            Let analysts tag a game once, no matter how many angles get submitted.
-          </dd>
+          <dt class="fact__label">Impact</dt>
+          <dd class="fact__value">$500K saved a year in duplicate tagging</dd>
         </div>
         <div class="fact">
-          <dt class="fact__label">Business goal</dt>
-          <dd class="fact__value">
-            Cut redundant analyst hours on duplicate-film games.
-          </dd>
+          <dt class="fact__label">Tag time</dt>
+          <dd class="fact__value">2+ hrs &rarr; 78 min per duplicate game</dd>
         </div>
         <div class="fact">
-          <dt class="fact__label">Timeline</dt>
-          <dd class="fact__value">
-            1 quarter total<br />
-            1 month discovery, 2 months build
-          </dd>
+          <dt class="fact__label">My role</dt>
+          <dd class="fact__value">Sole designer &mdash; research, prototype, shipped UI</dd>
         </div>
         <div class="fact">
-          <dt class="fact__label">Team</dt>
-          <dd class="fact__value">
-            Me (design), 1 senior PM, 3 engineers, 1 QA
-          </dd>
+          <dt class="fact__label">Team &amp; timeline</dt>
+          <dd class="fact__value">1 quarter &middot; 1 PM, 4 devs, 2 QA</dd>
         </div>
       </dl>
     </section>
@@ -90,273 +177,415 @@
     <section class="container section">
       <div class="case-body stack" style="--gap: var(--space-xl);">
 
-        <div>
-          <h2>The problem</h2>
-          <p>
-            Teams submit game film to Hudl Assist, where analysts tag every play with data before returning it
-            to the coach. When only one coach filmed, that was one video, one tagging pass. But often
-            <em>both</em> coaches recorded and submitted their own copy of the same game &mdash; two different
-            camera angles, two different filming styles, one coach pausing between plays and the other
-            shooting continuously.
-          </p>
-          <p>
-            Our analysts had no way to know the two videos were the same game underneath, so they tagged both
-            from scratch: about 2 hours per video, 4 hours total, to produce data that should have been
-            identical. The team's goal for the quarter was blunt &mdash; figure out how to
-            <strong>tag a game only once</strong>.
-          </p>
-        </div>
-
-        <div>
-          <h2>Mapping the solution space</h2>
-          <p>
-            My PM opened the quarter with a workshop to pin down the problem before anyone reached for a
-            solution. From there, an engineer and I mapped out every idea we could think of along one axis:
-            how technical the fix was. The most technical end was full ML &mdash; detect a subset of events in
-            each video automatically and use an algorithm to line them up. The least technical end was pure
-            behavior change: get coaches to just use their opponent's film instead of filming their own.
-          </p>
-
-          <div class="spectrum">
-            <ul class="spectrum__points">
-              <li class="spectrum__point">
-                <span class="spectrum__dot"></span>
-                <span class="spectrum__label">Coach education: reuse opponent's film</span>
-              </li>
-              <li class="spectrum__point">
-                <span class="spectrum__dot"></span>
-                <span class="spectrum__label">In-product nudges toward one submission</span>
-              </li>
-              <li class="spectrum__point spectrum__point--chosen">
-                <span class="spectrum__dot"></span>
-                <span class="spectrum__label">Metadata-based angle alignment</span>
-              </li>
-              <li class="spectrum__point">
-                <span class="spectrum__dot"></span>
-                <span class="spectrum__label">Manually tag events, then align</span>
-              </li>
-              <li class="spectrum__point">
-                <span class="spectrum__dot"></span>
-                <span class="spectrum__label">ML-detected events + alignment algorithm</span>
-              </li>
-            </ul>
-            <div class="spectrum__track"></div>
-            <div class="spectrum__ends">
-              <span>Least technical</span>
-              <span>Most technical</span>
+        <div data-jump-nav-sentinel></div>
+        <nav class="jump-nav" data-jump-nav aria-label="Jump to section">
+          <div class="jump-nav__inner">
+            <p class="jump-nav__label">Jump to</p>
+            <div class="jump-nav__links">
+              <a class="jump-nav__link" href="#problem">Problem</a>
+              <a class="jump-nav__link" href="#research">Research</a>
+              <a class="jump-nav__link" href="#shipped">What shipped</a>
+              <a class="jump-nav__link" href="#results">Impact</a>
             </div>
           </div>
+        </nav>
+
+        <div class="lede">
+          <hr />
+          <p class="lede__title">
+            How can Hudl <strong>save money</strong> by tagging a game only ONCE, when two recordings of the
+            same game come in?
+          </p>
+          <hr />
         </div>
 
-        <div>
-          <h2>Racing four bets in two weeks</h2>
+        <div id="problem" class="anchor-target">
+          <h2>Paying twice for the same game</h2>
           <p>
-            Rather than debate the spectrum on paper, we split into two teams and went scrappy: two experiments
-            a week, skunkworks-style, to see which bets actually held up.
+            Hudl Assist breaks game film down into a list of events and the video timestamp of each one.
+            When two teams submit their own recording of the same game, we have no way to move one breakdown
+            onto the other &mdash; so analysts tag both. Roughly two analyst hours a video, doubled, for data
+            that should come out identical.
           </p>
-
-          <div class="sprint-compare">
-            <div class="sprint-compare__track">
-              <p class="sprint-compare__track-label">Engineering-led track</p>
-              <div class="sprint-compare__week">
-                <p class="sprint-compare__week-label">Week 1</p>
-                <p class="sprint-compare__week-title">ML-tagged event subset + alignment algorithm</p>
-                <p class="sprint-compare__week-note">The most technical end of the spectrum, tested first to see if it was even feasible.</p>
-              </div>
-              <div class="sprint-compare__week">
-                <p class="sprint-compare__week-label">Week 2</p>
-                <p class="sprint-compare__week-title">Manually tagged events + alignment</p>
-                <p class="sprint-compare__week-note">A cheaper version of the same idea &mdash; skip the ML, tag a few events by hand and align on those.</p>
-              </div>
-            </div>
-
-            <div class="sprint-compare__track">
-              <p class="sprint-compare__track-label">My track</p>
-              <div class="sprint-compare__week">
-                <p class="sprint-compare__week-label">Week 1</p>
-                <p class="sprint-compare__week-title">Customer education, mapped by effort</p>
-                <p class="sprint-compare__week-note">Explored what we could put in front of coaches to get one film submitted, and scoped the build effort for each. This is where I noticed the metadata pattern &mdash; see below.</p>
-              </div>
-              <div class="sprint-compare__week sprint-compare__week--won">
-                <p class="sprint-compare__week-label">Week 2</p>
-                <p class="sprint-compare__week-title">Angle alignment feasibility</p>
-                <p class="sprint-compare__week-note">Scrapped the education idea to chase what I'd found instead. Took roughly 5 minutes to find the right offset by hand.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="moment">
-          <p class="moment__kicker">The discovery</p>
-          <p class="moment__lead">
-            While digging through video metadata during week 1, I noticed something: some videos carried
-            <em>real-world timestamps</em>, and some didn't &mdash; and on the ones that did, the two coaches'
-            timestamps disagreed by a fixed, constant offset.
-          </p>
-          <div class="moment__body">
-            <p>
-              One coach paused the camera between plays; the other let it run continuously. That's why the raw
-              footage never lined up minute-to-minute. But if both videos had real-world timestamps on even a
-              few frames, the gap between them was just math &mdash; a fixed offset I could calculate and then
-              apply as dead time.
-            </p>
-            <p>
-              I downloaded Adobe Premiere, spliced in the calculated offset, and compared the two analysts'
-              tags on the same plays. They lined up. Two completely different filming styles, reconciled with
-              a few minutes of arithmetic instead of a second full tagging pass. I walked my group through it
-              on the spot &mdash; that demo is what sent us chasing angle alignment instead of the education
-              idea for week 2.
-            </p>
-          </div>
-
-          <div class="moment__diagram">
-            <svg viewBox="0 0 640 220" width="100%" role="img" aria-labelledby="alignDiagramTitle alignDiagramDesc">
-              <title id="alignDiagramTitle">Aligning two video timelines using a fixed offset</title>
-              <desc id="alignDiagramDesc">Coach A's paused footage and Coach B's continuous footage are misaligned before the offset is applied, then line up perfectly once the calculated dead time is inserted.</desc>
-
-              <text x="0" y="20" font-size="12" font-weight="600" fill="var(--color-text-muted)">BEFORE &mdash; raw footage, tags don't line up</text>
-              <text x="8" y="48" font-size="11" fill="var(--color-text-muted)">Coach A (paused between plays)</text>
-              <rect x="8" y="54" width="380" height="16" rx="4" fill="var(--color-border)" />
-              <circle cx="60" cy="62" r="5" fill="var(--color-accent)" />
-              <circle cx="160" cy="62" r="5" fill="var(--color-accent)" />
-              <circle cx="290" cy="62" r="5" fill="var(--color-accent)" />
-
-              <text x="8" y="90" font-size="11" fill="var(--color-text-muted)">Coach B (filmed continuously)</text>
-              <rect x="8" y="96" width="480" height="16" rx="4" fill="var(--color-border)" />
-              <circle cx="120" cy="104" r="5" fill="var(--color-accent-hover)" />
-              <circle cx="220" cy="104" r="5" fill="var(--color-accent-hover)" />
-              <circle cx="350" cy="104" r="5" fill="var(--color-accent-hover)" />
-
-              <line x1="8" y1="130" x2="500" y2="130" stroke="var(--color-border)" stroke-dasharray="3 4" />
-
-              <text x="0" y="156" font-size="12" font-weight="600" fill="var(--color-text-muted)">AFTER &mdash; fixed offset inserted, tags line up</text>
-              <text x="8" y="184" font-size="11" fill="var(--color-text-muted)">Coach A + calculated dead time</text>
-              <rect x="8" y="190" width="60" height="16" rx="4" fill="var(--color-surface)" stroke="var(--color-border)" stroke-dasharray="2 3" />
-              <rect x="68" y="190" width="380" height="16" rx="4" fill="var(--color-border)" />
-              <circle cx="120" cy="198" r="5" fill="var(--color-accent)" />
-              <circle cx="220" cy="198" r="5" fill="var(--color-accent)" />
-              <circle cx="350" cy="198" r="5" fill="var(--color-accent)" />
-
-              <line x1="120" y1="104" x2="120" y2="198" stroke="var(--color-accent)" stroke-width="1.5" stroke-dasharray="2 3" />
-              <line x1="220" y1="104" x2="220" y2="198" stroke="var(--color-accent)" stroke-width="1.5" stroke-dasharray="2 3" />
-              <line x1="350" y1="104" x2="350" y2="198" stroke="var(--color-accent)" stroke-width="1.5" stroke-dasharray="2 3" />
-            </svg>
-            <p class="moment__diagram-caption">Same three tagged events, two filming styles &mdash; a calculated offset (dashed block) is all it took to line them up.</p>
-          </div>
-        </div>
-
-        <div>
-          <h2>Turning it into a product</h2>
           <p>
-            Feasibility wasn't the same as a usable tool, so once we'd committed to angle alignment I ran a UI
-            sketch session with the team to work through what the alignment step should actually look like for
-            an analyst mid-tagging-job. We started the quarter down two engineers, who were mostly heads-down
-            on bug fixes &mdash; so I unblocked myself and ran two rounds of usability testing solo off a
-            scrappy prototype.
+            <strong>That duplicate work was costing about $500K a year.</strong> Either we found a way to map
+            a breakdown from one recording onto the other, or we stopped the second recording from being
+            submitted at all.
           </p>
 
-          <div class="grid grid--2up mt-lg">
-            <div class="sprint-compare__week">
-              <p class="sprint-compare__week-label">Round 1</p>
-              <p class="sprint-compare__week-title">Can this be a two-click job?</p>
-              <p class="sprint-compare__week-note">
-                Tested whether analysts could go from two raw submissions to a correctly aligned pair in two
-                clicks, consistently, with no coaching from me. This is what confirmed the offset math I'd
-                proven on my own laptop actually held up as a real workflow, not just a demo.
+          <figure class="figure-solo figure-solo--small mt-lg">
+            <img src="assets/img/alignment-collection-pipeline.png" alt="Diagram of the video collection pipeline, marking what could be solved at each stage and where a user touches the UI" />
+            <figcaption>
+              <strong>Where in the pipeline could we solve it?</strong> Every stage a video passes through
+              before it has data, what a fix there would have to prevent, and where a user is touching the UI.
+            </figcaption>
+          </figure>
+        </div>
+
+        <div id="research" class="anchor-target">
+          <h2>Research</h2>
+          <p>
+            Three strands, in the order they happened: what coaches would accept, which of four technical bets
+            could actually work, and whether an analyst could run the winner without breaking it.
+          </p>
+
+          <h3 class="mt-xl">Coaches killed the cheap fix</h3>
+          <p>
+            The cheapest solution needed almost no engineering: ask a coach whether they&rsquo;d take their
+            opponent&rsquo;s video to get their own data back faster. I interviewed
+            <strong>8 high school basketball coaches</strong> and surveyed
+            <strong>638 coaches across sports</strong>. The answer was a resounding no. They didn&rsquo;t trust
+            the other team to send film over quickly, they wanted their own camera angle, and they worried
+            about the quality of whatever the opponent shot.
+          </p>
+
+          <div class="stat-band mt-lg">
+            <div class="stat-band__item">
+              <p class="stat-band__value">8</p>
+              <p class="stat-band__label">coaches interviewed in depth</p>
+            </div>
+            <div class="stat-band__item">
+              <p class="stat-band__value">638</p>
+              <p class="stat-band__label">coaches surveyed across sports</p>
+            </div>
+            <div class="stat-band__item">
+              <p class="stat-band__value">&ldquo;No.&rdquo;</p>
+              <p class="stat-band__label">what nearly all of them said to using the opponent&rsquo;s film</p>
+            </div>
+          </div>
+
+          <div class="figure-row mt-lg">
+            <figure>
+              <div class="rejected-flow">
+                <svg viewBox="0 0 500 128" role="img" aria-labelledby="rejectTitle rejectDesc">
+                  <title id="rejectTitle">The cheap solution, crossed out</title>
+                  <desc id="rejectDesc">A three-step flow — Coach A films and submits, Coach B skips filming, both teams share one breakdown — struck through with a large cross, because coaches rejected it in research.</desc>
+
+                  <rect x="4" y="30" width="140" height="58" rx="8" fill="var(--color-surface)" stroke="var(--color-border)" />
+                  <text x="74" y="55" font-size="11" font-weight="600" text-anchor="middle" fill="var(--color-text)">Coach A films</text>
+                  <text x="74" y="71" font-size="11" text-anchor="middle" fill="var(--color-text-muted)">and submits</text>
+
+                  <g stroke="var(--color-text-muted)" stroke-width="1.5" fill="var(--color-text-muted)">
+                    <line x1="152" y1="59" x2="170" y2="59" />
+                    <polygon points="178,59 168,54 168,64" stroke="none" />
+                  </g>
+
+                  <rect x="186" y="30" width="140" height="58" rx="8" fill="var(--color-surface)" stroke="var(--color-border)" />
+                  <text x="256" y="55" font-size="11" font-weight="600" text-anchor="middle" fill="var(--color-text)">Coach B skips</text>
+                  <text x="256" y="71" font-size="11" text-anchor="middle" fill="var(--color-text-muted)">filming entirely</text>
+
+                  <g stroke="var(--color-text-muted)" stroke-width="1.5" fill="var(--color-text-muted)">
+                    <line x1="334" y1="59" x2="352" y2="59" />
+                    <polygon points="360,59 350,54 350,64" stroke="none" />
+                  </g>
+
+                  <rect x="356" y="30" width="140" height="58" rx="8" fill="var(--color-surface)" stroke="var(--color-border)" />
+                  <text x="426" y="55" font-size="11" font-weight="600" text-anchor="middle" fill="var(--color-text)">Both teams share</text>
+                  <text x="426" y="71" font-size="11" text-anchor="middle" fill="var(--color-text-muted)">one breakdown</text>
+
+                  <g stroke="var(--color-danger)" stroke-width="4" stroke-linecap="round" opacity="0.6">
+                    <line x1="16" y1="18" x2="484" y2="102" />
+                    <line x1="484" y1="18" x2="16" y2="102" />
+                  </g>
+                </svg>
+              </div>
+              <figcaption>The no-engineering path, closed by research in the first two weeks.</figcaption>
+            </figure>
+
+            <div>
+              <p>
+                A small slice of respondents <em>would</em> have taken the opponent&rsquo;s data to get their
+                breakdown back faster &mdash; nowhere near enough to build a business case on. Limiting
+                duplicate submissions stayed on the board only as a backup.
+              </p>
+              <p>
+                That left the hard version: map a breakdown from one recording onto a different angle of the
+                same game. Smart people at Hudl had tried before and failed.
               </p>
             </div>
-            <div class="sprint-compare__week">
-              <p class="sprint-compare__week-label">Round 2</p>
-              <p class="sprint-compare__week-title">Where does a brand-new job type break?</p>
-              <p class="sprint-compare__week-note">
-                Analysts had never done this kind of task before, so there were no habits to lean on. This
-                round hunted for the places the UI quietly assumed knowledge nobody had yet &mdash; which is
-                where the vocabulary problem below surfaced first.
+          </div>
+
+          <h3 class="mt-xl">Four bets in two weeks &mdash; one survived</h3>
+          <p>
+            So we raced four bets in parallel, hack-a-thon style. My engineers took the mathematical ones; I
+            took the investigative ones &mdash; the backups we&rsquo;d need if the math didn&rsquo;t land.
+          </p>
+
+          <div class="bet-grid">
+            <div class="bet">
+              <p class="bet__label">Bet 1</p>
+              <p class="bet__title">Machine-learn the events</p>
+              <p class="bet__note">
+                Tag a subset of events on Video B with ML, then transfer the rest across from Video A.
+              </p>
+            </div>
+            <div class="bet">
+              <p class="bet__label">Bet 2</p>
+              <p class="bet__title">Head off the second submission</p>
+              <p class="bet__note">
+                Tell the opposing coach the game is already broken down, and see whether that prevents the
+                duplicate at all.
+              </p>
+            </div>
+            <div class="bet">
+              <p class="bet__label">Bet 3</p>
+              <p class="bet__title">Hand-tag a few anchors</p>
+              <p class="bet__note">
+                Bet 1 without the ML &mdash; tag a subset on Video B by hand, transfer the rest.
+              </p>
+            </div>
+            <div class="bet bet--won">
+              <p class="bet__label">Bet 4 <span class="bet__flag">The winner</span></p>
+              <p class="bet__title">Align the video, not the data</p>
+              <p class="bet__note">
+                Use the metadata already in the file to line the two recordings up, and every event moves at
+                once. Not what Bet 4 started as &mdash; it was rewritten mid-sprint.
+              </p>
+            </div>
+          </div>
+
+          <!-- The one beat the project turns on, and it sits between the
+               bets and the analyst testing because that is where it landed.
+               .moment is documented as once-per-case-study; this is the once. -->
+          <div class="moment">
+            <p class="moment__kicker">The reframe</p>
+            <p class="moment__lead">
+              The jobs that wouldn&rsquo;t line up all had <em>multiple media segments</em>. The problem was
+              never getting data onto the second video. It was aligning the two videos.
+            </p>
+            <div class="moment__body">
+              <p>
+                I was on Bet 2, digging through admin, when I noticed it. A coach who stops recording between
+                plays isn&rsquo;t submitting one video &mdash; they&rsquo;re submitting a stack of pieces, and
+                the pieces are what knock the timelines apart. I cut one in Premiere and aligned it by hand to
+                prove it.
+              </p>
+              <p>
+                That killed Bets 1 and 3, which were both solving the wrong problem, and rewrote Bet 4: use the
+                timestamps already sitting on each segment to line the recordings up, and every event crosses
+                at once.
+              </p>
+              <p>
+                I made the argument with a meme. One of my devs saw the math behind it, and we spent the rest
+                of the sprint proving it out. <strong>It worked.</strong>
+              </p>
+            </div>
+
+            <figure class="moment__diagram">
+              <img src="assets/img/alignment-meme.png" alt="The meme I showed my squad, captioned &ldquo;it&rsquo;s not about the data, it&rsquo;s about the video&rdquo;" />
+              <figcaption class="moment__diagram-caption">
+                The entire technical argument, as presented to my squad.
+              </figcaption>
+            </figure>
+          </div>
+
+          <h3 class="mt-xl">I built the prototype myself, then tested it with 25 analysts</h3>
+          <p>
+            The math worked on two videos inside the team. Whether a Hudl Assist analyst could run it, on
+            angles pulled from a much larger sample, was a different question &mdash; and my devs were tied up
+            with critical bugs and backend work.
+          </p>
+          <p>
+            Rather than wait for them, or assume analysts could complete the workflow just because my team
+            could, I built the front end myself in ProtoPie: two sets of playable video, real transport
+            controls, and enough math behind it to feel like a live job. Twenty-five analysts ran it across
+            moderated and unmoderated sessions.
+          </p>
+
+          <div class="figure-row mt-lg">
+            <figure>
+              <img src="assets/img/alignment-protopie-prototype.png" alt="The ProtoPie prototype, showing two playable game videos side by side with tagging controls beneath them" />
+              <figcaption>
+                A fully interactive video experiment, built in ProtoPie so testing didn&rsquo;t have to wait on
+                engineering.
+              </figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/img/alignment-tag-time-chart.png" alt="Bar chart of alignment times from the ProtoPie sessions, binned by minute" />
+              <figcaption>
+                Alignment times from the sessions, binned by minute &mdash; the long tail on the right is where
+                the tip-off was missing.
+              </figcaption>
+            </figure>
+          </div>
+
+          <p class="mt-lg">Two things came back.</p>
+
+          <div class="grid grid--2up">
+            <div class="pillar">
+              <p class="pillar__title">1. It worked.</p>
+              <p class="pillar__text">
+                Fast, accurate, and it absolutely solved the tag-a-game-only-once problem.
+              </p>
+            </div>
+            <div class="pillar">
+              <p class="pillar__title">2. It worked <em>if</em> the tip-off was on film.</p>
+              <p class="pillar__text">
+                When the tip-off was missing from one of the videos, tag times crossed fifteen minutes and kept
+                climbing.
               </p>
             </div>
           </div>
 
           <p class="mt-lg">
-            The edge case that came out of testing and shaped the final flow: games missing footage at the
-            start, where the usual sync point didn't exist and analysts needed a fallback way to anchor the
-            alignment elsewhere in the video.
+            We leaned on the tip-off because it&rsquo;s easy to find and impossible to mistake for anything
+            else. Without an anchor like it, an analyst is just scrubbing. So I fixed both problems in the
+            design before a line of production code was written:
           </p>
-
-          <div class="grid grid--2up mt-lg">
-            <img src="https://placehold.co/600x400?text=UI+sketch+session" alt="Whiteboard sketches from the UI ideation session" />
-            <img src="https://placehold.co/600x400?text=Usability+study+setup" alt="Prototype used for solo usability testing" />
-          </div>
+          <ul>
+            <li>Improved video navigation and keyboard shortcuts, so hunting for a new anchor is a few
+              keystrokes instead of a search.</li>
+            <li>A way to set the sync point anywhere in either video, rather than assuming it lives at the
+              start of the game.</li>
+          </ul>
         </div>
 
-        <div>
-          <h2>My biggest challenge: inventing a vocabulary</h2>
+        <div id="shipped" class="anchor-target">
+          <h2>What shipped</h2>
           <p>
-            The hardest part of this project wasn't the math or the build &mdash; it was that this job had
-            never existed before, so none of the words for it existed either. I couldn't explain the problem to
-            engineers, get sign-off from my PM, or ask an analyst what confused them, without a shared way to
-            talk about pieces of a video that had never needed names before. Round 2 of usability testing is
-            where I felt this hardest: analysts kept describing confusion in circles because we had no shared
-            term for what they were pointing at.
+            A tagging interface with as little analyst interaction as possible: load both submissions, confirm
+            one sync point, and every event crosses over in a single pass.
           </p>
-          <p>Some of the terms I ended up defining and carrying into the shipped UI:</p>
-          <dl class="glossary">
-            <div class="glossary__item">
-              <dt class="glossary__term">Media segment</dt>
-              <dd class="glossary__def">One continuous piece of a game's footage. A coach who pauses and resumes recording doesn't submit one file &mdash; they submit a stack of segments, and the tool needed a word for "one of those" before it could talk about aligning them.</dd>
-            </div>
-            <div class="glossary__item">
-              <dt class="glossary__term">Sync point</dt>
-              <dd class="glossary__def">The specific moment in each source we anchor the alignment offset to. Normally the start of the game; when that footage was missing, analysts needed to pick a different one.</dd>
-            </div>
-            <div class="glossary__item">
-              <dt class="glossary__term">Trusted source</dt>
-              <dd class="glossary__def">A segment carrying a real-world timestamp we can actually calculate an offset against.</dd>
-            </div>
-            <div class="glossary__item">
-              <dt class="glossary__term">Untrusted source</dt>
-              <dd class="glossary__def">A segment with no reliable timestamp, or one that doesn't agree with anything else &mdash; the alignment math has nothing solid to check itself against.</dd>
-            </div>
-          </dl>
-          <p>
-            Once the team had agreed on these, the pace of every conversation after changed &mdash; design
-            reviews, engineering handoff, even usability scripts got faster, because we were no longer spending
-            the first five minutes of every conversation re-explaining what we meant.
-          </p>
+
+          <figure class="annotated figure-solo mt-lg">
+            <span class="annotated__frame">
+              <img src="assets/img/alignment-final-ui.png" alt="The shipped Video Alignment Tool: both submissions loaded side by side above a panel for confirming the sync point between them" />
+              <span class="annotated__pin" style="--x: 50%; --y: 41%" aria-hidden="true">1</span>
+              <span class="annotated__pin" style="--x: 88%; --y: 84%" aria-hidden="true">2</span>
+              <span class="annotated__pin" style="--x: 20%; --y: 92%" aria-hidden="true">3</span>
+            </span>
+            <ol class="annotated__legend">
+              <li>
+                <span class="annotated__num" aria-hidden="true">1</span>
+                <span><strong>Both submissions, stepped independently.</strong> Frame-accurate transport on
+                each, because a near-match is not a match.</span>
+              </li>
+              <li>
+                <span class="annotated__num" aria-hidden="true">2</span>
+                <span><strong>One decision, one button.</strong> Confirming the sync point is the only thing
+                the tool asks an analyst to judge.</span>
+              </li>
+              <li>
+                <span class="annotated__num" aria-hidden="true">3</span>
+                <span><strong>Anchored anywhere, not just the tip-off.</strong> The fix that came out of
+                testing, when missing footage turned a two-minute job into a fifteen-minute one.</span>
+              </li>
+            </ol>
+          </figure>
         </div>
 
-        <div>
-          <h2>Results</h2>
-          <p>
-            The Video Alignment Tool shipped at the end of the quarter. Analysts now align two angles of the
-            same game in minutes instead of re-tagging one from scratch.
-          </p>
+        <div id="results" class="anchor-target">
+          <h2>$500K a year, and no drop in quality</h2>
           <div class="stat-band mt-lg">
             <div class="stat-band__item">
               <p class="stat-band__value">$500K</p>
-              <p class="stat-band__label">saved year-over-year in analyst time</p>
+              <p class="stat-band__label">saved year over year on duplicate tagging</p>
             </div>
             <div class="stat-band__item">
-              <p class="stat-band__value">4hrs &rarr; ~2hrs</p>
-              <p class="stat-band__label">per duplicate-film game, tagging down to one pass plus alignment</p>
+              <p class="stat-band__value">78 min</p>
+              <p class="stat-band__label">median tag time in testing, down from over 2 hours</p>
             </div>
             <div class="stat-band__item">
-              <p class="stat-band__value">0%</p>
-              <p class="stat-band__label">drop in coach-reported data quality after launch</p>
+              <p class="stat-band__value">No dip</p>
+              <p class="stat-band__label">guardrail: coach ratings held on real games after launch</p>
             </div>
           </div>
         </div>
-      </div>
-    </section>
 
-    <section class="container section--tight">
-      <h2>How I would improve this</h2>
-      <p>
-        The missing-footage edge case was the one we found through testing rather than anticipating up front
-        &mdash; with more time, I'd want a broader pass of research up front across the range of ways coaches
-        actually film, rather than discovering fallback anchors reactively during usability testing. I'd also
-        want to revisit the manual-anchor flow for that edge case once we had usage data: it worked, but it
-        was the least-tested part of the tool at launch.
-      </p>
+        <div>
+          <h2>What I&rsquo;d do next</h2>
+          <ul>
+            <li>
+              <strong>A keyboard shortcut for setting a sync point.</strong> It&rsquo;s still a mouse job, and
+              it&rsquo;s the one step an analyst does on every single alignment.
+            </li>
+            <li>
+              <strong>Solve for multi.</strong> We handle one messy video well. Two messy videos &mdash; both
+              chopped into segments, neither with a clean anchor &mdash; still fall back to manual work.
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h2>The vocabulary outlived the project</h2>
+          <p>
+            We invented so many terms that I couldn&rsquo;t explain the work to another designer without
+            twenty minutes of preamble &mdash; so I worked with a content designer to write a small dictionary.
+            Teams across Hudl still use these words years later.
+          </p>
+          <dl class="glossary">
+            <div class="glossary__item">
+              <dt class="glossary__term">Media segment</dt>
+              <dd class="glossary__def">One continuous piece of a game&rsquo;s footage. A coach who pauses and resumes recording submits a stack of these, not one file.</dd>
+            </div>
+            <div class="glossary__item">
+              <dt class="glossary__term">Sync point</dt>
+              <dd class="glossary__def">The moment in each recording we anchor the offset to. Normally the tip-off; when that footage is missing, the analyst picks another.</dd>
+            </div>
+            <div class="glossary__item">
+              <dt class="glossary__term">Trusted source</dt>
+              <dd class="glossary__def">A segment carrying a real-world timestamp we can calculate an offset against.</dd>
+            </div>
+            <div class="glossary__item">
+              <dt class="glossary__term">Untrusted source</dt>
+              <dd class="glossary__def">A segment with no reliable timestamp, or one that agrees with nothing else &mdash; the math has nothing to check itself against.</dd>
+            </div>
+          </dl>
+        </div>
+
+        <!-- The working behind the three research strands above. Cut from
+             the main narrative, not from the page. -->
+        <details class="deep-dive deep-dive--folded">
+          <summary class="deep-dive__summary">
+            <svg class="deep-dive__chevron" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+            <span>The working &mdash; the workshop, the math, and why the tip-off</span>
+            <span class="deep-dive__hint">2 min read</span>
+          </summary>
+
+          <div class="deep-dive__inner">
+            <h3>Where in the pipeline we could solve it</h3>
+            <p>
+              Before any of the bets, my PM and I ran a workshop to walk the squad through where a fix could
+              live, which edge cases were real, and what our options actually were. It is the reason we went
+              into the two weeks with four bets rather than four arguments.
+            </p>
+
+            <figure class="figure-solo figure-solo--small mt-lg">
+              <img src="assets/img/alignment-miro-workshop.png" alt="Miro board from the solution workshop, covered in sticky notes grouping edge cases and possible solutions" />
+              <figcaption>
+                <strong>What can we do?</strong> Every option on one board, grouped by where in the pipeline it
+                would have to work.
+              </figcaption>
+            </figure>
+
+            <h3 class="mt-xl">The math the meme was standing in for</h3>
+            <p>
+              If we used the metadata timestamps on each media segment relative to each other, we could align
+              the video in chunks. Where Video B has media segments we know exactly where its pauses are; where
+              it doesn&rsquo;t, we binary-search for them.
+            </p>
+
+            <figure class="figure-solo mt-lg">
+              <img src="assets/img/video-alignment.png" alt="Diagram mapping one quarter of Video A onto Video B across three cases: Video B with fewer pauses, the same number of pauses, and more pauses than Video A" />
+              <figcaption>
+                How a quarter of Video A maps onto Video B when the two recordings have a different number of
+                pauses. My squad understood the meme faster than they understood this.
+              </figcaption>
+            </figure>
+
+            <h3 class="mt-xl">Why the tip-off, specifically</h3>
+            <p>
+              A sync point is technically arbitrary &mdash; any shared instant works. But anchoring on a real
+              event gives you context clues, and context clues are what let someone land an almost
+              frame-accurate match. The tip-off is easy to find and impossible to mistake for anything else,
+              which is why it became the default rather than the requirement.
+            </p>
+          </div>
+        </details>
+      </div>
     </section>
   </main>
 

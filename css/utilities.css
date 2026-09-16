@@ -11,10 +11,26 @@
   color: var(--color-accent);
 }
 
+/* For an object-fit: cover image whose subject sits toward one edge,
+   so cropping doesn't center on empty space instead. */
+.object-left {
+  object-position: left;
+}
+
 .mt-0 { margin-top: 0; }
 .mb-0 { margin-bottom: 0; }
 .mt-lg { margin-top: var(--space-lg); }
 .mb-lg { margin-bottom: var(--space-lg); }
+.mt-xl { margin-top: var(--space-xl); }
+
+/* Clears the sticky .jump-nav bar when a reader lands here via anchor
+   link, so the heading isn't tucked underneath it. Sized against the
+   minimized bar (its --space-sm offset plus its own height), not the
+   at-rest one — by the time any of these links can be clicked from a
+   scrolled position, the bar is minimized. */
+.anchor-target {
+  scroll-margin-top: 5.5rem;
+}
 
 .visually-hidden {
   position: absolute;

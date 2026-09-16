@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Reports — Volleyball Consolidation — Hannah Monk</title>
-  <meta name="description" content="Part 1 of the Volleyball Consolidation case study: reports." />
+  <meta name="description" content="Part 1 of the Volleyball Consolidation case study: rebuilding reports." />
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -32,26 +32,2237 @@
   <div data-include="partials/header.html"></div>
 
   <main id="main">
-    <section class="container section">
-      <!-- Replaces the usual .back-link: points at the series hub rather
-           than the projects index, since that's the level up from here. -->
-      <div class="series-bar">
-        <a class="series-bar__parent" href="case-study-volleyball-consolidation.html">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
-          Volleyball Consolidation
-        </a>
-        <span class="series-bar__position">Part 1 of 3</span>
+    <section class="case-hero">
+      <div class="case-hero__intro">
+        <div class="series-bar">
+          <a class="series-bar__parent" href="case-study-volleyball-consolidation.html">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Volleyball Consolidation
+          </a>
+          <span class="series-bar__position">Part 1 of 3</span>
+        </div>
+
+        <h1 class="case-hero__title">Reports</h1>
+        <p class="case-hero__tagline">Three products, three sets of loyal coaches, one system to replace all of them</p>
+        <p class="case-hero__client">Hudl</p>
+
+        <p class="case-hero__summary">
+          Hudl, Volleymetrics, and BallTime each shipped their own volleyball reports, and coaches were
+          fiercely loyal to whichever one they learned first. Over a year and 30&ndash;40 coach interviews, I
+          designed the system that replaces all three &mdash; one layout system, three new components, built
+          around coaches&rsquo; habits instead of against them.
+        </p>
       </div>
 
-      <h1>Reports</h1>
-      <p class="text-muted">Write-up coming soon.</p>
+      <div class="case-hero__media">
+        <img src="assets/img/reports-hero-athlete-stats.webp" alt="Athlete Stats report showing per-athlete serve, reception, attack, and set data for a match" style="object-position: left;" />
+      </div>
 
-      <nav class="pager" aria-label="Series chapters">
-        <a class="pager__link pager__link--next" href="case-study-volleyball-playback.html">
-          <span class="pager__label">Next &mdash; Part 2</span>
-          <span class="pager__title">Video overlays &amp; playback</span>
+      <dl class="fact-grid">
+        <div class="fact">
+          <dt class="fact__label">Experience goal</dt>
+          <dd class="fact__value">Make it feel like a report they already know.</dd>
+        </div>
+        <div class="fact">
+          <dt class="fact__label">Business goal</dt>
+          <dd class="fact__value">Three reporting systems into one.</dd>
+        </div>
+        <div class="fact">
+          <dt class="fact__label">Timeline</dt>
+          <dd class="fact__value">A year &mdash; constantly on and off the roadmap.</dd>
+        </div>
+        <div class="fact">
+          <dt class="fact__label">Team</dt>
+          <dd class="fact__value">2 designers (me + a data viz specialist), 1 PM, 6 devs, 2 QA</dd>
+        </div>
+        <!-- TODO: fill in the outcome and uncomment. Four input facts and no result is
+             the first gap a hiring manager notices.
+        <div class="fact">
+          <dt class="fact__label">Outcome</dt>
+          <dd class="fact__value">&hellip;</dd>
+        </div>
+        -->
+      </dl>
+    </section>
+
+    <section class="container section">
+      <div class="case-body stack" style="--gap: var(--space-xl);">
+
+        <div data-jump-nav-sentinel></div>
+        <nav class="jump-nav" data-jump-nav aria-label="Jump to section">
+          <div class="jump-nav__inner">
+            <p class="jump-nav__label">Jump to</p>
+            <div class="jump-nav__links">
+              <a class="jump-nav__link" href="#talking-with-users">Research</a>
+              <a class="jump-nav__link" href="#reports-header">Components</a>
+              <a class="jump-nav__link" href="#the-final-product">Final Designs</a>
+            </div>
+          </div>
+        </nav>
+
+        <div class="lede">
+          <hr />
+          <p class="lede__title">The Big Question</p>
+          <p class="">How do you replace three reports coaches already love that are all a little different from each other with one system they&rsquo;ll love more?</p>
+          <hr />
+        </div>
+
+        <div id="talking-with-users" class="anchor-target">
+          <h2>Coaches don&rsquo;t start with video. They start with a report.</h2>
+          <div class="figure-row mt-lg">
+            <figure>
+              <img src="assets/img/reports-user-research-slide.webp" alt="Slide captioned &quot;The first thing I do when I get my Assist data back is...&quot;, showing a stats report on the left and a synced video clip list on the right, connected by a looping arrow" />
+              <figcaption>93% of coaches described this loop &mdash; the reason they open Hudl, and the part they dread.</figcaption>
+            </figure>
+
+            <div>
+              <p>
+                I talked to 30&ndash;40 coaches over a year, middle school through Olympic analysts. Reports kept
+                sliding on and off the roadmap, so I used the delay to talk to as many coaches as I could &mdash; and it was easy to find users since coaches will always make time to talk about their favorite report.
+              </p>
+              <p class="mt-lg">Every one of them described the same loop that they did not like: Click a cell &rarr; find the clip &rarr; go back &rarr; lose your place &rarr; repeat.</p>
+            </div>
+          </div>
+          <div class="lede">
+          <hr />
+          <p class="lede__title">The problem I didn&rsquo;t want to repeat</p>
+            <p class="lede__title text-center">Click a cell &rarr; find the clip &rarr; go back &rarr; lose your place &rarr; repeat.</p>
+            <p>
+            They loved the data. They loved that the data got them to the video, but they didn&rsquo;t like that it took them out of what they were experiencing &mdash; a report-first world.
+          </p>
+          <hr />
+          </div>
+
+        
+
+
+        </div>
+
+        <div>
+          <h2>Familiarity beats almost everything else</h2>
+          <p>
+            Coaches are loyal to what they know, and every change costs them something. But their loyalty
+            wasn&rsquo;t a reason to repeat the old reports&rsquo; mistakes. My PM and I turned the research
+            into a ranked priority guide, so the team could settle tradeoffs without me in the room.
+          </p>
+
+          <div class="grid grid--4up mt-lg">
+            <div class="pillar">
+              <p class="pillar__title">1. Path to action</p>
+              <p class="pillar__text">Coaches don&rsquo;t just read reports. They clean data and find video in them.</p>
+            </div>
+            <div class="pillar">
+              <p class="pillar__title">2. Familiarity</p>
+              <p class="pillar__text">Years of muscle memory. Don&rsquo;t spend it.</p>
+            </div>
+            <div class="pillar">
+              <p class="pillar__title">3. Interactive-ness</p>
+              <p class="pillar__text">Data is better when the video is one click away.</p>
+            </div>
+            <div class="pillar">
+              <p class="pillar__title">4. Responsiveness</p>
+              <p class="pillar__text">Athletes live on their phones. Hudl reports didn&rsquo;t.</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2>Where coaches look for reports</h2>
+          <p>
+            Before designing anything, I mapped where each product hid its reports &mdash; which nav slot, and
+            what it was called. All three buried it in nearly the same place. So we left it there.
+          </p>
+          <p><b>This was the key to keeping reports familiar, while adding new features and making some changes to layouts and components.</b> How do you replace three reports coaches already love with one they’ll love even more? You keep their wayfinding the same—a lesson, unfortunately, we had to learn the hard way (more context below).</p>
+          <img class="mt-lg" src="assets/img/reports-nav-comparison.webp" alt="Reports navigation entry points highlighted in Volleymetrics, BallTime, and Hudl" />
+
+          <h3 class="mt-xl">Three components, a header, and a layout system covered every report we had</h3>
+
+          <p class="mt-lg">
+            Then I mapped every existing report and its flow, plus what competitors shipped, so anything we cut
+            could come back as a planned fast follow instead of a surprise.
+          </p>
+
+          <p>
+            Everything we owed coaches collapsed into three components: a data table worth staring at, a
+            location chart with lines and heat maps, and a trends chart that redraws on demand. A full report
+            builder needed more than that &mdash; those became follow-ups.
+          </p>
+          <img class="mt-lg" src="assets/img/reports-competitive-audit.webp" alt="A board cataloging report pages and components across BT, Hudl, Volleymetrics, VolleyStation, NCAA stats pages, and other tools" />
+        </div>
+
+        <div>
+          <h2>We built the system. We built the components. 2 mistakes almost cost us everything.</h2>
+          <p class="text-muted">One we were forced into. One was an existing system that I advocated to change.</p>
+
+          <div class="stack mt-lg" style="--gap: var(--space-xl);">
+            <div class="figure-row">
+              <img src="assets/img/reports-mistake-video-first.png" alt="Placeholder: the video-first entry point beside the rerouted Reports button" />
+              <div>
+                <h4>We shipped reports before they were ready. A new data system forced us into a video-first approach. User sentiment was rough...</h4>
+                <div class="chip-row">
+                  <span class="tag">Familiarity</span>
+                </div>
+                <p class="text-muted">
+                  We never meant to ship video-first. The data behind the old reports broke in a way we couldn&rsquo;t repair. Another initiative needed that data pipeline that broke the old reports &mdash; so video-first went out early: pick your content, then see your numbers.
+                </p>
+                <p class="text-muted">
+                  It turned into the clearest evidence we got all year. Coaches didn&rsquo;t adapt to it. They worked around it, and they told us so. What they wanted was the order the research had described from the start: open reports, see the most recent match, change the content from there.
+                </p>
+                <p class="text-muted">
+                  Rerouting the Reports button to the new experience was always the plan. Shipping the wrong order first just told us exactly what that order was worth.
+                </p>
+              </div>
+            </div>
+
+            <div class="figure-row">
+              <img src="assets/img/reports-mistake-report-collapse.png" alt="Placeholder: a full-screen report collapsing into a side panel beside the grid opening under the video" />
+              <div>
+                <h4>The existing layout system made reports too easy to dissolve</h4>
+                <div class="chip-row">
+                  <span class="tag">Path to action</span>
+                  <span class="tag">Familiarity</span>
+                </div>
+                <p class="text-muted">
+                  I pushed very hard to get this fixed. Our principal designer&rsquo;s grand vision was a video and data experience that was modular and fluid. The system wasn&rsquo;t working, and it was one of the core complaints from users. Based on my research, I knew how important it was to get rid of the report-to-video loop and instead have them in one experience. Our existing system did that, but it was only grounded in 1 of the 2 report -> data loop problem (the removal of the loop). It did not help users stay in the reports experience. It still forced them into a video first experience.
+                </p>
+                <p class="text-muted">
+                  The fluidness of the system was forcing users to flip-flop between reports-first and video-first. The fluidness was too jarring.
+                </p>
+                <p class="text-muted">
+                  So I argued to constrain the system. Sometimes a full-screen report should just be a
+                  full-screen report &mdash; no collapse, no side panel, no transition, even though the system
+                  made it possible. Full screen reports should be full screen reports with a hint of video. Full screen video should have a some reports.
+                </p>
+              </div> 
+            </div>
+          </div>
+
+          <p class="mt-xl">
+            Everything below is built on what those two cost us: let coaches start where they already start, and
+            don&rsquo;t move them once they&rsquo;re there.
+          </p>
+        </div>
+
+        <div>
+          <h2>The system we built</h2>
+
+          <div class="stack mt-xl" style="--gap: var(--space-lg);">
+            <div id="reports-header" class="anchor-target">
+              <h3>Reports Header</h3>
+              <div class="figure-row mt-lg">
+                <img src="assets/img/reports-header.png" alt="" />
+                <div>
+                  <h4>One header, every report</h4>
+                  <div class="chip-row">
+                    <span class="tag">Familiarity</span>
+                  </div>
+                  <p class="text-muted">
+                    Team, matches, and the tabs between report types &mdash; in the same place all three old products
+                    put them. A coach opening the new system doesn&rsquo;t hunt for anything. The frame was
+                    already familiar, even when the data underneath was new.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3>Reports Layouts System</h3>
+              <div class="figure-row mt-lg">
+                <img src="assets/img/reports-layout-system.png" alt="" />
+                <div>
+                  <h4>A layout system, not one-off reports</h4>
+                  <div class="chip-row">
+                    <span class="tag">Familiarity</span>
+                    <span class="tag">Responsiveness</span>
+                  </div>
+                  <p class="text-muted">
+                    We couldn&rsquo;t rebuild every report for every sport, and other squads were about to
+                    start building their own.
+                  </p>
+                  <p class="text-muted">
+                    So we defined the four layouts volleyball needed and made it easy to add more. Designers and
+                    engineers plug components into cards; the system handles responsiveness and spacing. Nobody
+                    reinvents a report again &mdash; with guardrails, added later, on what a layout isn&rsquo;t
+                    allowed to do.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3>New Components</h3>
+              <div class="stack mt-lg" style="--gap: var(--space-lg);">
+                <div class="figure-row">
+                  <img src="assets/img/reports-component-data-table.png" alt="" />
+                  <div>
+                    <h4>The data table</h4>
+                    <div class="chip-row">
+                      <span class="tag">Familiarity</span>
+                      <span class="tag">Path to action</span>
+                    </div>
+                    <p class="text-muted">
+                      The same stats in the same shape coaches already read &mdash; but every cell is a door into
+                      the video behind it. Selections hold, so you can see what you&rsquo;ve clicked and act on
+                      a set of cells instead of chasing one clip and losing your place on the way back.
+                    </p>
+                  </div>
+                </div>
+                <div class="figure-row">
+                  <img src="assets/img/reports-component-location-chart.png" alt="" />
+                  <div>
+                    <h4>The location chart</h4>
+                    <div class="chip-row">
+                      <span class="tag">Interactive-ness</span>
+                    </div>
+                    <p class="text-muted">
+                      Where the ball actually went: serve and attack lines, heat maps for the patterns a column of
+                      numbers can&rsquo;t show. Click a hot zone, get the rallies that made it &mdash; which is
+                      the only reason a coach is looking at it.
+                    </p>
+                  </div>
+                </div>
+                <div class="figure-row">
+                  <img src="assets/img/reports-component-trends-chart.png" alt="" />
+                  <div>
+                    <h4>The trends chart</h4>
+                    <div class="chip-row">
+                      <span class="tag">Interactive-ness</span>
+                      <span class="tag">Familiarity</span>
+                    </div>
+                    <p class="text-muted">
+                      Is this getting better or worse? The question every coach asks after a match, answered across
+                      a season instead of a single game. Pick the stat, the grouping, the window &mdash; the same
+                      component covers a team&rsquo;s side-out all year and one athlete&rsquo;s last five sets.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="the-final-product" class="anchor-target">
+          <h2>The Final Product</h2>
+          <p>
+            Rather than screenshot the report, I rebuilt it here. The navigation is the coach&rsquo;s
+            starting point: which match, the filters over it, and the three things they do with a report
+            once they have it &mdash; ask for help, send it to an assistant, take it away as a file.
+          </p>
+
+          <figure class="rdemo-fig mt-lg">
+            <!-- Web / tablet / phone, without leaving the page: the report
+                 is a size container, so these set the window to each
+                 device's width AND its proportions, and every layout rule
+                 inside it answers to that (.rdemo-sizes in components.css,
+                 setupReportSizes in main.js). -->
+            <div class="rdemo-sizes" data-rdemo-sizes role="group" aria-label="Report width">
+              <button type="button" class="rdemo-sizes__option" data-rdemo-size="web" aria-pressed="true">
+                <svg class="rdemo-sizes__icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                  <rect x="2.5" y="4" width="19" height="13" rx="2" />
+                  <path d="M9 20h6M12 17v3" />
+                </svg>
+                Web
+              </button>
+              <button type="button" class="rdemo-sizes__option" data-rdemo-size="tablet" aria-pressed="false">
+                <svg class="rdemo-sizes__icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                  <rect x="4" y="2.5" width="16" height="19" rx="2" />
+                  <path d="M12 18.5h.01" />
+                </svg>
+                Tablet
+              </button>
+              <button type="button" class="rdemo-sizes__option" data-rdemo-size="mobile" aria-pressed="false">
+                <svg class="rdemo-sizes__icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                  <rect x="7" y="2.5" width="10" height="19" rx="2" />
+                  <path d="M12 18.5h.01" />
+                </svg>
+                Mobile
+              </button>
+            </div>
+
+            <!-- The report's own chrome, drawn in CSS the same way the
+                 thumbnails on the home and projects pages are (.rdemo in
+                 components.css). Inert and aria-hidden for now: the canvas
+                 under it is where the report goes, and the controls that
+                 turn out to need behaviour become real buttons when they
+                 get it. Until then the caption is what describes this. -->
+            <div class="rdemo" data-report-demo data-size="web">
+              <div class="rdemo__bar">
+                <!-- The two groups of chrome share a row of their own on a
+                     narrow container and dissolve into the bar's own row on
+                     a wide one — see .rdemo__row in components.css. -->
+                <div class="rdemo__row">
+                  <div class="rdemo__group rdemo__group--lead">
+                    <span class="rdemo__btn rdemo__btn--icon" aria-hidden="true">
+                      <svg class="rdemo__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                      </svg>
+                    </span>
+                    <span class="rdemo__dots"></span aria-hidden="true">
+                    <span class="rdemo__btn">
+                      <svg class="rdemo__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                        <path d="M6 20V11M12 20V4M18 20V14" />
+                      </svg>
+                      FHS vs VHS
+                    </span>
+                    <button
+                      type="button"
+                      class="rdemo__btn rdemo__btn--live"
+                      data-rdemo-side-toggle="left"
+                      aria-controls="rdemo-side-left"
+                      aria-expanded="false"
+                    >
+                      <svg class="rdemo__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <path d="M4 5h16l-6.3 7.6V19l-3.4-2.1v-4.3L4 5z" />
+                      </svg>
+                      <span class="rdemo__label">0 Filters</span>
+                    </button>
+                  </div>
+
+                  <div class="rdemo__group rdemo__group--trail">
+                    <button
+                      type="button"
+                      class="rdemo__btn rdemo__btn--icon rdemo__btn--live"
+                      data-rdemo-side-toggle="right"
+                      aria-controls="rdemo-side-right"
+                      aria-expanded="false"
+                      aria-label="Video panel"
+                    >
+                      <svg class="rdemo__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <rect x="3" y="4.5" width="18" height="15" rx="2" />
+                        <path d="M14.5 4.5v15" />
+                      </svg>
+                    </button>
+                    <span class="rdemo__btn rdemo__btn--icon" aria-hidden="true">
+                      <svg class="rdemo__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                        <circle cx="12" cy="12" r="8.5" />
+                        <path d="M9.6 9.4a2.5 2.5 0 1 1 3.3 2.4c-.6.2-.9.7-.9 1.3v.4" />
+                        <path d="M12 16.6h.01" />
+                      </svg>
+                    </span>
+                    <span class="rdemo__btn" aria-hidden="true">
+                      <svg class="rdemo__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                        <path d="M4 19c0-6.1 4-9.5 10.5-9.5" />
+                        <path d="M11 5.5l4.5 4-4.5 4" />
+                      </svg>
+                      <span class="rdemo__label">Share</span>
+                    </span>
+                    <span class="rdemo__btn" aria-hidden="true">
+                      <svg class="rdemo__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                        <path d="M12 4v9.5" />
+                        <path d="M8.2 10.3L12 14l3.8-3.7" />
+                        <path d="M5 18.5h14" />
+                      </svg>
+                      <span class="rdemo__label">Download</span>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="rdemo__field" aria-hidden="true">
+                  <svg class="rdemo__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                    <circle cx="11" cy="11" r="6.5" />
+                    <path d="M20 20l-4.2-4.2" />
+                  </svg>
+                  <span class="rdemo__placeholder">Type to apply filters&hellip;</span>
+                </div>
+              </div>
+
+              <!-- Report, flanked. The two panels are the product's answer to
+                   the loop the research kept turning up: a coach who has to
+                   leave the report to reach a filter or a clip loses their
+                   place, so both arrive beside the report instead of instead
+                   of it. Closed by default — the report is the subject. -->
+              <div class="rdemo__stage">
+                <!-- The left-hand panel. Empty until something is loaded
+                     into its body (setupSidePanels in main.js fires
+                     rdemo:side-open, which is where that goes). -->
+                <aside
+                  class="rdemo__side rdemo__side--left"
+                  id="rdemo-side-left"
+                  data-rdemo-side="left"
+                  aria-label="Filters"
+                >
+                  <span class="rdemo__grabber" aria-hidden="true"></span>
+                  <div class="rdemo__sidehead">
+                    <span class="rdemo__sidetitle" data-rdemo-side-title="left">Filters</span>
+                    <button
+                      type="button"
+                      class="rdemo__sideclose"
+                      data-rdemo-side-close="left"
+                      aria-label="Close filters"
+                    >
+                      <svg class="rdemo__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <path d="M6 6l12 12M18 6L6 18" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="rdemo__sidebody" data-rdemo-side-body="left"></div>
+                </aside>
+
+              <!-- The report itself. Everything above this is the window
+                   around it; from here down it is the report the case
+                   study is about: who you're looking at, which report,
+                   and which matches it counts. The match tiles' show/hide
+                   is the one live control so far (setupMatchTiles in
+                   main.js); the rest is drawn. -->
+              <div class="rdemo__canvas">
+                <div class="rdemo__report">
+                  <div class="rdemo__head">
+                    <span class="rdemo__crest" aria-hidden="true">F</span>
+                    <span class="rdemo__team">
+                      <span class="rdemo__teamname">
+                        Framingham
+                        <svg class="rdemo__icon rdemo__chev" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+                          <path d="M5 8.5h14L12 17z" />
+                        </svg>
+                      </span>
+                      <span class="rdemo__scout">Scout a different team</span>
+                    </span>
+                    <svg class="rdemo__icon rdemo__collapse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                      <path d="M10 4v6H4M14 20v-6h6" />
+                    </svg>
+                  </div>
+
+                  <!-- A real tablist: these switch the panel below (see
+                       setupReportTabs in main.js). The row's leading icon is
+                       chrome, not a tab, so it is hidden from assistive tech
+                       and the list owns nothing but the five tabs. -->
+                  <div class="rdemo__tabs" role="tablist" aria-label="Report type">
+                    <svg class="rdemo__icon rdemo__tabsicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                      <path d="M4 7h1M4 12h1M4 17h1M9 7h11M9 12h11M9 17h11" />
+                    </svg>
+                    <button
+                      type="button"
+                      class="rdemo__tab"
+                      role="tab"
+                      id="rdemo-tab-athlete"
+                      aria-controls="rdemo-panel-athlete"
+                      aria-selected="true"
+                      tabindex="0"
+                    >Athlete Stats</button>
+                    <button
+                      type="button"
+                      class="rdemo__tab"
+                      role="tab"
+                      id="rdemo-tab-team"
+                      aria-controls="rdemo-panel-team"
+                      aria-selected="false"
+                      tabindex="-1"
+                    >Team Stats</button>
+                    <button
+                      type="button"
+                      class="rdemo__tab"
+                      role="tab"
+                      id="rdemo-tab-attack"
+                      aria-controls="rdemo-panel-attack"
+                      aria-selected="false"
+                      tabindex="-1"
+                    >Attack Tendencies</button>
+                    <button
+                      type="button"
+                      class="rdemo__tab"
+                      role="tab"
+                      id="rdemo-tab-setter"
+                      aria-controls="rdemo-panel-setter"
+                      aria-selected="false"
+                      tabindex="-1"
+                    >Setter Tendencies</button>
+                    <button
+                      type="button"
+                      class="rdemo__tab"
+                      role="tab"
+                      id="rdemo-tab-trends"
+                      aria-controls="rdemo-panel-trends"
+                      aria-selected="false"
+                      tabindex="-1"
+                    >Trends</button>
+                  </div>
+
+                  <div class="rdemo__picker">
+                    <span class="rdemo__count" data-rdemo-count>1 Selected</span>
+                    <span class="rdemo__scope">2025&ndash;26 Matches:</span>
+                    <button
+                      type="button"
+                      class="rdemo__chip"
+                      data-rdemo-quick="recent"
+                      aria-pressed="true"
+                    >Most Recent</button>
+                    <button
+                      type="button"
+                      class="rdemo__chip"
+                      data-rdemo-quick="last5"
+                      aria-pressed="false"
+                    >Last 5</button>
+                    <button
+                      type="button"
+                      class="rdemo__chip"
+                      data-rdemo-quick="season"
+                      aria-pressed="false"
+                    >All Season</button>
+                    <button
+                      type="button"
+                      class="rdemo__chip"
+                      data-rdemo-quick="tournaments"
+                      aria-pressed="false"
+                    >Tournaments</button>
+                    <button
+                      type="button"
+                      class="rdemo__chip"
+                      data-rdemo-quick="home"
+                      aria-pressed="false"
+                    >Home</button>
+                    <button
+                      type="button"
+                      class="rdemo__chip"
+                      data-rdemo-quick="away"
+                      aria-pressed="false"
+                    >Away</button>
+                    <button
+                      type="button"
+                      class="rdemo__chip"
+                      data-rdemo-quick="wins"
+                      aria-pressed="false"
+                    >Wins</button>
+                    <button
+                      type="button"
+                      class="rdemo__chip"
+                      data-rdemo-quick="losses"
+                      aria-pressed="false"
+                    >Losses</button>
+                    <span class="rdemo__more">Select other matches</span>
+                    <button
+                      type="button"
+                      class="rdemo__tilestoggle"
+                      data-rdemo-tiles
+                      aria-expanded="true"
+                      aria-controls="rdemo-tiles"
+                    >
+                      <svg class="rdemo__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <path d="M3 3l18 18" />
+                        <path d="M10.6 5.2A9.6 9.6 0 0 1 12 5c5 0 9 4.5 9 7 0 .9-.5 2-1.5 3.1" />
+                        <path d="M6.5 7.3C4.3 8.8 3 10.9 3 12c0 2.5 4 7 9 7 1.6 0 3-.4 4.2-1.1" />
+                        <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
+                      </svg>
+                      <span class="rdemo__tileslabel rdemo__tileslabel--hide">Hide Match Tiles</span>
+                      <span class="rdemo__tileslabel rdemo__tileslabel--show">Show Match Tiles</span>
+                    </button>
+                  </div>
+
+                  <!-- The season, most recent first — which is the order the
+                       quick selects above read it in: "Most Recent" is the
+                       leftmost tile, "Last 5" the leftmost five. Venue and
+                       result ride on each tile rather than being parsed back
+                       out of its label, and a tournament weekend is flagged,
+                       so every shortcut in that row has something real to
+                       filter on (setupMatchSelects in main.js). -->
+                  <div class="rdemo__tiles" id="rdemo-tiles">
+                    <button
+                      type="button"
+                      class="rdemo__tile"
+                      data-rdemo-match
+                      data-venue="home"
+                      data-result="w"
+                      data-sideout="55.1"
+                      aria-pressed="true"
+                    >
+                      <span class="rdemo__tileopp">vs FHS</span>
+                      <span class="rdemo__tiledate">Oct 24</span>
+                      <span class="rdemo__tileresult">
+                        <span class="rdemo__wl rdemo__wl--w">W</span>
+                        3-2
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      class="rdemo__tile"
+                      data-rdemo-match
+                      data-venue="away"
+                      data-result="w"
+                      data-sideout="54.4"
+                      aria-pressed="false"
+                    >
+                      <span class="rdemo__tileopp">@ MHS</span>
+                      <span class="rdemo__tiledate">Oct 21</span>
+                      <span class="rdemo__tileresult">
+                        <span class="rdemo__wl rdemo__wl--w">W</span>
+                        3-0
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      class="rdemo__tile"
+                      data-rdemo-match
+                      data-venue="home"
+                      data-result="l"
+                      data-sideout="48.6"
+                      aria-pressed="false"
+                    >
+                      <span class="rdemo__tileopp">vs GHS</span>
+                      <span class="rdemo__tiledate">Oct 17</span>
+                      <span class="rdemo__tileresult">
+                        <span class="rdemo__wl rdemo__wl--l">L</span>
+                        1-3
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      class="rdemo__tile"
+                      data-rdemo-match
+                      data-venue="away"
+                      data-result="w"
+                      data-sideout="51.2"
+                      aria-pressed="false"
+                    >
+                      <span class="rdemo__tileopp">@ BHS</span>
+                      <span class="rdemo__tiledate">Oct 14</span>
+                      <span class="rdemo__tileresult">
+                        <span class="rdemo__wl rdemo__wl--w">W</span>
+                        3-1
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      class="rdemo__tile"
+                      data-rdemo-match
+                      data-venue="home"
+                      data-result="w"
+                      data-sideout="52.0"
+                      aria-pressed="false"
+                    >
+                      <span class="rdemo__tileopp">vs RHS</span>
+                      <span class="rdemo__tiledate">Oct 10</span>
+                      <span class="rdemo__tileresult">
+                        <span class="rdemo__wl rdemo__wl--w">W</span>
+                        3-0
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      class="rdemo__tile"
+                      data-rdemo-match
+                      data-venue="away"
+                      data-result="l"
+                      data-sideout="46.8"
+                      aria-pressed="false"
+                    >
+                      <span class="rdemo__tileopp">@ GHS</span>
+                      <span class="rdemo__tiledate">Oct 7</span>
+                      <span class="rdemo__tileresult">
+                        <span class="rdemo__wl rdemo__wl--l">L</span>
+                        0-3
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      class="rdemo__tile"
+                      data-rdemo-match
+                      data-venue="home"
+                      data-result="w"
+                      data-sideout="49.1"
+                      aria-pressed="false"
+                    >
+                      <span class="rdemo__tileopp">vs MHS</span>
+                      <span class="rdemo__tiledate">Oct 3</span>
+                      <span class="rdemo__tileresult">
+                        <span class="rdemo__wl rdemo__wl--w">W</span>
+                        3-1
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      class="rdemo__tile"
+                      data-rdemo-match
+                      data-venue="home"
+                      data-result="w"
+                      data-sideout="50.3"
+                      aria-pressed="false"
+                    >
+                      <span class="rdemo__tileopp">vs BHS</span>
+                      <span class="rdemo__tiledate">Sept 30</span>
+                      <span class="rdemo__tileresult">
+                        <span class="rdemo__wl rdemo__wl--w">W</span>
+                        3-2
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      class="rdemo__tile"
+                      data-rdemo-match
+                      data-venue="away"
+                      data-result="l"
+                      data-sideout="45.5"
+                      aria-pressed="false"
+                    >
+                      <span class="rdemo__tileopp">@ RHS</span>
+                      <span class="rdemo__tiledate">Sept 26</span>
+                      <span class="rdemo__tileresult">
+                        <span class="rdemo__wl rdemo__wl--l">L</span>
+                        2-3
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      class="rdemo__tile"
+                      data-rdemo-match
+                      data-venue="home"
+                      data-result="w"
+                      data-tournament
+                      data-sideout="47.2"
+                      aria-pressed="false"
+                    >
+                      <span class="rdemo__tileopp">vs GHS</span>
+                      <span class="rdemo__tiledate">Sept 23</span>
+                      <span class="rdemo__tileresult">
+                        <span class="rdemo__wl rdemo__wl--w">W</span>
+                        3-0
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      class="rdemo__tile"
+                      data-rdemo-match
+                      data-venue="home"
+                      data-result="w"
+                      data-tournament
+                      data-sideout="48.0"
+                      aria-pressed="false"
+                    >
+                      <span class="rdemo__tileopp">vs MHS</span>
+                      <span class="rdemo__tiledate">Sept 20</span>
+                      <span class="rdemo__tileresult">
+                        <span class="rdemo__wl rdemo__wl--w">W</span>
+                        3-1
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      class="rdemo__tile"
+                      data-rdemo-match
+                      data-venue="home"
+                      data-result="l"
+                      data-tournament
+                      data-sideout="44.6"
+                      aria-pressed="false"
+                    >
+                      <span class="rdemo__tileopp">vs RHS</span>
+                      <span class="rdemo__tiledate">Sept 19</span>
+                      <span class="rdemo__tileresult">
+                        <span class="rdemo__wl rdemo__wl--l">L</span>
+                        1-3
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      class="rdemo__tile"
+                      data-rdemo-match
+                      data-venue="away"
+                      data-result="w"
+                      data-sideout="46.1"
+                      aria-pressed="false"
+                    >
+                      <span class="rdemo__tileopp">@ BHS</span>
+                      <span class="rdemo__tiledate">Sept 16</span>
+                      <span class="rdemo__tileresult">
+                        <span class="rdemo__wl rdemo__wl--w">W</span>
+                        3-0
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      class="rdemo__tile"
+                      data-rdemo-match
+                      data-venue="home"
+                      data-result="l"
+                      data-sideout="39.8"
+                      aria-pressed="false"
+                    >
+                      <span class="rdemo__tileopp">vs FHS</span>
+                      <span class="rdemo__tiledate">Sept 12</span>
+                      <span class="rdemo__tileresult">
+                        <span class="rdemo__wl rdemo__wl--l">L</span>
+                        0-3
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      class="rdemo__tile"
+                      data-rdemo-match
+                      data-venue="away"
+                      data-result="w"
+                      data-sideout="43.2"
+                      aria-pressed="false"
+                    >
+                      <span class="rdemo__tileopp">@ MHS</span>
+                      <span class="rdemo__tiledate">Sept 9</span>
+                      <span class="rdemo__tileresult">
+                        <span class="rdemo__wl rdemo__wl--w">W</span>
+                        3-2
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      class="rdemo__tile"
+                      data-rdemo-match
+                      data-venue="home"
+                      data-result="w"
+                      data-sideout="44.0"
+                      aria-pressed="false"
+                    >
+                      <span class="rdemo__tileopp">vs GHS</span>
+                      <span class="rdemo__tiledate">Sept 5</span>
+                      <span class="rdemo__tileresult">
+                        <span class="rdemo__wl rdemo__wl--w">W</span>
+                        3-0
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      class="rdemo__tile"
+                      data-rdemo-match
+                      data-venue="away"
+                      data-result="l"
+                      data-sideout="41.5"
+                      aria-pressed="false"
+                    >
+                      <span class="rdemo__tileopp">@ RHS</span>
+                      <span class="rdemo__tiledate">Sept 3</span>
+                      <span class="rdemo__tileresult">
+                        <span class="rdemo__wl rdemo__wl--l">L</span>
+                        1-3
+                      </span>
+                    </button>
+                  </div>
+
+                  <!-- One panel per report. Empty for now: this is where each
+                       report's own content loads, and the tab row above is
+                       what swaps them. -->
+                  <div class="rdemo__body">
+                    <div
+                      class="rdemo__panel"
+                      role="tabpanel"
+                      id="rdemo-panel-athlete"
+                      aria-labelledby="rdemo-tab-athlete"
+                      tabindex="0"
+                      data-rdemo-report="athlete"
+                    >
+                      <!-- Layout 4 of 4: one full-width card, fit to the table's own
+                           height. The table is cut into stat groups - the roster,
+                           then attacks, serves, receptions, sets, blocks. Each group
+                           is its own <table> carrying the roster column, which is
+                           what lets it become a card of its own on a phone; on web
+                           and tablet the repeated roster columns collapse and the
+                           groups read as one connected table (.rdemo__stats in
+                           components.css). -->
+                      <div class="rdemo__layout rdemo__layout--fit">
+                        <div class="rdemo__card">
+                          <div class="rdemo__tablewrap">
+                            <div class="rdemo__stats">
+                              <div class="rdemo__statgroup rdemo__statgroup--id">
+                                <table class="rdemo__table">
+                                  <caption class="visually-hidden">Athletes, FHS vs VHS</caption>
+                                  <thead>
+                                    <tr><th scope="col" colspan="3">Athlete Stats</th></tr>
+                                    <tr>
+                                      <th scope="col" class="rdemo__statname"><span>Athletes</span></th>
+                                      <th scope="col">MP</th>
+                                      <th scope="col">SP</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#4 V. Will</span></th>
+                                      <td>1</td>
+                                      <td>3</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#13 M. Herbert</span></th>
+                                      <td>1</td>
+                                      <td>3</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#8 L. Vigil</span></th>
+                                      <td>1</td>
+                                      <td>3</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#31 L. Lee</span></th>
+                                      <td>1</td>
+                                      <td>3</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#2 J. Eny</span></th>
+                                      <td>1</td>
+                                      <td>3</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#10 J. Roth</span></th>
+                                      <td>1</td>
+                                      <td>3</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#22 B. Mason</span></th>
+                                      <td>1</td>
+                                      <td>3</td>
+                                    </tr>
+                                  </tbody>
+                                  <tfoot>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span class="rdemo__tableteam"><span class="rdemo__tablecrest" aria-hidden="true">F</span>FHS</span></th>
+                                      <td>1</td>
+                                      <td>3</td>
+                                    </tr>
+                                  </tfoot>
+                                </table>
+                              </div>
+                              <div class="rdemo__statgroup rdemo__statgroup--stat">
+                                <table class="rdemo__table">
+                                  <caption class="visually-hidden">Attacks by athlete, FHS vs VHS</caption>
+                                  <thead>
+                                    <tr><th scope="col" colspan="5">Attacks</th></tr>
+                                    <tr>
+                                      <th scope="col" class="rdemo__statname"><span>Athletes</span></th>
+                                      <th scope="col">Kill</th>
+                                      <th scope="col">A Err</th>
+                                      <th scope="col">A Att</th>
+                                      <th scope="col">A%</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#4 V. Will</span></th>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__cell">6</span></td>
+                                      <td>0.333</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#13 M. Herbert</span></th>
+                                      <td><span class="rdemo__cell">7</span></td>
+                                      <td><span class="rdemo__cell">4</span></td>
+                                      <td><span class="rdemo__cell">17</span></td>
+                                      <td>0.176</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#8 L. Vigil</span></th>
+                                      <td><span class="rdemo__cell">6</span></td>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">14</span></td>
+                                      <td>0.286</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#31 L. Lee</span></th>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#2 J. Eny</span></th>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">5</span></td>
+                                      <td><span class="rdemo__cell">16</span></td>
+                                      <td>-0.125</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#10 J. Roth</span></th>
+                                      <td><span class="rdemo__cell">7</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__cell">13</span></td>
+                                      <td>0.538</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#22 B. Mason</span></th>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">7</span></td>
+                                      <td>0.286</td>
+                                    </tr>
+                                  </tbody>
+                                  <tfoot>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span class="rdemo__tableteam"><span class="rdemo__tablecrest" aria-hidden="true">F</span>FHS</span></th>
+                                      <td><span class="rdemo__cell">28</span></td>
+                                      <td><span class="rdemo__cell">12</span></td>
+                                      <td><span class="rdemo__cell">73</span></td>
+                                      <td>0.219</td>
+                                    </tr>
+                                  </tfoot>
+                                </table>
+                              </div>
+                              <div class="rdemo__statgroup rdemo__statgroup--stat">
+                                <table class="rdemo__table">
+                                  <caption class="visually-hidden">Serves by athlete, FHS vs VHS</caption>
+                                  <thead>
+                                    <tr><th scope="col" colspan="6">Serves</th></tr>
+                                    <tr>
+                                      <th scope="col" class="rdemo__statname"><span>Athletes</span></th>
+                                      <th scope="col">Ace</th>
+                                      <th scope="col">S Err</th>
+                                      <th scope="col">S Att</th>
+                                      <th scope="col">S Rtg</th>
+                                      <th scope="col">S%</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#4 V. Will</span></th>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">10</span></td>
+                                      <td>1.80</td>
+                                      <td>90.0%</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#13 M. Herbert</span></th>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">8</span></td>
+                                      <td>1.63</td>
+                                      <td>62.5%</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#8 L. Vigil</span></th>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">13</span></td>
+                                      <td>1.69</td>
+                                      <td>76.9%</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#31 L. Lee</span></th>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">11</span></td>
+                                      <td>2.73</td>
+                                      <td>90.9%</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#2 J. Eny</span></th>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">10</span></td>
+                                      <td>2.10</td>
+                                      <td>80.0%</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#10 J. Roth</span></th>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">14</span></td>
+                                      <td>2.07</td>
+                                      <td>78.6%</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#22 B. Mason</span></th>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                    </tr>
+                                  </tbody>
+                                  <tfoot>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span class="rdemo__tableteam"><span class="rdemo__tablecrest" aria-hidden="true">F</span>FHS</span></th>
+                                      <td><span class="rdemo__cell">7</span></td>
+                                      <td><span class="rdemo__cell">13</span></td>
+                                      <td><span class="rdemo__cell">66</span></td>
+                                      <td>2.02</td>
+                                      <td>80.3%</td>
+                                    </tr>
+                                  </tfoot>
+                                </table>
+                              </div>
+                              <div class="rdemo__statgroup rdemo__statgroup--stat">
+                                <table class="rdemo__table">
+                                  <caption class="visually-hidden">Receptions by athlete, FHS vs VHS</caption>
+                                  <thead>
+                                    <tr><th scope="col" colspan="7">Receptions</th></tr>
+                                    <tr>
+                                      <th scope="col" class="rdemo__statname"><span>Athletes</span></th>
+                                      <th scope="col">Rtg 3</th>
+                                      <th scope="col">Rtg 2</th>
+                                      <th scope="col">Rtg 1</th>
+                                      <th scope="col">SR Err</th>
+                                      <th scope="col">SR Att</th>
+                                      <th scope="col">Avg Rtg</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#4 V. Will</span></th>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#13 M. Herbert</span></th>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">5</span></td>
+                                      <td>1.40</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#8 L. Vigil</span></th>
+                                      <td><span class="rdemo__cell">5</span></td>
+                                      <td><span class="rdemo__cell">6</span></td>
+                                      <td><span class="rdemo__cell">4</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">16</span></td>
+                                      <td>1.96</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#31 L. Lee</span></th>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">7</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">14</span></td>
+                                      <td>1.43</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#2 J. Eny</span></th>
+                                      <td><span class="rdemo__cell">5</span></td>
+                                      <td><span class="rdemo__cell">4</span></td>
+                                      <td><span class="rdemo__cell">5</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">15</span></td>
+                                      <td>1.87</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#10 J. Roth</span></th>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td>2.00</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#22 B. Mason</span></th>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                    </tr>
+                                  </tbody>
+                                  <tfoot>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span class="rdemo__tableteam"><span class="rdemo__tablecrest" aria-hidden="true">F</span>FHS</span></th>
+                                      <td><span class="rdemo__cell">12</span></td>
+                                      <td><span class="rdemo__cell">19</span></td>
+                                      <td><span class="rdemo__cell">14</span></td>
+                                      <td><span class="rdemo__cell">6</span></td>
+                                      <td><span class="rdemo__cell">51</span></td>
+                                      <td>1.66</td>
+                                    </tr>
+                                  </tfoot>
+                                </table>
+                              </div>
+                              <div class="rdemo__statgroup rdemo__statgroup--stat">
+                                <table class="rdemo__table">
+                                  <caption class="visually-hidden">Sets by athlete, FHS vs VHS</caption>
+                                  <thead>
+                                    <tr><th scope="col" colspan="5">Sets</th></tr>
+                                    <tr>
+                                      <th scope="col" class="rdemo__statname"><span>Athletes</span></th>
+                                      <th scope="col">Ast</th>
+                                      <th scope="col">BHE</th>
+                                      <th scope="col">Set Att</th>
+                                      <th scope="col">Ast%</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#4 V. Will</span></th>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#13 M. Herbert</span></th>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td>0.500</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#8 L. Vigil</span></th>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td>0.000</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#31 L. Lee</span></th>
+                                      <td><span class="rdemo__cell">22</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">26</span></td>
+                                      <td>0.846</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#2 J. Eny</span></th>
+                                      <td><span class="rdemo__cell">4</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__cell">6</span></td>
+                                      <td>0.667</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#10 J. Roth</span></th>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td>0.333</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#22 B. Mason</span></th>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                    </tr>
+                                  </tbody>
+                                  <tfoot>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span class="rdemo__tableteam"><span class="rdemo__tablecrest" aria-hidden="true">F</span>FHS</span></th>
+                                      <td><span class="rdemo__cell">28</span></td>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">38</span></td>
+                                      <td>0.737</td>
+                                    </tr>
+                                  </tfoot>
+                                </table>
+                              </div>
+                              <div class="rdemo__statgroup rdemo__statgroup--stat">
+                                <table class="rdemo__table">
+                                  <caption class="visually-hidden">Blocks by athlete, FHS vs VHS</caption>
+                                  <thead>
+                                    <tr><th scope="col" colspan="5">Blocks</th></tr>
+                                    <tr>
+                                      <th scope="col" class="rdemo__statname"><span>Athletes</span></th>
+                                      <th scope="col">Solo</th>
+                                      <th scope="col">Assist</th>
+                                      <th scope="col">B Err</th>
+                                      <th scope="col">Total</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#4 V. Will</span></th>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td>2.0</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#13 M. Herbert</span></th>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">4</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td>4.0</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#8 L. Vigil</span></th>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td>2.5</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#31 L. Lee</span></th>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td>0.5</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#2 J. Eny</span></th>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td>1.0</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#10 J. Roth</span></th>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td>3.5</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>#22 B. Mason</span></th>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td>1.5</td>
+                                    </tr>
+                                  </tbody>
+                                  <tfoot>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span class="rdemo__tableteam"><span class="rdemo__tablecrest" aria-hidden="true">F</span>FHS</span></th>
+                                      <td><span class="rdemo__cell">7</span></td>
+                                      <td><span class="rdemo__cell">16</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td>15.0</td>
+                                    </tr>
+                                  </tfoot>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="rdemo__panel"
+                      role="tabpanel"
+                      id="rdemo-panel-team"
+                      aria-labelledby="rdemo-tab-team"
+                      tabindex="0"
+                      data-rdemo-report="team"
+                      hidden
+                    >
+                      <!-- The same report by rotation rather than by athlete: same
+                           layout, same groups, same totals - only the rows change.
+                           Which is the argument this case study is making. -->
+                      <div class="rdemo__layout rdemo__layout--fit">
+                        <div class="rdemo__card">
+                          <div class="rdemo__tablewrap">
+                            <div class="rdemo__stats">
+                              <div class="rdemo__statgroup rdemo__statgroup--id">
+                                <table class="rdemo__table">
+                                  <caption class="visually-hidden">Rotations, FHS vs VHS</caption>
+                                  <thead>
+                                    <tr><th scope="col" colspan="3">Team Stats</th></tr>
+                                    <tr>
+                                      <th scope="col" class="rdemo__statname"><span>Rotation</span></th>
+                                      <th scope="col">Pts</th>
+                                      <th scope="col">SO%</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 1</span></th>
+                                      <td>14</td>
+                                      <td>66.7%</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 2</span></th>
+                                      <td>12</td>
+                                      <td>69.2%</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 3</span></th>
+                                      <td>11</td>
+                                      <td>53.3%</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 4</span></th>
+                                      <td>9</td>
+                                      <td>40.0%</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 5</span></th>
+                                      <td>12</td>
+                                      <td>47.1%</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 6</span></th>
+                                      <td>11</td>
+                                      <td>41.6%</td>
+                                    </tr>
+                                  </tbody>
+                                  <tfoot>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span class="rdemo__tableteam"><span class="rdemo__tablecrest" aria-hidden="true">F</span>FHS</span></th>
+                                      <td>69</td>
+                                      <td>51.6%</td>
+                                    </tr>
+                                  </tfoot>
+                                </table>
+                              </div>
+                              <div class="rdemo__statgroup rdemo__statgroup--stat">
+                                <table class="rdemo__table">
+                                  <caption class="visually-hidden">Attacks by rotation, FHS vs VHS</caption>
+                                  <thead>
+                                    <tr><th scope="col" colspan="5">Attacks</th></tr>
+                                    <tr>
+                                      <th scope="col" class="rdemo__statname"><span>Rotation</span></th>
+                                      <th scope="col">Kill</th>
+                                      <th scope="col">A Err</th>
+                                      <th scope="col">A Att</th>
+                                      <th scope="col">A%</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 1</span></th>
+                                      <td><span class="rdemo__cell">6</span></td>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">14</span></td>
+                                      <td>0.286</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 2</span></th>
+                                      <td><span class="rdemo__cell">5</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">12</span></td>
+                                      <td>0.333</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 3</span></th>
+                                      <td><span class="rdemo__cell">4</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">13</span></td>
+                                      <td>0.077</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 4</span></th>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">11</span></td>
+                                      <td>0.000</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 5</span></th>
+                                      <td><span class="rdemo__cell">5</span></td>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">12</span></td>
+                                      <td>0.250</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 6</span></th>
+                                      <td><span class="rdemo__cell">5</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">11</span></td>
+                                      <td>0.364</td>
+                                    </tr>
+                                  </tbody>
+                                  <tfoot>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span class="rdemo__tableteam"><span class="rdemo__tablecrest" aria-hidden="true">F</span>FHS</span></th>
+                                      <td><span class="rdemo__cell">28</span></td>
+                                      <td><span class="rdemo__cell">12</span></td>
+                                      <td><span class="rdemo__cell">73</span></td>
+                                      <td>0.219</td>
+                                    </tr>
+                                  </tfoot>
+                                </table>
+                              </div>
+                              <div class="rdemo__statgroup rdemo__statgroup--stat">
+                                <table class="rdemo__table">
+                                  <caption class="visually-hidden">Serves by rotation, FHS vs VHS</caption>
+                                  <thead>
+                                    <tr><th scope="col" colspan="6">Serves</th></tr>
+                                    <tr>
+                                      <th scope="col" class="rdemo__statname"><span>Rotation</span></th>
+                                      <th scope="col">Ace</th>
+                                      <th scope="col">S Err</th>
+                                      <th scope="col">S Att</th>
+                                      <th scope="col">S Rtg</th>
+                                      <th scope="col">S%</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 1</span></th>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">12</span></td>
+                                      <td>2.08</td>
+                                      <td>83.3%</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 2</span></th>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">11</span></td>
+                                      <td>2.00</td>
+                                      <td>81.8%</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 3</span></th>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">11</span></td>
+                                      <td>1.91</td>
+                                      <td>72.7%</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 4</span></th>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">10</span></td>
+                                      <td>1.80</td>
+                                      <td>70.0%</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 5</span></th>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">11</span></td>
+                                      <td>2.18</td>
+                                      <td>90.9%</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 6</span></th>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">11</span></td>
+                                      <td>2.09</td>
+                                      <td>81.8%</td>
+                                    </tr>
+                                  </tbody>
+                                  <tfoot>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span class="rdemo__tableteam"><span class="rdemo__tablecrest" aria-hidden="true">F</span>FHS</span></th>
+                                      <td><span class="rdemo__cell">7</span></td>
+                                      <td><span class="rdemo__cell">13</span></td>
+                                      <td><span class="rdemo__cell">66</span></td>
+                                      <td>2.02</td>
+                                      <td>80.3%</td>
+                                    </tr>
+                                  </tfoot>
+                                </table>
+                              </div>
+                              <div class="rdemo__statgroup rdemo__statgroup--stat">
+                                <table class="rdemo__table">
+                                  <caption class="visually-hidden">Receptions by rotation, FHS vs VHS</caption>
+                                  <thead>
+                                    <tr><th scope="col" colspan="7">Receptions</th></tr>
+                                    <tr>
+                                      <th scope="col" class="rdemo__statname"><span>Rotation</span></th>
+                                      <th scope="col">Rtg 3</th>
+                                      <th scope="col">Rtg 2</th>
+                                      <th scope="col">Rtg 1</th>
+                                      <th scope="col">SR Err</th>
+                                      <th scope="col">SR Att</th>
+                                      <th scope="col">Avg Rtg</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 1</span></th>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">9</span></td>
+                                      <td>1.67</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 2</span></th>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">4</span></td>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">10</span></td>
+                                      <td>1.80</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 3</span></th>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">8</span></td>
+                                      <td>1.63</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 4</span></th>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">8</span></td>
+                                      <td>1.44</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 5</span></th>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">8</span></td>
+                                      <td>1.63</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 6</span></th>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">8</span></td>
+                                      <td>1.75</td>
+                                    </tr>
+                                  </tbody>
+                                  <tfoot>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span class="rdemo__tableteam"><span class="rdemo__tablecrest" aria-hidden="true">F</span>FHS</span></th>
+                                      <td><span class="rdemo__cell">12</span></td>
+                                      <td><span class="rdemo__cell">19</span></td>
+                                      <td><span class="rdemo__cell">14</span></td>
+                                      <td><span class="rdemo__cell">6</span></td>
+                                      <td><span class="rdemo__cell">51</span></td>
+                                      <td>1.66</td>
+                                    </tr>
+                                  </tfoot>
+                                </table>
+                              </div>
+                              <div class="rdemo__statgroup rdemo__statgroup--stat">
+                                <table class="rdemo__table">
+                                  <caption class="visually-hidden">Sets by rotation, FHS vs VHS</caption>
+                                  <thead>
+                                    <tr><th scope="col" colspan="5">Sets</th></tr>
+                                    <tr>
+                                      <th scope="col" class="rdemo__statname"><span>Rotation</span></th>
+                                      <th scope="col">Ast</th>
+                                      <th scope="col">BHE</th>
+                                      <th scope="col">Set Att</th>
+                                      <th scope="col">Ast%</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 1</span></th>
+                                      <td><span class="rdemo__cell">6</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">8</span></td>
+                                      <td>0.750</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 2</span></th>
+                                      <td><span class="rdemo__cell">5</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__cell">6</span></td>
+                                      <td>0.833</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 3</span></th>
+                                      <td><span class="rdemo__cell">4</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__cell">6</span></td>
+                                      <td>0.667</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 4</span></th>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">6</span></td>
+                                      <td>0.500</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 5</span></th>
+                                      <td><span class="rdemo__cell">5</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__cell">6</span></td>
+                                      <td>0.833</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 6</span></th>
+                                      <td><span class="rdemo__cell">5</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td><span class="rdemo__cell">6</span></td>
+                                      <td>0.833</td>
+                                    </tr>
+                                  </tbody>
+                                  <tfoot>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span class="rdemo__tableteam"><span class="rdemo__tablecrest" aria-hidden="true">F</span>FHS</span></th>
+                                      <td><span class="rdemo__cell">28</span></td>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">38</span></td>
+                                      <td>0.737</td>
+                                    </tr>
+                                  </tfoot>
+                                </table>
+                              </div>
+                              <div class="rdemo__statgroup rdemo__statgroup--stat">
+                                <table class="rdemo__table">
+                                  <caption class="visually-hidden">Blocks by rotation, FHS vs VHS</caption>
+                                  <thead>
+                                    <tr><th scope="col" colspan="5">Blocks</th></tr>
+                                    <tr>
+                                      <th scope="col" class="rdemo__statname"><span>Rotation</span></th>
+                                      <th scope="col">Solo</th>
+                                      <th scope="col">Assist</th>
+                                      <th scope="col">B Err</th>
+                                      <th scope="col">Total</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 1</span></th>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td>3.5</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 2</span></th>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td>2.5</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 3</span></th>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td>2.0</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 4</span></th>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td>2.5</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 5</span></th>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td>2.5</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span>Rotation 6</span></th>
+                                      <td><span class="rdemo__cell">1</span></td>
+                                      <td><span class="rdemo__cell">2</span></td>
+                                      <td><span class="rdemo__nil">&ndash;</span></td>
+                                      <td>2.0</td>
+                                    </tr>
+                                  </tbody>
+                                  <tfoot>
+                                    <tr>
+                                      <th scope="row" class="rdemo__statname"><span class="rdemo__tableteam"><span class="rdemo__tablecrest" aria-hidden="true">F</span>FHS</span></th>
+                                      <td><span class="rdemo__cell">7</span></td>
+                                      <td><span class="rdemo__cell">16</span></td>
+                                      <td><span class="rdemo__cell">3</span></td>
+                                      <td>15.0</td>
+                                    </tr>
+                                  </tfoot>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="rdemo__panel"
+                      role="tabpanel"
+                      id="rdemo-panel-attack"
+                      aria-labelledby="rdemo-tab-attack"
+                      tabindex="0"
+                      data-rdemo-report="attack"
+                      hidden
+                    >
+                      <!-- Layout 3 of 4: 1/3 and 2/3, both full height. Cards
+                           are empty until the attack tendency components land in
+                           them. -->
+                      <div class="rdemo__layout rdemo__layout--split">
+                        <div class="rdemo__card">
+                          <div class="rdemo__court">
+                            <svg viewBox="-90 -110 1080 2020" role="img" aria-label="Full court: seven attacks from the front row, five landing in for kills and two out">
+                              <rect class="rdemo__courtsurface" x="0" y="0" width="900" height="1800" />
+                              <!-- Attack lines, 3m either side of the net. -->
+                              <line class="rdemo__courtline" x1="0" y1="600" x2="900" y2="600" />
+                              <line class="rdemo__courtline" x1="0" y1="1200" x2="900" y2="1200" />
+                              <line class="rdemo__courtnet" x1="-40" y1="900" x2="940" y2="900" />
+                              <g>
+                                <line class="rdemo__shot rdemo__shot--kill" x1="180" y1="980" x2="700" y2="520" />
+                                <line class="rdemo__shot rdemo__shot--kill" x1="180" y1="980" x2="820" y2="760" />
+                                <line class="rdemo__shot rdemo__shot--kill" x1="450" y1="960" x2="450" y2="300" />
+                                <line class="rdemo__shot rdemo__shot--kill" x1="740" y1="980" x2="170" y2="480" />
+                                <line class="rdemo__shot rdemo__shot--kill" x1="740" y1="980" x2="120" y2="780" />
+                                <line class="rdemo__shot rdemo__shot--err" x1="450" y1="960" x2="450" y2="-60" />
+                                <line class="rdemo__shot rdemo__shot--err" x1="180" y1="980" x2="985" y2="640" />
+                                <circle class="rdemo__shotend--kill" cx="700" cy="520" r="24" />
+                                <circle class="rdemo__shotend--kill" cx="820" cy="760" r="24" />
+                                <circle class="rdemo__shotend--kill" cx="450" cy="300" r="24" />
+                                <circle class="rdemo__shotend--kill" cx="170" cy="480" r="24" />
+                                <circle class="rdemo__shotend--kill" cx="120" cy="780" r="24" />
+                                <circle class="rdemo__shotend--err" cx="450" cy="-60" r="24" />
+                                <circle class="rdemo__shotend--err" cx="985" cy="640" r="24" />
+                              </g>
+                            </svg>
+                          </div>
+                          <div class="rdemo__courtkey">
+                            <span class="rdemo__keyitem"><span class="rdemo__keyline rdemo__keyline--kill"></span>Kill</span>
+                            <span class="rdemo__keyitem"><span class="rdemo__keyline rdemo__keyline--err"></span>Error</span>
+                          </div>
+                        </div>
+                        <div class="rdemo__card">
+                          <div class="rdemo__tablewrap">
+                            <table class="rdemo__table">
+                              <caption class="visually-hidden">Attacking by athlete, FHS vs VHS</caption>
+                              <thead>
+                                <tr>
+                                  <th scope="col" colspan="3">Athlete</th>
+                                  <th scope="col" colspan="4">Attacks</th>
+                                </tr>
+                                <tr>
+                                  <th scope="col">Athlete</th>
+                                  <th scope="col">MP</th>
+                                  <th scope="col">SP</th>
+                                  <th scope="col">Kill</th>
+                                  <th scope="col">A Err</th>
+                                  <th scope="col">A Att</th>
+                                  <th scope="col">A%</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <th scope="row">#4 V. Will</th>
+                                  <td>1</td>
+                                  <td>3</td>
+                                  <td><span class="rdemo__cell">2</span></td>
+                                  <td><span class="rdemo__nil">&ndash;</span></td>
+                                  <td><span class="rdemo__cell">6</span></td>
+                                  <td>0.333</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">#13 M. Herbert</th>
+                                  <td>1</td>
+                                  <td>3</td>
+                                  <td><span class="rdemo__cell">7</span></td>
+                                  <td><span class="rdemo__cell">4</span></td>
+                                  <td><span class="rdemo__cell">17</span></td>
+                                  <td>0.176</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">#8 L. Vigil</th>
+                                  <td>1</td>
+                                  <td>3</td>
+                                  <td><span class="rdemo__cell">6</span></td>
+                                  <td><span class="rdemo__cell">2</span></td>
+                                  <td><span class="rdemo__cell">14</span></td>
+                                  <td>0.286</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">#31 L. Lee</th>
+                                  <td>1</td>
+                                  <td>3</td>
+                                  <td><span class="rdemo__nil">&ndash;</span></td>
+                                  <td><span class="rdemo__nil">&ndash;</span></td>
+                                  <td><span class="rdemo__nil">&ndash;</span></td>
+                                  <td><span class="rdemo__nil">&ndash;</span></td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">#2 J. Eny</th>
+                                  <td>1</td>
+                                  <td>3</td>
+                                  <td><span class="rdemo__cell">3</span></td>
+                                  <td><span class="rdemo__cell">5</span></td>
+                                  <td><span class="rdemo__cell">16</span></td>
+                                  <td>-0.125</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">#10 J. Roth</th>
+                                  <td>1</td>
+                                  <td>3</td>
+                                  <td><span class="rdemo__cell">7</span></td>
+                                  <td><span class="rdemo__nil">&ndash;</span></td>
+                                  <td><span class="rdemo__cell">13</span></td>
+                                  <td>0.538</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">#22 B. Mason</th>
+                                  <td>1</td>
+                                  <td>3</td>
+                                  <td><span class="rdemo__cell">3</span></td>
+                                  <td><span class="rdemo__cell">1</span></td>
+                                  <td><span class="rdemo__cell">7</span></td>
+                                  <td>0.286</td>
+                                </tr>
+                              </tbody>
+                              <tfoot>
+                                <tr>
+                                  <th scope="row">
+                                    <span class="rdemo__tableteam">
+                                      <span class="rdemo__tablecrest" aria-hidden="true">F</span>
+                                      FHS
+                                    </span>
+                                  </th>
+                                  <td>1</td>
+                                  <td>3</td>
+                                  <td><span class="rdemo__cell">28</span></td>
+                                  <td><span class="rdemo__cell">12</span></td>
+                                  <td><span class="rdemo__cell">73</span></td>
+                                  <td>0.219</td>
+                                </tr>
+                              </tfoot>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="rdemo__panel"
+                      role="tabpanel"
+                      id="rdemo-panel-setter"
+                      aria-labelledby="rdemo-tab-setter"
+                      tabindex="0"
+                      data-rdemo-report="setter"
+                      hidden
+                    >
+                      <!-- Layout 3 of 4: 1/3 and 2/3, both full height. Cards
+                           are empty until the setter tendency components land in
+                           them. -->
+                      <div class="rdemo__layout rdemo__layout--split">
+                        <div class="rdemo__card">
+                          <div class="rdemo__court">
+                            <svg viewBox="-40 -60 980 1000" role="img" aria-label="Half court: where #2 J. Eny set the ball, zone 4 taking 34 percent and the back row 18 percent between them">
+                              <line class="rdemo__courtnet" x1="-30" y1="-18" x2="930" y2="-18" />
+                              <g>
+                                <g>
+                                  <rect class="rdemo__zone--hot" x="0" y="0" width="300" height="300" />
+                                  <rect class="rdemo__zoneframe" x="0" y="0" width="300" height="300" />
+                                  <text class="rdemo__zonevalue rdemo__zonetext--light" x="150" y="144">34%</text>
+                                  <text class="rdemo__zonelabel rdemo__zonetext--light" x="150" y="208">Zone 4</text>
+                                </g>
+                                <g>
+                                  <rect class="rdemo__zone--mid" x="300" y="0" width="300" height="300" />
+                                  <rect class="rdemo__zoneframe" x="300" y="0" width="300" height="300" />
+                                  <text class="rdemo__zonevalue rdemo__zonetext--dark" x="450" y="144">22%</text>
+                                  <text class="rdemo__zonelabel rdemo__zonetext--dark" x="450" y="208">Zone 3</text>
+                                </g>
+                                <g>
+                                  <rect class="rdemo__zone--mid" x="600" y="0" width="300" height="300" />
+                                  <rect class="rdemo__zoneframe" x="600" y="0" width="300" height="300" />
+                                  <text class="rdemo__zonevalue rdemo__zonetext--dark" x="750" y="144">26%</text>
+                                  <text class="rdemo__zonelabel rdemo__zonetext--dark" x="750" y="208">Zone 2</text>
+                                </g>
+                                <g>
+                                  <rect class="rdemo__zone--cool" x="0" y="300" width="300" height="600" />
+                                  <rect class="rdemo__zoneframe" x="0" y="300" width="300" height="600" />
+                                  <text class="rdemo__zonevalue rdemo__zonetext--light" x="150" y="594">6%</text>
+                                  <text class="rdemo__zonelabel rdemo__zonetext--light" x="150" y="658">Zone 5</text>
+                                </g>
+                                <g>
+                                  <rect class="rdemo__zone--none" x="300" y="300" width="300" height="600" />
+                                  <rect class="rdemo__zoneframe" x="300" y="300" width="300" height="600" />
+                                  <text class="rdemo__zonevalue rdemo__zonetext--dim" x="450" y="594">4%</text>
+                                  <text class="rdemo__zonelabel rdemo__zonetext--dim" x="450" y="658">Zone 6</text>
+                                </g>
+                                <g>
+                                  <rect class="rdemo__zone--cool" x="600" y="300" width="300" height="600" />
+                                  <rect class="rdemo__zoneframe" x="600" y="300" width="300" height="600" />
+                                  <text class="rdemo__zonevalue rdemo__zonetext--light" x="750" y="594">8%</text>
+                                  <text class="rdemo__zonelabel rdemo__zonetext--light" x="750" y="658">Zone 1</text>
+                                </g>
+                              </g>
+                              <rect class="rdemo__courtline" x="0" y="0" width="900" height="900" />
+                            </svg>
+                          </div>
+                          <div class="rdemo__courtkey">
+                            Fewer sets
+                            <span class="rdemo__keyscale"><span></span><span></span><span></span><span></span></span>
+                            More
+                          </div>
+                        </div>
+                        <div class="rdemo__card">
+                          <div class="rdemo__tablewrap">
+                            <table class="rdemo__table">
+                              <caption class="visually-hidden">Setting by athlete, FHS vs VHS</caption>
+                              <thead>
+                                <tr>
+                                  <th scope="col" colspan="3">Setter</th>
+                                  <th scope="col" colspan="4">Setting</th>
+                                </tr>
+                                <tr>
+                                  <th scope="col">Setter</th>
+                                  <th scope="col">MP</th>
+                                  <th scope="col">SP</th>
+                                  <th scope="col">Ast</th>
+                                  <th scope="col">S Err</th>
+                                  <th scope="col">BHE</th>
+                                  <th scope="col">Ast/Set</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <th scope="row">#2 J. Eny</th>
+                                  <td>1</td>
+                                  <td>3</td>
+                                  <td><span class="rdemo__cell">31</span></td>
+                                  <td><span class="rdemo__cell">2</span></td>
+                                  <td><span class="rdemo__cell">1</span></td>
+                                  <td>10.33</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">#7 K. Alvarez</th>
+                                  <td>1</td>
+                                  <td>3</td>
+                                  <td><span class="rdemo__cell">9</span></td>
+                                  <td><span class="rdemo__cell">1</span></td>
+                                  <td><span class="rdemo__nil">&ndash;</span></td>
+                                  <td>3.00</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">#8 L. Vigil</th>
+                                  <td>1</td>
+                                  <td>3</td>
+                                  <td><span class="rdemo__cell">3</span></td>
+                                  <td><span class="rdemo__nil">&ndash;</span></td>
+                                  <td><span class="rdemo__nil">&ndash;</span></td>
+                                  <td>1.00</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">#10 J. Roth</th>
+                                  <td>1</td>
+                                  <td>3</td>
+                                  <td><span class="rdemo__cell">2</span></td>
+                                  <td><span class="rdemo__cell">1</span></td>
+                                  <td><span class="rdemo__nil">&ndash;</span></td>
+                                  <td>0.67</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">#4 V. Will</th>
+                                  <td>1</td>
+                                  <td>3</td>
+                                  <td><span class="rdemo__cell">1</span></td>
+                                  <td><span class="rdemo__nil">&ndash;</span></td>
+                                  <td><span class="rdemo__cell">1</span></td>
+                                  <td>0.33</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">#31 L. Lee</th>
+                                  <td>1</td>
+                                  <td>3</td>
+                                  <td><span class="rdemo__nil">&ndash;</span></td>
+                                  <td><span class="rdemo__nil">&ndash;</span></td>
+                                  <td><span class="rdemo__nil">&ndash;</span></td>
+                                  <td><span class="rdemo__nil">&ndash;</span></td>
+                                </tr>
+                              </tbody>
+                              <tfoot>
+                                <tr>
+                                  <th scope="row">
+                                    <span class="rdemo__tableteam">
+                                      <span class="rdemo__tablecrest" aria-hidden="true">F</span>
+                                      FHS
+                                    </span>
+                                  </th>
+                                  <td>1</td>
+                                  <td>3</td>
+                                  <td><span class="rdemo__cell">46</span></td>
+                                  <td><span class="rdemo__cell">4</span></td>
+                                  <td><span class="rdemo__cell">2</span></td>
+                                  <td>15.33</td>
+                                </tr>
+                              </tfoot>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="rdemo__panel"
+                      role="tabpanel"
+                      id="rdemo-panel-trends"
+                      aria-labelledby="rdemo-tab-trends"
+                      tabindex="0"
+                      data-rdemo-report="trends"
+                      hidden
+                    >
+                      <!-- Layout 1 of 4: one card, full width, full height.
+                           The chart inside it is Recharts, mounted on first
+                           view and drawn from the match tiles' own numbers
+                           (setupReportPanels in main.js). -->
+                      <div class="rdemo__layout rdemo__layout--full">
+                        <div class="rdemo__card">
+                          <div class="rdemo__chart" data-rdemo-chart="trends"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+                <!-- The right-hand panel. Empty until something is loaded
+                     into its body (setupSidePanels in main.js fires
+                     rdemo:side-open, which is where that goes). -->
+                <aside
+                  class="rdemo__side rdemo__side--right"
+                  id="rdemo-side-right"
+                  data-rdemo-side="right"
+                  aria-label="Video"
+                >
+                  <span class="rdemo__grabber" aria-hidden="true"></span>
+                  <div class="rdemo__sidehead">
+                    <span class="rdemo__sidetitle" data-rdemo-side-title="right">Video</span>
+                    <button
+                      type="button"
+                      class="rdemo__sideclose"
+                      data-rdemo-side-close="right"
+                      aria-label="Close video"
+                    >
+                      <svg class="rdemo__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <path d="M6 6l12 12M18 6L6 18" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="rdemo__sidebody" data-rdemo-side-body="right"></div>
+                </aside>
+              </div>
+
+              <!-- What a sheet comes up over, on touch only. Tapping it is
+                   the shortcut out; the sheet's own close button is the
+                   path that gets announced. -->
+              <div class="rdemo__scrim" data-rdemo-scrim aria-hidden="true"></div>
+            </div>
+            <figcaption>
+              The header every report in the system opens with &mdash; the team, the report types, and the
+              matches the numbers come from. Switch the device above &mdash; each one is that screen&rsquo;s
+              real proportions, so you see how much report is left after the header: the tabs scroll, the
+              labels drop to icons, and the match tiles give way to &ldquo;Select other matches&rdquo;,
+              which is what a coach gets on a phone.
+            </figcaption>
+          </figure>
+        </div>
+
+        <div>
+          <h2>What I Would Change</h2>
+          <p class="text-muted">Coming soon &mdash; what I'd revisit with more time or data.</p>
+        </div>
+
+        <div>
+          <h2>What I Learned</h2>
+          <p class="text-muted">Coming soon &mdash; takeaways from this part of the project.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="container section">
+      <div class="section-heading">
+        <h2 class="section-heading__title">Related case studies</h2>
+      </div>
+      <nav class="pager" aria-label="Related case studies" style="margin-top: 0; padding-top: 0; border-top: none;">
+        <a class="pager__link pager__link--with-thumb" href="case-study-volleyball-playback.html">
+          <img class="pager__thumb" src="assets/video/volleyball-playback-poster.jpg" alt="" />
+          <span class="pager__text">
+            <span class="pager__label">Part 2</span>
+            <span class="pager__title">Video overlays &amp; playback</span>
+          </span>
+        </a>
+        <a class="pager__link pager__link--with-thumb" href="case-study-volleyball-submission.html">
+          <img class="pager__thumb" src="assets/video/volleyball-submission-poster.jpg" alt="" />
+          <span class="pager__text">
+            <span class="pager__label">Part 3</span>
+            <span class="pager__title">Frictionless submission</span>
+          </span>
         </a>
       </nav>
     </section>
