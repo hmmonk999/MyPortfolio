@@ -52,6 +52,31 @@
   --color-success: #1a7f4e;
   --color-danger: #b3261e;
 
+  /* ---- Color: research figures ----
+     Used only by .rfind (components.css), the two drawn figures in the AI
+     command bar case study's research section. Unlike the product mockups
+     further down, these are this site's own charts rather than a picture
+     of someone else's UI, so they follow the theme — both values here have
+     a counterpart in .theme-dark.
+
+     Colour separates two kinds of thing, never two sizes of thing: the
+     accent is filtering, which is what the feature was built to do, and
+     --rfind-other is everything else people asked it for. Bar length
+     carries every value, which is why there's no ramp here — a ramp would
+     colour a bar darker for being longer, spending the only free channel
+     on information the bar already shows.
+
+     --rfind-other was checked for separation from --color-accent rather
+     than eyeballed: it clears the normal-vision floor (ΔE 15.7) and both
+     colour-blindness floors (protan 8.1, tritan 16.5) against the accent
+     in this theme, and by more in dark. Deliberately cooler than
+     --color-text-muted — at the warm value it sat too near the clay to
+     separate. Retune the pair together if either moves. */
+  --rfind-other: #6f6c6b;
+  /* A meter's unfilled remainder. One step off the surface it's drawn on,
+     so it reads as chrome rather than as data. */
+  --rfind-track: #ece7df;
+
   /* ---- Color: court illustration ----
      Used only by .court-demo (components.css), the interactive court on
      the volleyball consolidation case study. These depict a physical
@@ -122,12 +147,12 @@
      product separates surfaces by a hair rather than by contrast, and
      widening the gap here made the panels read as this site's cards
      instead of as the product. */
-  --vbd-window: #161e25;
+  --vbd-window: #0F1215;
   --vbd-well: #10161c;
   /* The frame around a window. The product bezels a clip rather than
      letting the footage run to the panel edge, and against a stage this
      saturated the windows need the separation. */
-  --vbd-bezel: #0b1015;
+  --vbd-bezel: #191F24;
   --vbd-line: #2f3841;
   --vbd-text: #dfe4e9;
   --vbd-text-dim: #8d959e;
@@ -150,7 +175,7 @@
      the report canvas. Very slightly darker and greyer than
      --vbd-window behind it, which is all the separation the product
      gives it — see .rdemo__card. */
-  --vbd-card: #161b20;
+  --vbd-card: #1E242A;
   --vbd-trend: #7f7fb5;
   --vbd-good: #7fb069;
   --vbd-bad: #d9694f;
@@ -257,6 +282,15 @@
      --shadow-lg because a drop-shadow spreads outside its element's
      box, and the panels these sit in clip their overflow. */
   --shadow-drop: 0 8px 18px rgba(20, 20, 25, 0.16);
+
+  /* ---- Lightbox scrim (expanded case-study figures) ----
+     The ground a figure opens over when it's clicked. Dark in both
+     themes: an expanded figure keeps the surface and border it wears in
+     the page, and against a pale scrim there'd be nothing for that
+     framing to separate it from. Dark mode's runs heavier because the
+     page underneath is already dark — at the light value the edge
+     between page and scrim stopped reading as an edge. */
+  --lightbox-scrim: rgba(20, 20, 25, 0.92);
 
   /* ---- Glass (floating mobile tab bar) ----
      A translucent pane that the page scrolls under, blurred via
@@ -397,6 +431,14 @@
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
 
   --shadow-drop: 0 8px 18px rgba(0, 0, 0, 0.5);
+
+  --lightbox-scrim: rgba(0, 0, 0, 0.93);
+
+  /* Research figures. The accent holds its value here as it does
+     everywhere else on the site, so only its counterpart moves: against a
+     dark ground the neutral has to go light to stay clear of the clay. */
+  --rfind-other: #adaaa8;
+  --rfind-track: #3a3735;
 
   /* Hero atmosphere: the cursor follows the text colour; the fringe
      follows the accent tokens above on its own. */
