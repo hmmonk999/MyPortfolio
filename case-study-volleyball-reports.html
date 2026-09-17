@@ -25,6 +25,7 @@
       }
     })();
   </script>
+  <script defer src="js/analytics.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -169,10 +170,11 @@
         </div>
 
         <div>
-          <h2>Where coaches look for reports</h2>
+          <h2>What already existed</h2>
+          <h3>Where coaches look for reports</h3>
           <p>
             Before designing anything, I mapped where each product hid its reports &mdash; which nav slot, and
-            what it was called. All three buried it in nearly the same place. So we left it there.
+            what it was called. All three buried it in nearly the same place. So we left it there.re
           </p>
           <p><b>This was the key to keeping reports familiar, while adding new features and making some changes to layouts and components.</b> How do you replace three reports coaches already love with one they’ll love even more? You keep their wayfinding the same—a lesson, unfortunately, we had to learn the hard way (more context below).</p>
           <img class="mt-lg" src="assets/img/reports-nav-comparison.webp" alt="Reports navigation entry points highlighted in Volleymetrics, BallTime, and Hudl" />
@@ -187,7 +189,7 @@
           <p>
             Everything we owed coaches collapsed into three components: a data table worth staring at, a
             location chart with lines and heat maps, and a trends chart that redraws on demand. A full report
-            builder needed more than that &mdash; those became follow-ups.
+            builder with more interesting displays of data and better usage of data and player tracking data needed more than that &mdash; those became follow-ups.
           </p>
           <img class="mt-lg" src="assets/img/reports-competitive-audit.webp" alt="A board cataloging report pages and components across BT, Hudl, Volleymetrics, VolleyStation, NCAA stats pages, and other tools" />
         </div>
@@ -205,13 +207,13 @@
                   <span class="tag">Familiarity</span>
                 </div>
                 <p class="text-muted">
-                  We never meant to ship video-first. The data behind the old reports broke in a way we couldn&rsquo;t repair. Another initiative needed that data pipeline that broke the old reports &mdash; so video-first went out early: pick your content, then see your numbers.
+                  We never meant to ship video-first. Another initiative needed that data pipeline that broke the old reports &mdash; in a way that we couldn't repair them so video-first went out early: pick your content, then see your numbers. 
                 </p>
                 <p class="text-muted">
-                  It turned into the clearest evidence we got all year. Coaches didn&rsquo;t adapt to it. They worked around it, and they told us so. What they wanted was the order the research had described from the start: open reports, see the most recent match, change the content from there.
+                  It turned into the clearest evidence we got all year that we could not be so video centric. Coaches didn&rsquo;t adapt to it. They worked around it, and they told us so. What they wanted was the order the research had described from the start: open reports, see the most recent match, change the content from there.
                 </p>
                 <p class="text-muted">
-                  Rerouting the Reports button to the new experience was always the plan. Shipping the wrong order first just told us exactly what that order was worth.
+                  Rerouting the Reports button to the new experience was always the plan. Not building the data foundation earlier was where we went wrong and caused us to be more reactive to report changes than we wanted to be.
                 </p>
               </div>
             </div>
@@ -219,7 +221,7 @@
             <div class="figure-row">
               <img src="assets/img/reports-mistake-report-collapse.png" alt="Placeholder: a full-screen report collapsing into a side panel beside the grid opening under the video" />
               <div>
-                <h4>The existing layout system made reports too easy to dissolve</h4>
+                <h4>The existing layout system made reports too flexible</h4>
                 <div class="chip-row">
                   <span class="tag">Path to action</span>
                   <span class="tag">Familiarity</span>
@@ -416,7 +418,7 @@
                       <svg class="rdemo__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
                         <path d="M4 5h16l-6.3 7.6V19l-3.4-2.1v-4.3L4 5z" />
                       </svg>
-                      <span class="rdemo__label">0 Filters</span>
+                      <span class="rdemo__label" data-rdemo-filter-count>0 Filters</span>
                     </button>
                   </div>
 
@@ -474,9 +476,13 @@
                    place, so both arrive beside the report instead of instead
                    of it. Closed by default — the report is the subject. -->
               <div class="rdemo__stage">
-                <!-- The left-hand panel. Empty until something is loaded
-                     into its body (setupSidePanels in main.js fires
-                     rdemo:side-open, which is where that goes). -->
+                <!-- The left-hand panel: the filters over whatever matches
+                     the picker has selected. Two dimensions, and both are
+                     real cuts rather than a scale factor over a total —
+                     the report's data is generated per set and per
+                     rotation precisely so they can be (report-demo.js).
+                     An empty group means all of it, which is why the
+                     funnel starts at "0 Filters" and not at eleven. -->
                 <aside
                   class="rdemo__side rdemo__side--left"
                   id="rdemo-side-left"
@@ -497,15 +503,121 @@
                       </svg>
                     </button>
                   </div>
-                  <div class="rdemo__sidebody" data-rdemo-side-body="left"></div>
+                  <div class="rdemo__sidebody" data-rdemo-side-body="left">
+                    <div class="rdemo__filters">
+                      <fieldset class="rdemo__filtergroup">
+                        <legend class="rdemo__filterlegend">Sets</legend>
+                        <div class="rdemo__filterchips" data-rdemo-filter="set">
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="1"
+                          aria-label="Set 1"
+                          aria-pressed="false"
+                        >1</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="2"
+                          aria-label="Set 2"
+                          aria-pressed="false"
+                        >2</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="3"
+                          aria-label="Set 3"
+                          aria-pressed="false"
+                        >3</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="4"
+                          aria-label="Set 4"
+                          aria-pressed="false"
+                        >4</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="5"
+                          aria-label="Set 5"
+                          aria-pressed="false"
+                        >5</button>
+                        </div>
+                      </fieldset>
+                      <fieldset class="rdemo__filtergroup">
+                        <legend class="rdemo__filterlegend">Rotation</legend>
+                        <div class="rdemo__filterchips" data-rdemo-filter="rot">
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="1"
+                          aria-label="Rotation 1"
+                          aria-pressed="false"
+                        >R1</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="2"
+                          aria-label="Rotation 2"
+                          aria-pressed="false"
+                        >R2</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="3"
+                          aria-label="Rotation 3"
+                          aria-pressed="false"
+                        >R3</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="4"
+                          aria-label="Rotation 4"
+                          aria-pressed="false"
+                        >R4</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="5"
+                          aria-label="Rotation 5"
+                          aria-pressed="false"
+                        >R5</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="6"
+                          aria-label="Rotation 6"
+                          aria-pressed="false"
+                        >R6</button>
+                        </div>
+                      </fieldset>
+                      <p class="rdemo__filternote" data-rdemo-filter-note>
+                        Every set and every rotation is in the report.
+                      </p>
+                      <button
+                        type="button"
+                        class="rdemo__filterclear"
+                        data-rdemo-filter-clear
+                        hidden
+                      >Clear filters</button>
+                    </div>
+                  </div>
                 </aside>
 
               <!-- The report itself. Everything above this is the window
                    around it; from here down it is the report the case
                    study is about: who you're looking at, which report,
-                   and which matches it counts. The match tiles' show/hide
-                   is the one live control so far (setupMatchTiles in
-                   main.js); the rest is drawn. -->
+                   and which matches it counts.
+
+                   Every number below is computed, not written down: the
+                   quick selects and the match tiles set which matches are
+                   counted, the funnel's filters narrow that to particular
+                   sets and rotations, and report-demo.js re-totals the
+                   tables, both court cards and the trends chart off the
+                   same aggregation. What is in the markup is the report's
+                   shape, plus the most recent match as the state it opens
+                   in for anyone with JavaScript off. -->
               <div class="rdemo__canvas">
                 <div class="rdemo__report">
                   <div class="rdemo__head">
@@ -661,6 +773,7 @@
                       type="button"
                       class="rdemo__tile"
                       data-rdemo-match
+                      data-sets="5"
                       data-venue="home"
                       data-result="w"
                       data-sideout="55.1"
@@ -677,6 +790,7 @@
                       type="button"
                       class="rdemo__tile"
                       data-rdemo-match
+                      data-sets="3"
                       data-venue="away"
                       data-result="w"
                       data-sideout="54.4"
@@ -693,6 +807,7 @@
                       type="button"
                       class="rdemo__tile"
                       data-rdemo-match
+                      data-sets="4"
                       data-venue="home"
                       data-result="l"
                       data-sideout="48.6"
@@ -709,6 +824,7 @@
                       type="button"
                       class="rdemo__tile"
                       data-rdemo-match
+                      data-sets="4"
                       data-venue="away"
                       data-result="w"
                       data-sideout="51.2"
@@ -725,6 +841,7 @@
                       type="button"
                       class="rdemo__tile"
                       data-rdemo-match
+                      data-sets="3"
                       data-venue="home"
                       data-result="w"
                       data-sideout="52.0"
@@ -741,6 +858,7 @@
                       type="button"
                       class="rdemo__tile"
                       data-rdemo-match
+                      data-sets="3"
                       data-venue="away"
                       data-result="l"
                       data-sideout="46.8"
@@ -757,6 +875,7 @@
                       type="button"
                       class="rdemo__tile"
                       data-rdemo-match
+                      data-sets="4"
                       data-venue="home"
                       data-result="w"
                       data-sideout="49.1"
@@ -773,6 +892,7 @@
                       type="button"
                       class="rdemo__tile"
                       data-rdemo-match
+                      data-sets="5"
                       data-venue="home"
                       data-result="w"
                       data-sideout="50.3"
@@ -789,6 +909,7 @@
                       type="button"
                       class="rdemo__tile"
                       data-rdemo-match
+                      data-sets="5"
                       data-venue="away"
                       data-result="l"
                       data-sideout="45.5"
@@ -805,6 +926,7 @@
                       type="button"
                       class="rdemo__tile"
                       data-rdemo-match
+                      data-sets="3"
                       data-venue="home"
                       data-result="w"
                       data-tournament
@@ -822,6 +944,7 @@
                       type="button"
                       class="rdemo__tile"
                       data-rdemo-match
+                      data-sets="4"
                       data-venue="home"
                       data-result="w"
                       data-tournament
@@ -839,6 +962,7 @@
                       type="button"
                       class="rdemo__tile"
                       data-rdemo-match
+                      data-sets="4"
                       data-venue="home"
                       data-result="l"
                       data-tournament
@@ -856,6 +980,7 @@
                       type="button"
                       class="rdemo__tile"
                       data-rdemo-match
+                      data-sets="3"
                       data-venue="away"
                       data-result="w"
                       data-sideout="46.1"
@@ -872,6 +997,7 @@
                       type="button"
                       class="rdemo__tile"
                       data-rdemo-match
+                      data-sets="3"
                       data-venue="home"
                       data-result="l"
                       data-sideout="39.8"
@@ -888,6 +1014,7 @@
                       type="button"
                       class="rdemo__tile"
                       data-rdemo-match
+                      data-sets="5"
                       data-venue="away"
                       data-result="w"
                       data-sideout="43.2"
@@ -904,6 +1031,7 @@
                       type="button"
                       class="rdemo__tile"
                       data-rdemo-match
+                      data-sets="3"
                       data-venue="home"
                       data-result="w"
                       data-sideout="44.0"
@@ -920,6 +1048,7 @@
                       type="button"
                       class="rdemo__tile"
                       data-rdemo-match
+                      data-sets="4"
                       data-venue="away"
                       data-result="l"
                       data-sideout="41.5"
@@ -934,9 +1063,11 @@
                     </button>
                   </div>
 
-                  <!-- One panel per report. Empty for now: this is where each
-                       report's own content loads, and the tab row above is
-                       what swaps them. -->
+                  <!-- One panel per report; the tab row above swaps them.
+                       Column headings are load-bearing down here — the
+                       binder in report-demo.js finds a cell by its stat
+                       group and its column label, so renaming "A Err"
+                       renames what feeds it. -->
                   <div class="rdemo__body">
                     <div
                       class="rdemo__panel"
@@ -962,7 +1093,7 @@
                                 <table class="rdemo__table">
                                   <caption class="visually-hidden">Athletes, FHS vs VHS</caption>
                                   <thead>
-                                    <tr><th scope="col" colspan="3">Athlete Stats</th></tr>
+                                    <tr><th scope="col" colspan="3">Athletes</th></tr>
                                     <tr>
                                       <th scope="col" class="rdemo__statname"><span>Athletes</span></th>
                                       <th scope="col">MP</th>
@@ -1868,44 +1999,96 @@
                       data-rdemo-report="attack"
                       hidden
                     >
-                      <!-- Layout 3 of 4: 1/3 and 2/3, both full height. Cards
-                           are empty until the attack tendency components land in
-                           them. -->
+                      <!-- Layout 3 of 4: 1/3 and 2/3, both full height. The
+                           court card holds the shot map: routes out of the
+                           front row, each as thick as the share of the
+                           report's attacks that took it. -->
                       <div class="rdemo__layout rdemo__layout--split">
                         <div class="rdemo__card">
                           <div class="rdemo__court">
-                            <svg viewBox="-90 -110 1080 2020" role="img" aria-label="Full court: seven attacks from the front row, five landing in for kills and two out">
+                            <!-- The court as drawn, and the frame it is drawn in: the
+                                   shots inside it are generated to land within
+                                   this viewBox rather than the box being sized to
+                                   the shots (makeShot in report-demo.js keeps a
+                                   ball that went out inside the margin). -->
+                              <svg viewBox="-90 -110 1080 2020" role="img" aria-label="Shot map: nine attacks, plotted from where each was hit to where it finished">
                               <rect class="rdemo__courtsurface" x="0" y="0" width="900" height="1800" />
                               <!-- Attack lines, 3m either side of the net. -->
                               <line class="rdemo__courtline" x1="0" y1="600" x2="900" y2="600" />
                               <line class="rdemo__courtline" x1="0" y1="1200" x2="900" y2="1200" />
                               <line class="rdemo__courtnet" x1="-40" y1="900" x2="940" y2="900" />
-                              <g>
-                                <line class="rdemo__shot rdemo__shot--kill" x1="180" y1="980" x2="700" y2="520" />
-                                <line class="rdemo__shot rdemo__shot--kill" x1="180" y1="980" x2="820" y2="760" />
-                                <line class="rdemo__shot rdemo__shot--kill" x1="450" y1="960" x2="450" y2="300" />
-                                <line class="rdemo__shot rdemo__shot--kill" x1="740" y1="980" x2="170" y2="480" />
-                                <line class="rdemo__shot rdemo__shot--kill" x1="740" y1="980" x2="120" y2="780" />
-                                <line class="rdemo__shot rdemo__shot--err" x1="450" y1="960" x2="450" y2="-60" />
-                                <line class="rdemo__shot rdemo__shot--err" x1="180" y1="980" x2="985" y2="640" />
-                                <circle class="rdemo__shotend--kill" cx="700" cy="520" r="24" />
-                                <circle class="rdemo__shotend--kill" cx="820" cy="760" r="24" />
-                                <circle class="rdemo__shotend--kill" cx="450" cy="300" r="24" />
-                                <circle class="rdemo__shotend--kill" cx="170" cy="480" r="24" />
-                                <circle class="rdemo__shotend--kill" cx="120" cy="780" r="24" />
-                                <circle class="rdemo__shotend--err" cx="450" cy="-60" r="24" />
-                                <circle class="rdemo__shotend--err" cx="985" cy="640" r="24" />
+                              <!-- Drawn by renderRoutes in report-demo.js, from
+                                   whatever matches are in the report. What ships
+                                   here is the most recent match. -->
+                              <g data-rdemo-shots>
+                                <line class="rdemo__shot rdemo__shot--play" x1="250" y1="970" x2="640" y2="540" />
+                                <path class="rdemo__shotend--play" d="M640 540L595 561.3L623.2 586.9Z" />
+                                <line class="rdemo__shot rdemo__shot--play" x1="800" y1="985" x2="300" y2="260" />
+                                <path class="rdemo__shotend--play" d="M300 260L310.5 308.7L341.7 287.1Z" />
+                                <line class="rdemo__shot rdemo__shot--play rdemo__shot--deflected" x1="420" y1="1290" x2="560" y2="380" />
+                                <path class="rdemo__shotend--play" d="M560 380L534.2 422.6L571.8 428.4Z" />
+                                <line class="rdemo__shot rdemo__shot--err" x1="450" y1="965" x2="500" y2="-70" />
+                                <path class="rdemo__shotend--err" d="M483 -87L517 -53M483 -53L517 -87" />
+                                <line class="rdemo__shot rdemo__shot--err rdemo__shot--deflected" x1="700" y1="980" x2="975" y2="470" />
+                                <path class="rdemo__shotend--err" d="M958 453L992 487M958 487L992 453" />
+                                <line class="rdemo__shot rdemo__shot--kill" x1="150" y1="960" x2="700" y2="300" />
+                                <circle class="rdemo__shotend--kill" cx="700" cy="300" r="20" />
+                                <line class="rdemo__shot rdemo__shot--kill" x1="760" y1="975" x2="180" y2="420" />
+                                <circle class="rdemo__shotend--kill" cx="180" cy="420" r="20" />
+                                <line class="rdemo__shot rdemo__shot--kill rdemo__shot--deflected" x1="450" y1="950" x2="520" y2="700" />
+                                <circle class="rdemo__shotend--kill" cx="520" cy="700" r="20" />
+                                <line class="rdemo__shot rdemo__shot--kill" x1="120" y1="990" x2="330" y2="120" />
+                                <circle class="rdemo__shotend--kill" cx="330" cy="120" r="20" />
                               </g>
                             </svg>
                           </div>
-                          <div class="rdemo__courtkey">
-                            <span class="rdemo__keyitem"><span class="rdemo__keyline rdemo__keyline--kill"></span>Kill</span>
-                            <span class="rdemo__keyitem"><span class="rdemo__keyline rdemo__keyline--err"></span>Error</span>
+                          <!-- Outcome on the first row, how the ball got
+                               there on the second. Each mark is drawn the
+                               way the court draws it rather than as a
+                               coloured square, so the key can't say one
+                               thing while the court says another. -->
+                          <div class="rdemo__courtkey rdemo__courtkey--stack">
+                            <div class="rdemo__keyrow">
+                              <span class="rdemo__keyitem">
+                                <svg class="rdemo__keymark" viewBox="0 0 20 9" aria-hidden="true" focusable="false">
+                                  <line class="rdemo__shot rdemo__shot--kill" x1="0.5" y1="4.5" x2="12.2" y2="4.5" />
+                                  <circle class="rdemo__shotend--kill" cx="16" cy="4.5" r="4" />
+                                </svg>
+                                Kill
+                              </span>
+                              <span class="rdemo__keyitem">
+                                <svg class="rdemo__keymark" viewBox="0 0 20 9" aria-hidden="true" focusable="false">
+                                  <line class="rdemo__shot rdemo__shot--err" x1="0.5" y1="4.5" x2="9.6" y2="4.5" />
+                                  <path class="rdemo__shotend--err" d="M10.9 0.7L18.9 8.3M10.9 8.3L18.9 0.7" />
+                                </svg>
+                                Error
+                              </span>
+                              <span class="rdemo__keyitem">
+                                <svg class="rdemo__keymark" viewBox="0 0 20 9" aria-hidden="true" focusable="false">
+                                  <line class="rdemo__shot rdemo__shot--play" x1="0.5" y1="4.5" x2="11.4" y2="4.5" />
+                                  <path class="rdemo__shotend--play" d="M19.5 4.5L12 8.6L12 0.4Z" />
+                                </svg>
+                                In Play
+                              </span>
+                            </div>
+                            <div class="rdemo__keyrow rdemo__keyrow--wide">
+                              <span class="rdemo__keyitem"><span class="rdemo__keyline rdemo__keyline--clean"></span>Clean Atk</span>
+                              <span class="rdemo__keyitem"><span class="rdemo__keyline rdemo__keyline--deflected"></span>Deflected Atk</span>
+                            </div>
                           </div>
                         </div>
                         <div class="rdemo__card">
-                          <div class="rdemo__tablewrap">
-                            <table class="rdemo__table">
+                          <div class="rdemo__tablewrap rdemo__tablewrap--roster">
+                            <table class="rdemo__table rdemo__table--roster">
+                              <!-- The frozen columns are sized here, and the sticky
+                                   offsets in components.css are matched to these three
+                                   widths. The four stat columns split what is left. -->
+                              <colgroup>
+                                <col style="width: 8.5rem" />
+                                <col style="width: 2.5rem" />
+                                <col style="width: 2.5rem" />
+                                <col span="4" />
+                              </colgroup>
                               <caption class="visually-hidden">Attacking by athlete, FHS vs VHS</caption>
                               <thead>
                                 <tr>
@@ -2017,46 +2200,47 @@
                       data-rdemo-report="setter"
                       hidden
                     >
-                      <!-- Layout 3 of 4: 1/3 and 2/3, both full height. Cards
-                           are empty until the setter tendency components land in
-                           them. -->
+                      <!-- Layout 3 of 4: 1/3 and 2/3, both full height. The
+                           court card holds the set distribution of whoever
+                           is setting most in the current report — the
+                           percentages and the heat both come out of it. -->
                       <div class="rdemo__layout rdemo__layout--split">
                         <div class="rdemo__card">
                           <div class="rdemo__court">
                             <svg viewBox="-40 -60 980 1000" role="img" aria-label="Half court: where #2 J. Eny set the ball, zone 4 taking 34 percent and the back row 18 percent between them">
                               <line class="rdemo__courtnet" x1="-30" y1="-18" x2="930" y2="-18" />
                               <g>
-                                <g>
+                                <g data-rdemo-zone="4">
                                   <rect class="rdemo__zone--hot" x="0" y="0" width="300" height="300" />
                                   <rect class="rdemo__zoneframe" x="0" y="0" width="300" height="300" />
                                   <text class="rdemo__zonevalue rdemo__zonetext--light" x="150" y="144">34%</text>
                                   <text class="rdemo__zonelabel rdemo__zonetext--light" x="150" y="208">Zone 4</text>
                                 </g>
-                                <g>
+                                <g data-rdemo-zone="3">
                                   <rect class="rdemo__zone--mid" x="300" y="0" width="300" height="300" />
                                   <rect class="rdemo__zoneframe" x="300" y="0" width="300" height="300" />
                                   <text class="rdemo__zonevalue rdemo__zonetext--dark" x="450" y="144">22%</text>
                                   <text class="rdemo__zonelabel rdemo__zonetext--dark" x="450" y="208">Zone 3</text>
                                 </g>
-                                <g>
+                                <g data-rdemo-zone="2">
                                   <rect class="rdemo__zone--mid" x="600" y="0" width="300" height="300" />
                                   <rect class="rdemo__zoneframe" x="600" y="0" width="300" height="300" />
                                   <text class="rdemo__zonevalue rdemo__zonetext--dark" x="750" y="144">26%</text>
                                   <text class="rdemo__zonelabel rdemo__zonetext--dark" x="750" y="208">Zone 2</text>
                                 </g>
-                                <g>
+                                <g data-rdemo-zone="5">
                                   <rect class="rdemo__zone--cool" x="0" y="300" width="300" height="600" />
                                   <rect class="rdemo__zoneframe" x="0" y="300" width="300" height="600" />
                                   <text class="rdemo__zonevalue rdemo__zonetext--light" x="150" y="594">6%</text>
                                   <text class="rdemo__zonelabel rdemo__zonetext--light" x="150" y="658">Zone 5</text>
                                 </g>
-                                <g>
+                                <g data-rdemo-zone="6">
                                   <rect class="rdemo__zone--none" x="300" y="300" width="300" height="600" />
                                   <rect class="rdemo__zoneframe" x="300" y="300" width="300" height="600" />
                                   <text class="rdemo__zonevalue rdemo__zonetext--dim" x="450" y="594">4%</text>
                                   <text class="rdemo__zonelabel rdemo__zonetext--dim" x="450" y="658">Zone 6</text>
                                 </g>
-                                <g>
+                                <g data-rdemo-zone="1">
                                   <rect class="rdemo__zone--cool" x="600" y="300" width="300" height="600" />
                                   <rect class="rdemo__zoneframe" x="600" y="300" width="300" height="600" />
                                   <text class="rdemo__zonevalue rdemo__zonetext--light" x="750" y="594">8%</text>
@@ -2070,11 +2254,21 @@
                             Fewer sets
                             <span class="rdemo__keyscale"><span></span><span></span><span></span><span></span></span>
                             More
+                            <span class="rdemo__keystat" data-rdemo-setternote>#31 L. Lee &middot; 45 sets</span>
                           </div>
                         </div>
                         <div class="rdemo__card">
-                          <div class="rdemo__tablewrap">
-                            <table class="rdemo__table">
+                          <div class="rdemo__tablewrap rdemo__tablewrap--roster">
+                            <table class="rdemo__table rdemo__table--roster">
+                              <!-- The frozen columns are sized here, and the sticky
+                                   offsets in components.css are matched to these three
+                                   widths. The four stat columns split what is left. -->
+                              <colgroup>
+                                <col style="width: 8.5rem" />
+                                <col style="width: 2.5rem" />
+                                <col style="width: 2.5rem" />
+                                <col span="4" />
+                              </colgroup>
                               <caption class="visually-hidden">Setting by athlete, FHS vs VHS</caption>
                               <thead>
                                 <tr>
@@ -2092,77 +2286,86 @@
                                 </tr>
                               </thead>
                               <tbody>
-                                <tr>
-                                  <th scope="row">#2 J. Eny</th>
-                                  <td>1</td>
-                                  <td>3</td>
-                                  <td><span class="rdemo__cell">31</span></td>
-                                  <td><span class="rdemo__cell">2</span></td>
-                                  <td><span class="rdemo__cell">1</span></td>
-                                  <td>10.33</td>
-                                </tr>
-                                <tr>
-                                  <th scope="row">#7 K. Alvarez</th>
-                                  <td>1</td>
-                                  <td>3</td>
-                                  <td><span class="rdemo__cell">9</span></td>
-                                  <td><span class="rdemo__cell">1</span></td>
-                                  <td><span class="rdemo__nil">&ndash;</span></td>
-                                  <td>3.00</td>
-                                </tr>
-                                <tr>
-                                  <th scope="row">#8 L. Vigil</th>
-                                  <td>1</td>
-                                  <td>3</td>
-                                  <td><span class="rdemo__cell">3</span></td>
-                                  <td><span class="rdemo__nil">&ndash;</span></td>
-                                  <td><span class="rdemo__nil">&ndash;</span></td>
-                                  <td>1.00</td>
-                                </tr>
-                                <tr>
-                                  <th scope="row">#10 J. Roth</th>
-                                  <td>1</td>
-                                  <td>3</td>
-                                  <td><span class="rdemo__cell">2</span></td>
-                                  <td><span class="rdemo__cell">1</span></td>
-                                  <td><span class="rdemo__nil">&ndash;</span></td>
-                                  <td>0.67</td>
-                                </tr>
-                                <tr>
-                                  <th scope="row">#4 V. Will</th>
-                                  <td>1</td>
-                                  <td>3</td>
-                                  <td><span class="rdemo__cell">1</span></td>
-                                  <td><span class="rdemo__nil">&ndash;</span></td>
-                                  <td><span class="rdemo__cell">1</span></td>
-                                  <td>0.33</td>
-                                </tr>
-                                <tr>
-                                  <th scope="row">#31 L. Lee</th>
-                                  <td>1</td>
-                                  <td>3</td>
-                                  <td><span class="rdemo__nil">&ndash;</span></td>
-                                  <td><span class="rdemo__nil">&ndash;</span></td>
-                                  <td><span class="rdemo__nil">&ndash;</span></td>
-                                  <td><span class="rdemo__nil">&ndash;</span></td>
-                                </tr>
-                              </tbody>
-                              <tfoot>
-                                <tr>
-                                  <th scope="row">
-                                    <span class="rdemo__tableteam">
-                                      <span class="rdemo__tablecrest" aria-hidden="true">F</span>
-                                      FHS
-                                    </span>
-                                  </th>
-                                  <td>1</td>
-                                  <td>3</td>
-                                  <td><span class="rdemo__cell">46</span></td>
-                                  <td><span class="rdemo__cell">4</span></td>
-                                  <td><span class="rdemo__cell">2</span></td>
-                                  <td>15.33</td>
-                                </tr>
-                              </tfoot>
+                                  <tr>
+                                    <th scope="row">#31 L. Lee</th>
+                                    <td>1</td>
+                                    <td>5</td>
+                                    <td><span class="rdemo__cell">45</span></td>
+                                    <td><span class="rdemo__cell">3</span></td>
+                                    <td><span class="rdemo__cell">1</span></td>
+                                    <td>9.00</td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">#2 J. Eny</th>
+                                    <td>1</td>
+                                    <td>5</td>
+                                    <td><span class="rdemo__cell">8</span></td>
+                                    <td><span class="rdemo__cell">1</span></td>
+                                    <td><span class="rdemo__nil">&ndash;</span></td>
+                                    <td>1.60</td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">#10 J. Roth</th>
+                                    <td>1</td>
+                                    <td>5</td>
+                                    <td><span class="rdemo__cell">2</span></td>
+                                    <td><span class="rdemo__nil">&ndash;</span></td>
+                                    <td><span class="rdemo__cell">1</span></td>
+                                    <td>0.40</td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">#13 M. Herbert</th>
+                                    <td>1</td>
+                                    <td>5</td>
+                                    <td><span class="rdemo__cell">2</span></td>
+                                    <td><span class="rdemo__nil">&ndash;</span></td>
+                                    <td><span class="rdemo__nil">&ndash;</span></td>
+                                    <td>0.40</td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">#8 L. Vigil</th>
+                                    <td>1</td>
+                                    <td>5</td>
+                                    <td><span class="rdemo__cell">1</span></td>
+                                    <td><span class="rdemo__nil">&ndash;</span></td>
+                                    <td><span class="rdemo__nil">&ndash;</span></td>
+                                    <td>0.20</td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">#4 V. Will</th>
+                                    <td>1</td>
+                                    <td>5</td>
+                                    <td><span class="rdemo__nil">&ndash;</span></td>
+                                    <td><span class="rdemo__nil">&ndash;</span></td>
+                                    <td><span class="rdemo__nil">&ndash;</span></td>
+                                    <td><span class="rdemo__nil">&ndash;</span></td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">#22 B. Mason</th>
+                                    <td>1</td>
+                                    <td>5</td>
+                                    <td><span class="rdemo__nil">&ndash;</span></td>
+                                    <td><span class="rdemo__nil">&ndash;</span></td>
+                                    <td><span class="rdemo__nil">&ndash;</span></td>
+                                    <td><span class="rdemo__nil">&ndash;</span></td>
+                                  </tr>
+                                </tbody>
+                                <tfoot>
+                                  <tr>
+                                    <th scope="row">
+                                      <span class="rdemo__tableteam">
+                                        <span class="rdemo__tablecrest" aria-hidden="true">F</span>
+                                        FHS
+                                      </span>
+                                    </th>
+                                    <td>1</td>
+                                    <td>5</td>
+                                    <td><span class="rdemo__cell">58</span></td>
+                                    <td><span class="rdemo__cell">4</span></td>
+                                    <td><span class="rdemo__cell">2</span></td>
+                                    <td>11.60</td>
+                                  </tr>
+                                </tfoot>
                             </table>
                           </div>
                         </div>
@@ -2225,10 +2428,15 @@
             </div>
             <figcaption>
               The header every report in the system opens with &mdash; the team, the report types, and the
-              matches the numbers come from. Switch the device above &mdash; each one is that screen&rsquo;s
-              real proportions, so you see how much report is left after the header: the tabs scroll, the
-              labels drop to icons, and the match tiles give way to &ldquo;Select other matches&rdquo;,
-              which is what a coach gets on a phone.
+              matches the numbers come from. It counts: change which matches are selected, or narrow the
+              report to particular sets or rotations in the filters panel, and every table, both court
+              cards and the trend re-total against what you picked. Switch the device above &mdash; each
+              one is that screen&rsquo;s real proportions, so you see how much report is left after the
+              header: the tabs scroll, the labels drop to icons, and the match tiles give way to
+              &ldquo;Select other matches&rdquo;, which is what a coach gets on a phone.
+              <span class="text-muted">The season behind it is generated rather than real &mdash; a
+              school&rsquo;s scouting data isn&rsquo;t mine to publish &mdash; but it is generated per set
+              and per rotation, so the parts add up to the whole however the report is sliced.</span>
             </figcaption>
           </figure>
         </div>
@@ -2271,6 +2479,9 @@
   <div data-include="partials/footer.html"></div>
 
   <script src="js/include.js"></script>
+  <!-- The report's data model and everything it draws. This page only:
+       nothing else on the site has a report in it. -->
+  <script src="js/report-demo.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

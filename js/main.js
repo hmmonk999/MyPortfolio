@@ -754,16 +754,31 @@ function chartPalette(host) {
   };
 }
 
-/* The season as the tiles have it. They are laid out most recent first
-   and a trend reads oldest to newest, so this reverses them — and it
-   takes the numbers off the tiles rather than keeping a second copy
-   here, which is the only way the chart and the timeline above it can't
-   drift apart.
+/* The season the chart plots.
+
+   report-demo.js owns the report's data, so when it is on the page the
+   chart asks it: side-out per match, computed from the same (set,
+   rotation) cells the tables downstairs just counted. That is what lets
+   a filter in the funnel move this line too — filter to set 5 and the
+   trend becomes the team's fifth sets, three-set matches dropping out of
+   it entirely, rather than the same seventeen points it always was.
+
+   The fallback below is the tiles' own data-sideout, which is where those
+   numbers are authored. It keeps the chart working on its own and it is
+   the shape report-demo.js returns, so neither side has to know which
+   one drew the line.
 
    `picked` is the same number again, or null where the match isn't in
    the current selection. Two keys over one set of points is what lets
    the chart draw the whole season faintly and the selected matches
-   brightly on top of it, from a single pass over the markup. */
+   brightly on top of it. */
+function seasonPoints(demo) {
+  const model = window.ReportDemo;
+  return model ? model.seasonPoints() : seasonFromTiles(demo);
+}
+
+/* The tiles are laid out most recent first and a trend reads oldest to
+   newest, so this reverses them. */
 function seasonFromTiles(demo) {
   return [...demo.querySelectorAll("[data-rdemo-match]")]
     .map((tile) => {
@@ -793,7 +808,14 @@ function seasonFromTiles(demo) {
 
    The dashed line stays the season average either way — it is what
    "better or worse" is measured against, so it can't move when the
-   selection does. */
+   selection does.
+
+   Neither series animates. Recharts re-runs its entry animation on every
+   data change and withholds the dots until it finishes, so a chart wired
+   to the match picker spent a second and a half redrawing itself after
+   each click — and in the default one-match state, where the dot IS the
+   mark, showed nothing at all while animating a line it had no room to
+   draw. A trend is read, not watched. */
 function buildTrendsChart(host, demo) {
   const R = window.Recharts;
   const {
@@ -809,15 +831,24 @@ function buildTrendsChart(host, demo) {
   } = R || {};
   if (!ResponsiveContainer) throw new Error("Recharts did not initialise");
 
-  const data = seasonFromTiles(demo);
+  const data = seasonPoints(demo);
   const colors = chartPalette(host);
+  // A filter can empty the report — every match in the season can end up
+  // with no sets left in it — and a chart of nothing is worse than a
+  // sentence saying so.
+  if (!data.length) {
+    return React.createElement(
+      "p",
+      { className: "rdemo__chartnote" },
+      "No matches left in the report."
+    );
+  }
   const average = data.reduce((sum, point) => sum + point.sideout, 0) / data.length;
   const picked = data.filter((point) => point.picked !== null).length;
   // With one match selected there is no line to draw — the path Recharts
   // emits is a single point — so the dot is the entire mark and a 2.5px
   // speck won't do. It grows to carry that on its own.
   const dotRadius = picked === 1 ? 5 : 2.5;
-  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const axis = { stroke: colors.grid, tick: { fill: colors.text, fontSize: 11 } };
 
   const chart = React.createElement(
@@ -885,7 +916,7 @@ function buildTrendsChart(host, demo) {
         strokeWidth: 1.5,
         dot: false,
         activeDot: { r: 3, fill: colors.text },
-        isAnimationActive: !still,
+        isAnimationActive: false,
       }),
       // The selection, on top. connectNulls stays off on purpose: a gap
       // in the bright line is a match the coach left out, and bridging it
@@ -900,12 +931,6 @@ function buildTrendsChart(host, demo) {
         dot: { r: dotRadius, fill: colors.line, strokeWidth: 0 },
         activeDot: { r: 4 },
         tooltipType: "none",
-        // Never animated, unlike the season line under it. Recharts
-        // re-runs its entry animation on every data change and hides the
-        // dots until it finishes — so an animated selection series both
-        // lagged a click by a second and a half and, in the default
-        // one-match state where the dot IS the mark, showed nothing at
-        // all until the animation it had no line to draw completed.
         isAnimationActive: false,
       })
     )
@@ -1209,6 +1234,248 @@ function setFooterYear() {
   segments.forEach((segment) => {
     segment.addEventListener("click", () => {
       activate(segment.getAttribute("data-testimonial-segment"));
+    });
+  });
+})();
+
+/* ---- Figure lightbox (case-study pages) ----
+   Every screenshot and diagram in a case study opens full size over the
+   page when it's clicked. They're laid out at half measure or smaller in
+   the body, which is right for reading past them and too small for
+   reading what's in them.
+
+   The images are made clickable here rather than in the markup: there
+   are around thirty of them across the case studies and nothing about
+   any one of them needs saying, so marking each one up by hand is thirty
+   chances to miss one. The role goes on the <img> itself rather than on
+   a <button> wrapped around it because a wrapper element would land in
+   the middle of the grid and flex rules those figures are laid out by
+   (.figure-row's columns, --align-bottom's auto margin) and quietly
+   break them. */
+(() => {
+  // Case studies only. Everywhere else an image is a card or a thumbnail.
+  if (!getCurrentPage().startsWith("case-study")) return;
+
+  /* Every image in the body counts, rather than a list of the container
+     classes figures use: half of them are framed by a .figure-row or a
+     .figure-solo and half are loose in the prose with nothing but a
+     margin class, and a new one is as likely to be either. So the rule
+     is what an image ISN'T, below.
+
+     The hero image is in: the page crops it to 16:10, and it's worth
+     seeing whole. */
+  const NOT_A_FIGURE = [
+    /* Anything inside a working mockup — the footage under the command
+       bar, the panels of the report demo. Pulling one piece of a mockup's
+       chrome out of the mockup it's a piece of shows nothing. */
+    ".cmdbar",
+    "[data-report-demo]",
+    "[data-court-demo]",
+    // Cards and pager thumbnails are navigation wearing a picture.
+    ".card",
+    ".pager",
+    "a",
+    // The escape hatch for anything else that turns up.
+    "[data-no-zoom]",
+  ].join(", ");
+
+  const figures = [...document.querySelectorAll("#main img")].filter(
+    (img) => !img.closest(NOT_A_FIGURE)
+  );
+  if (!figures.length) return;
+
+  const ICON =
+    '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">';
+
+  let overlay = null;
+  let dialogImage = null;
+  let dialogCaption = null;
+  let closeButton = null;
+  let navButtons = [];
+  let index = -1;
+  let opener = null;
+
+  const isOpen = () => overlay !== null && overlay.classList.contains("is-open");
+
+  /* The caption the figure carries in the page, and only that. Falling
+     back to the alt text would put writing meant for a screen reader on
+     screen — half of these read "Placeholder: ..." or describe the image
+     to someone who can't see it, neither of which is a caption. */
+  const captionFor = (img) => {
+    const figure = img.closest("figure");
+    const caption = figure && figure.querySelector("figcaption");
+    return caption ? caption.textContent.trim() : "";
+  };
+
+  const show = (next) => {
+    index = (next + figures.length) % figures.length;
+    const img = figures[index];
+    /* currentSrc rather than src: whatever the browser actually picked
+       is the file already in cache, so the overlay paints immediately
+       instead of fetching a second copy. */
+    dialogImage.src = img.currentSrc || img.src;
+    dialogImage.alt = img.alt || "";
+    dialogCaption.textContent = captionFor(img);
+    // What the dialog announces itself as when it takes focus.
+    overlay.setAttribute("aria-label", img.alt || "Expanded image");
+
+    /* What the CSS above sizes the image against. Read off the page's
+       own copy, which is decoded by the time anything is clicked, so the
+       overlay opens at the right size in the first frame rather than
+       resizing once the file lands. */
+    setBounds(img.naturalWidth, img.naturalHeight);
+  };
+
+  const setBounds = (width, height) => {
+    if (!width || !height) return;
+    overlay.style.setProperty("--lightbox-max-w", `${width * 2}px`);
+    overlay.style.setProperty("--lightbox-aspect", `${width / height}`);
+  };
+
+  /* Freeze the page behind the scrim, holding open the width the
+     scrollbar was taking so the page doesn't slide sideways as it goes
+     (nothing to hold where the OS overlays its scrollbars: 0). */
+  const lockPage = (locked) => {
+    const root = document.documentElement;
+    if (locked) {
+      const gutter = window.innerWidth - root.clientWidth;
+      root.style.setProperty("--lightbox-gutter", `${gutter}px`);
+    }
+    root.classList.toggle("lightbox-open", locked);
+  };
+
+  const step = (delta) => show(index + delta);
+
+  const close = () => {
+    if (!isOpen()) return;
+
+    overlay.classList.remove("is-open");
+    lockPage(false);
+    document.removeEventListener("keydown", onKeydown);
+
+    if (opener) opener.focus();
+    opener = null;
+  };
+
+  /* A modal that Tab can walk out of leaves the keyboard somewhere the
+     screen isn't, so focus cycles between the overlay's own buttons for
+     as long as it's open. */
+  const onKeydown = (event) => {
+    if (event.key === "Escape") {
+      close();
+      return;
+    }
+
+    if (event.key === "ArrowLeft" && figures.length > 1) {
+      step(-1);
+      return;
+    }
+
+    if (event.key === "ArrowRight" && figures.length > 1) {
+      step(1);
+      return;
+    }
+
+    if (event.key !== "Tab") return;
+
+    const stops = [closeButton, ...navButtons.filter((button) => !button.hidden)];
+    const at = stops.indexOf(document.activeElement);
+    const next = event.shiftKey ? at - 1 : at + 1;
+    event.preventDefault();
+    stops[(next + stops.length) % stops.length].focus();
+  };
+
+  const build = () => {
+    overlay = document.createElement("div");
+    overlay.className = "lightbox";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-label", "Expanded image");
+    overlay.innerHTML = [
+      '<button class="lightbox__close" type="button" aria-label="Close image">',
+      ICON,
+      '<path d="M6 6l12 12M18 6L6 18" /></svg></button>',
+      '<button class="lightbox__nav lightbox__nav--prev" type="button" aria-label="Previous image">',
+      ICON,
+      '<path d="M15 5l-7 7 7 7" /></svg></button>',
+      '<button class="lightbox__nav lightbox__nav--next" type="button" aria-label="Next image">',
+      ICON,
+      '<path d="M9 5l7 7-7 7" /></svg></button>',
+      '<figure class="lightbox__figure">',
+      '<img class="lightbox__img" alt="" />',
+      '<figcaption class="lightbox__caption"></figcaption>',
+      "</figure>",
+    ].join("");
+
+    dialogImage = overlay.querySelector(".lightbox__img");
+    /* loading="lazy" further down a case study can still be undecoded
+       when it's clicked, in which case naturalWidth was 0 above and the
+       bounds come from the overlay's own copy as it lands. */
+    dialogImage.addEventListener("load", () =>
+      setBounds(dialogImage.naturalWidth, dialogImage.naturalHeight)
+    );
+    dialogCaption = overlay.querySelector(".lightbox__caption");
+    closeButton = overlay.querySelector(".lightbox__close");
+    navButtons = [...overlay.querySelectorAll(".lightbox__nav")];
+
+    closeButton.addEventListener("click", close);
+    overlay
+      .querySelector(".lightbox__nav--prev")
+      .addEventListener("click", () => step(-1));
+    overlay
+      .querySelector(".lightbox__nav--next")
+      .addEventListener("click", () => step(1));
+
+    /* Anywhere off the figure closes — the scrim, and the padding around
+       the image, which is the same gesture as far as the pointer is
+       concerned. The buttons sit outside the figure, so they're named
+       here to keep a press on one from closing the thing it acts on. */
+    overlay.addEventListener("click", (event) => {
+      const onChrome = event.target.closest(
+        ".lightbox__figure, .lightbox__close, .lightbox__nav"
+      );
+      if (!onChrome) close();
+    });
+
+    // One figure on the page means there's nothing to step to.
+    navButtons.forEach((button) => {
+      button.hidden = figures.length < 2;
+    });
+
+    document.body.appendChild(overlay);
+  };
+
+  const open = (img) => {
+    if (!overlay) build();
+
+    opener = img;
+    show(figures.indexOf(img));
+
+    overlay.classList.add("is-open");
+    lockPage(true);
+    closeButton.focus();
+    document.addEventListener("keydown", onKeydown);
+  };
+
+  figures.forEach((img) => {
+    img.classList.add("is-zoomable");
+    /* role=button replaces the image's own role, which makes the alt
+       text the button's name — announced as the figure it looks like
+       rather than as an unlabelled control. The few figures marked
+       decorative (alt="") have no name to inherit, so they say what the
+       control does instead of arriving as a silent tab stop. */
+    img.setAttribute("role", "button");
+    img.setAttribute("tabindex", "0");
+    img.setAttribute("aria-haspopup", "dialog");
+    if (!img.alt) img.setAttribute("aria-label", "Expand image");
+
+    img.addEventListener("click", () => open(img));
+    img.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        // Space scrolls the page otherwise, which isn't what a press does.
+        event.preventDefault();
+        open(img);
+      }
     });
   });
 })();

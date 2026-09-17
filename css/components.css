@@ -2554,6 +2554,103 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
+/* ---- What's in the filters panel ----
+   Two groups of small toggles in a 14rem column, so they wrap rather
+   than scroll. Chips rather than checkboxes because a set number and a
+   rotation number are one or two characters and a checkbox row would be
+   mostly checkbox; they stay real buttons carrying aria-pressed, which
+   is what a multi-select filter is.
+
+   None pressed means all of it — the note under them says so, because a
+   filter panel where nothing is on is otherwise ambiguous between
+   "everything" and "nothing". */
+.rdemo__filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.rdemo__filtergroup {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.rdemo__filterlegend {
+  padding: 0;
+  margin-bottom: 0.4375rem;
+  font-size: 0.625rem;
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--vbd-text-dim);
+}
+
+/* Six columns, because rotation has six and a 14rem panel can't hold
+   six of anything in a wrapping row — R6 dropped to a line of its own.
+   Sets take five of the six, so the two rows share a rhythm and the set
+   numbers sit under the rotation numbers. */
+.rdemo__filterchips {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.25rem;
+}
+
+/* Unlike the match picker's quick selects, these carry a visible box
+   when they're off: a filter is a thing you are looking for, and an
+   empty row of grey words doesn't read as somewhere to press. */
+.rdemo__filterchip {
+  min-width: 0;
+  padding: 0.25rem;
+  text-align: center;
+  border: 1px solid var(--vbd-line);
+  border-radius: var(--radius-sm);
+  background: none;
+  font: inherit;
+  font-size: 0.6875rem;
+  font-weight: var(--fw-medium);
+  color: var(--vbd-text-dim);
+  cursor: pointer;
+  transition: color var(--transition-fast), background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.rdemo__filterchip:hover {
+  color: var(--vbd-text);
+}
+
+.rdemo__filterchip[aria-pressed="true"] {
+  border-color: var(--vbd-blue);
+  background: var(--vbd-select);
+  color: var(--vbd-text);
+}
+
+.rdemo__filterchip:focus-visible,
+.rdemo__filterclear:focus-visible {
+  outline: 2px solid var(--vbd-blue);
+  outline-offset: 2px;
+}
+
+.rdemo__filternote {
+  margin: 0;
+  font-size: 0.625rem;
+  line-height: 1.5;
+  color: var(--vbd-text-dim);
+}
+
+.rdemo__filterclear {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.6875rem;
+  font-weight: var(--fw-semibold);
+  color: var(--vbd-blue);
+  cursor: pointer;
+}
+
 /* ---------- The report header ----------
    What every report in the system opens with, and the part the case
    study argues hardest about: the team you're looking at, the report
@@ -2784,7 +2881,6 @@
   min-height: 14rem;
   /* Cards sit inside the canvas rather than against its edge — the same
      12px the canvas is inset from the window. */
-  padding: 0.75rem;
 }
 
 .rdemo__layout--full {
@@ -2833,6 +2929,17 @@
    card. In here there is no slack to take. */
 .rdemo__layout--fit .rdemo__tablewrap {
   flex: 0 0 auto;
+}
+
+/* On a phone this layout's own card stops being a surface. Its stat
+   groups have each become a card in their own right by then (see the
+   [data-size="mobile"] rules under "Sectioned stats table"), so the
+   fill and padding here only drew a card around a stack of cards and
+   spent 24px of a 390px screen doing it. The layout's padding still
+   holds them off the canvas edge. */
+.rdemo[data-size="mobile"] .rdemo__layout--fit .rdemo__card {
+  padding: 0;
+  background: none;
 }
 
 .rdemo__card {
@@ -2908,30 +3015,59 @@
   stroke-dasharray: 26 14;
 }
 
-/* An attack, from contact to landing. Kills and errors are told apart by
-   colour rather than by style: a coach is scanning for the shape of the
-   pattern, and a dashed line reads as "less real" instead of "out". */
+/* An attack, from contact to where it finished. Forty of these share a
+   court, so they are thin and a little transparent: what a coach is
+   reading is where the ink gathers, and nine-wide opaque lines at this
+   count is one shape rather than forty shots.
+
+   Outcome is colour and mark; whether the block got a hand on it is the
+   line style. Two encodings rather than one because they are two
+   questions — where the ball went, and whether it got there clean. */
 .rdemo__shot {
   fill: none;
-  stroke-width: 9;
+  stroke-width: 6;
   stroke-linecap: round;
-  stroke-opacity: 0.9;
+  stroke-opacity: 0.8;
+}
+
+/* Deflected: the ball was touched on the way through, so the line is
+   broken. */
+.rdemo__shot--deflected {
+  stroke-dasharray: 26 18;
 }
 
 .rdemo__shot--kill {
-  stroke: var(--vbd-good);
+  stroke: var(--vbd-trend);
 }
 
 .rdemo__shot--err {
   stroke: var(--vbd-bad);
 }
 
+/* Dug, and the rally went on. The commonest outcome of an attack and the
+   quietest thing on the card: it is the ground the other two read
+   against, not a result. */
+.rdemo__shot--play {
+  stroke: var(--vbd-text);
+  stroke-opacity: 0.4;
+}
+
+/* A kill stops where it lands, an error is struck out, a ball still in
+   play carries on — the three marks the key names. */
 .rdemo__shotend--kill {
-  fill: var(--vbd-good);
+  fill: var(--vbd-trend);
 }
 
 .rdemo__shotend--err {
-  fill: var(--vbd-bad);
+  fill: none;
+  stroke: var(--vbd-bad);
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+
+.rdemo__shotend--play {
+  fill: var(--vbd-text);
+  fill-opacity: 0.45;
 }
 
 /* Set distribution, on the four-stop scale the drawn thumbnails use
@@ -2991,8 +3127,122 @@
   border-radius: var(--radius-full);
 }
 
-.rdemo__keyline--kill { background: var(--vbd-good); }
-.rdemo__keyline--err { background: var(--vbd-bad); }
+/* The key's own marks, drawn from the same classes the court draws them
+   with so the two can't drift on colour or shape — but not on weight.
+
+   The widths have to be set here rather than as stroke-width on the
+   elements: a presentation attribute loses to a stylesheet rule, so
+   .rdemo__shot's 6-unit stroke won every one of them and the glyphs came
+   out as a switch, a blob and a wedge. At a fifth of the court's scale
+   the marks need a fifth of its weight, and the line has to stay clearly
+   thinner than whatever sits on the end of it or the two fuse.
+
+   They are also drawn at full strength, unlike on the court: a key is
+   read once, deliberately, and an in-play line at the 40% it carries
+   over forty overlapping shots disappears on its own down here. */
+.rdemo__keymark {
+  flex: none;
+  width: 1.25rem;
+  height: 0.5625rem;
+  overflow: visible;
+}
+
+.rdemo__keymark .rdemo__shot {
+  stroke-width: 2.1;
+  stroke-opacity: 1;
+}
+
+.rdemo__keymark .rdemo__shot--play {
+  stroke-width: 2.4;
+  stroke-opacity: 0.8;
+}
+
+.rdemo__keymark .rdemo__shotend--err {
+  stroke-width: 1.8;
+}
+
+.rdemo__keymark .rdemo__shotend--play {
+  fill-opacity: 0.8;
+}
+
+/* The two line styles, as rules with nothing on the end. Drawn as a
+   gradient rather than a dashed border so the dash and the gap are the
+   lengths the design has them at instead of whatever ratio the browser
+   picks off the border width. */
+.rdemo__keyline--clean,
+.rdemo__keyline--deflected {
+  background: currentColor;
+}
+
+/* Three dashes and no fourth stub: the rule is exactly 4+3+4+3+4 long,
+   so the pattern ends where the rule does. */
+.rdemo__keyline--deflected {
+  border-radius: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    currentColor 0 4px,
+    transparent 4px 7px
+  );
+}
+
+/* Stacked and centred under the court, as designed: two kinds of thing
+   in here — what happened to the ball, and how it got there — and one
+   row of five items reads as five unrelated things.
+
+   This row is the card's only writing, so it is set like a label and not
+   like a footnote: semibold, a size up from the key on the setter card,
+   and lifted off --vbd-text-dim towards the foreground. The air between
+   the two rows is most of what separates them. */
+.rdemo__courtkey--stack {
+  flex-direction: column;
+  align-items: center;
+  gap: 1.75rem;
+  margin-top: 0.75rem;
+  font-size: 0.6875rem;
+  font-weight: var(--fw-semibold);
+  color: color-mix(in srgb, var(--vbd-text) 55%, var(--vbd-text-dim));
+}
+
+/* Wraps rather than overflows. The row is the design's single line at
+   the width the design is drawn at; below that the card is narrower than
+   the key and something has to give, and a second centred line gives up
+   less than a clipped one. */
+.rdemo__keyrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.4375rem 1.3125rem;
+  max-width: 100%;
+}
+
+/* The second row carries two long labels rather than three short ones,
+   and sits wider apart for it. */
+.rdemo__keyrow--wide {
+  gap: 3rem;
+}
+
+.rdemo__courtkey--stack .rdemo__keyitem {
+  gap: 0.3125rem;
+  white-space: nowrap;
+}
+
+.rdemo__courtkey--stack .rdemo__keyline {
+  width: 1.125rem;
+  height: 2px;
+}
+
+/* Whose map this is, on the setter card — the distribution belongs to
+   one setter, and a heat map that didn't say which would describe
+   nobody. The shot map next door has no counterpart: its key is the
+   design's two rows and nothing else, and the attack table beside it
+   already carries the totals. */
+.rdemo__keystat {
+  margin-left: auto;
+  padding-left: 0.5rem;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
 
 .rdemo__keyscale {
   display: flex;
@@ -3055,7 +3305,6 @@
 
 .rdemo__table th:first-child,
 .rdemo__table td:first-child {
-  padding-left: 0;
   text-align: left;
 }
 
@@ -3079,15 +3328,90 @@
 
 /* Dotted between rows, solid under the head and above the total: the
    product's own hierarchy, and it stops a long roster reading as one
-   block. */
-.rdemo__table tbody tr + tr {
+   block. Drawn on the cells rather than the rows so the frozen columns
+   keep their lines while the rest scrolls under them. */
+.rdemo__table tbody tr + tr > * {
   border-top: 1px dotted var(--vbd-line);
 }
 
-.rdemo__table tfoot td {
+.rdemo__table tfoot > tr > * {
   border-top: 1px solid var(--vbd-line);
   font-weight: var(--fw-semibold);
   color: var(--vbd-text);
+}
+
+/* ---------- Frozen roster columns (tendency reports) ----------
+   Who the row is about stays put while what they did scrolls under it.
+   These tables are wider than their card the moment a side panel takes
+   some of the canvas, and a stat with the athlete scrolled off is a
+   number with nobody attached to it — the one thing a report can't
+   afford to be.
+
+   Scoped to .rdemo__table--roster rather than every .rdemo__table,
+   because the sectioned stats table in the athlete and team reports
+   solves the same problem a different way: five tables side by side,
+   each carrying its own roster column, all but the first collapsed. A
+   sticky first column applied to that would pin five sets of cells to
+   the same edge of the same scroller.
+
+   The whole left group sticks, not just the name: that group is what the
+   header bar calls "Athlete", the rule after SP is where the scrolling
+   part begins, and freezing half a group would leave that rule in the
+   middle of nothing. Offsets are hand-matched to the colgroup widths in
+   the markup — 8.5rem then 2.5rem — so the three cells sit flush.
+
+   Each frozen cell carries the card's own background; without it the
+   scrolling figures pass visibly through the names. */
+.rdemo__table--roster {
+  /* separate, not collapse: a collapsed table's borders belong to the
+     table rather than to its cells, and a sticky cell carrying one
+     leaves it behind the moment it starts sticking. */
+  border-collapse: separate;
+  border-spacing: 0;
+  /* Fixed, so the frozen columns are the width the offsets below assume.
+     Under auto layout a long name widens its column and the offsets stop
+     matching the cells they are meant to sit against. */
+  table-layout: fixed;
+  /* 13.5rem of frozen columns plus 3.5rem per stat. Without a floor,
+     fixed layout keeps the table exactly as wide as its card however
+     narrow that gets — squeezing "0.333" into 20px rather than
+     overflowing — and a table that never overflows never scrolls, which
+     would leave the frozen columns above with nothing to do. This is
+     what hands them their job back. */
+  min-width: 27.5rem;
+}
+
+.rdemo__table--roster th:nth-child(-n + 3),
+.rdemo__table--roster td:nth-child(-n + 3) {
+  position: sticky;
+  z-index: 1;
+  background: var(--vbd-card);
+}
+
+.rdemo__table--roster th:nth-child(1),
+.rdemo__table--roster td:nth-child(1) {
+  left: 0;
+}
+
+.rdemo__table--roster th:nth-child(2),
+.rdemo__table--roster td:nth-child(2) {
+  left: 8.5rem;
+}
+
+.rdemo__table--roster th:nth-child(3),
+.rdemo__table--roster td:nth-child(3) {
+  left: 11rem;
+}
+
+/* A phone can't spare 13.5rem of frozen table — that would leave four
+   stat columns about 20px each. Only the name holds there; MP and SP
+   scroll away with the rest. */
+.rdemo[data-size="mobile"] .rdemo__table--roster th:nth-child(2),
+.rdemo[data-size="mobile"] .rdemo__table--roster td:nth-child(2),
+.rdemo[data-size="mobile"] .rdemo__table--roster th:nth-child(3),
+.rdemo[data-size="mobile"] .rdemo__table--roster td:nth-child(3) {
+  position: static;
+  background: none;
 }
 
 /* A count you can click through to video, in the product. Underlined
@@ -3153,13 +3477,33 @@
   flex: 0 0 auto;
 }
 
+/* And it stays put while the stat groups scroll under it. The wrap is
+   the scroller and this is a flex item inside it, so pinning the whole
+   group — rather than a column inside each table — is what the shape of
+   this component allows: one sticky box instead of six.
+
+   It needs the card's own background, or the numbers scroll through the
+   names. The shadow is the frozen edge: a hairline where content passes
+   under, and a short falloff so it reads as over rather than beside.
+   Where nothing has scrolled yet that hairline sits exactly on the next
+   group's own border-left, so the seam looks like one line either way.
+
+   Not on a phone: there the groups stack into cards that each scroll on
+   their own and each carry their own roster column, so there is no row
+   to hold a column still against. */
+.rdemo:not([data-size="mobile"]) .rdemo__statgroup--id {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--vbd-card);
+  box-shadow: 1px 0 0 var(--vbd-line), 6px 0 8px -6px rgba(0, 0, 0, 0.45);
+}
+
 /* The seam. One rule between groups is the only thing marking them as
    separate sections once they're shoulder to shoulder — the same line
    the old products drew, and the reason the group bar above it can be
    a plain label rather than a boxed header. */
 .rdemo__statgroup + .rdemo__statgroup {
-  margin-left: 0.75rem;
-  padding-left: 0.75rem;
   border-left: 1px solid var(--vbd-line);
 }
 
@@ -3228,7 +3572,7 @@
 .rdemo[data-size="mobile"] .rdemo__statgroup {
   padding: 0.625rem 0.75rem;
   border-radius: var(--radius-md);
-  background: var(--vbd-well);
+  background: var(--vbd-card);
   /* Each card carries its own sideways scroll. A phone can't hold six
      reception columns at once, and the scroll has to belong to the card
      you're reading — one scroller around the whole stack drags the
@@ -3244,10 +3588,45 @@
   overflow: visible;
 }
 
+/* ...but the tendency reports' tables have no inner scroller to hand it
+   to. They are one table with frozen roster columns rather than a row of
+   per-group tables, so on a phone the wrap has to stay the scroller or
+   the table is simply clipped by the card and the frozen columns have
+   nothing to hold still against. One extra class of specificity, rather
+   than an edit to the rule above, so the sectioned table keeps the
+   behaviour it wants. */
+.rdemo[data-size="mobile"] .rdemo__layout--split .rdemo__tablewrap--roster {
+  overflow: auto;
+}
+
 .rdemo[data-size="mobile"] .rdemo__statgroup + .rdemo__statgroup {
   margin-left: 0;
   padding-left: 0.75rem;
   border-left: 0;
+}
+
+/* Stacked, the roster still has to hold still — six times over. The
+   scroller here is inside each group rather than around the row of
+   them, so it is the name cells themselves that stick rather than the
+   group (which is what the desktop layout pins); and the background is
+   the group card's own fill, because that is what the cell is sitting
+   on — so it tracks --vbd-card along with the card.
+
+   Three shadows, doing three jobs. The first is a mask: the group's own
+   0.75rem of padding is inside its scrollport, so figures scroll into
+   that strip and would appear to the LEFT of the frozen names — a
+   12px-wide copy of the cell's fill covers it. The second is the frozen
+   edge, and the third the short falloff that says content is passing
+   under rather than sitting beside. */
+.rdemo[data-size="mobile"] .rdemo__statname {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--vbd-card);
+  box-shadow:
+    -0.75rem 0 0 var(--vbd-card),
+    1px 0 0 var(--vbd-line),
+    6px 0 8px -6px rgba(0, 0, 0, 0.45);
 }
 
 /* The box a chart is handed. Recharts measures its own container, so
@@ -4684,6 +5063,238 @@
   border-radius: var(--radius-md);
 }
 
+/* ---------- Journey probe (case-study "three places to go looking") ----------
+   A user journey drawn once across the top, with the open questions I
+   took into each stretch of it hanging underneath. The questions are
+   dashed rather than solid on purpose: solid cards read as three
+   finished solutions, and at this point in the story none of them are
+   answered yet — they're the things the research section goes and finds
+   out. Everything in accent belongs to the question layer; the journey
+   itself is drawn in --color-border so it reads as the ground the
+   questions are pinned to rather than competing with them.
+
+   ALIGNMENT, IMPORTANT: the drop line above each card has to land on its
+   numbered marker in the SVG. Both sides are expressed as fractions of
+   the same width, so they track each other at every size — the column
+   gap below is 4.571%, which puts the three card centres at 15.14%, 50%
+   and 84.86%, exactly where markers 1/2/3 sit in the track's 1120-unit
+   viewBox (170, 560, 950). Change the gap and the drops slide off the
+   markers; move a marker and the gap has to move with it. */
+.journey-probe {
+  container-type: inline-size;
+  margin: 0;
+}
+
+.journey-probe__track {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Photo strip, track and cards are all children of one grid so they share
+   a single set of columns. Stacked it collapses to one column, and the
+   `order` values below interleave it back into photo-then-card pairs — a
+   photo strip three screens above the question it belongs to would lose
+   the pairing entirely. */
+.journey-probe__grid {
+  display: grid;
+  gap: 0;
+}
+
+.journey-probe__grid > .journey-probe__track {
+  order: 0;
+  margin-bottom: var(--space-lg);
+}
+
+.journey-probe__grid > .journey-probe__photo {
+  order: calc(var(--probe-index) * 2 - 1);
+  margin-bottom: var(--space-xs);
+}
+
+.journey-probe__grid > .probe {
+  order: calc(var(--probe-index) * 2);
+  margin-bottom: var(--space-lg);
+}
+
+.journey-probe__grid > .probe:last-child {
+  margin-bottom: 0;
+}
+
+.journey-probe > figcaption {
+  margin-top: var(--space-md);
+  font-size: var(--fs-base);
+  color: var(--color-text-muted);
+}
+
+.probe {
+  position: relative;
+  padding: var(--space-md);
+  border: 1.5px dashed var(--color-accent);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+}
+
+/* A slot for a photo of the moment this stretch covers. Until the
+   photographs land it draws itself as a plainly-marked empty frame; drop
+   an <img> in and the frame is what crops it. */
+.journey-probe__photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 10;
+  width: 100%;
+  /* Stacked, the frame runs the full measure and 16:10 would make it
+     taller than the question it belongs to, so the height is capped. Note
+     that a cap plus an aspect-ratio drives the WIDTH too — it is lifted
+     three-up below, or each frame would sit 13px narrower than its
+     column and slide off the marker it belongs to. */
+  max-height: 14rem;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.journey-probe__photo img {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+}
+
+/* Repeats the marker on the track above, so a card still says which
+   stretch it belongs to once the columns stack and the drop lines go. */
+.probe__num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.625rem;
+  height: 1.625rem;
+  margin: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  /* Not --color-text-inverse: white on the clay falls short of AA, which
+     is why --color-accent-text exists (see tokens.css). */
+  color: var(--color-accent-text);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+.probe__q {
+  margin: var(--space-2xs) 0 0;
+  font-size: var(--fs-lg);
+  line-height: 1.35;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.probe__rule {
+  margin: var(--space-md) 0 0;
+  border: 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.probe__kicker {
+  margin: var(--space-sm) 0 var(--space-2xs);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.probe__hinges {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.probe__hinges li {
+  position: relative;
+  padding-left: 1.125rem;
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.probe__hinges li + li {
+  margin-top: var(--space-3xs);
+}
+
+/* Hollow, not filled: nothing on this list is settled yet. */
+.probe__hinges li::before {
+  content: "";
+  position: absolute;
+  top: 0.45em;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  border: 1.25px solid var(--color-accent);
+  border-radius: var(--radius-full);
+}
+
+/* Three across, each hung off its marker. This has to be a container
+   query, not a media query: the side rail and the container padding mean
+   the body column runs far narrower than the viewport — around 620px at
+   a 790px viewport — so any viewport breakpoint wide enough to look safe
+   still hands the three columns about 190px each. What matters is the
+   figure's own width, which is what cqi measures.
+
+   Below the threshold the cards stack and the drop lines come off —
+   three verticals reaching for a track now a long way above the second
+   and third card would be noise. There's no two-up step in between,
+   because the drops are only meaningful when all three line up with
+   their markers. */
+@container (min-width: 50rem) {
+  .journey-probe__grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0 4.571%;
+  }
+
+  /* Three rows rather than interleaved pairs: photos, then the track
+     spanning all three columns, then the cards. */
+  .journey-probe__grid > .journey-probe__photo {
+    order: 1;
+    max-height: none;
+    margin-bottom: var(--space-md);
+  }
+
+  .journey-probe__grid > .journey-probe__track {
+    order: 2;
+    grid-column: 1 / -1;
+    margin-bottom: 0;
+  }
+
+  .journey-probe__grid > .probe {
+    order: 3;
+    margin-bottom: 0;
+  }
+
+  /* A question set at --fs-lg is right across a full-measure card and too
+     heavy in a third of one, so it scales with the figure and lands back
+     on --fs-lg once there's room for it. */
+  .probe__q {
+    font-size: clamp(1.0625rem, 0.45rem + 1.35cqi, var(--fs-lg));
+  }
+
+  .journey-probe__grid > .probe {
+    margin-top: 2.375rem;
+  }
+
+  .probe::before {
+    content: "";
+    position: absolute;
+    top: -2.375rem;
+    left: 50%;
+    height: 2.375rem;
+    border-left: 1.5px dashed var(--color-accent);
+  }
+}
+
 /* ---------- Figure with side text (case-study body content) ----------
    An artifact (screenshot, diagram) paired with a caption underneath it
    and a paragraph running alongside — e.g. a research artifact next to
@@ -4714,6 +5325,22 @@
   margin-top: var(--space-2xs);
   font-size: var(--fs-base);
   color: var(--color-text-muted);
+}
+
+/* Modifier: when the two columns' captions run to different lengths,
+   this keeps their images lined up on a shared bottom edge instead of
+   each starting right where its own text happens to end. */
+.figure-row--align-bottom {
+  align-items: stretch;
+}
+
+.figure-row--align-bottom > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.figure-row--align-bottom > div img {
+  margin-top: auto;
 }
 
 /* ---------- Lede (untitled framing statement) ----------
@@ -6100,4 +6727,492 @@
 
 .figure-solo--small img {
   width: 100%;
+}
+
+/* ==========================================================================
+   Figure lightbox (case studies)
+   A case-study screenshot sits at half measure in a .figure-row, which is
+   the right size for reading past it and too small for reading what's in
+   it. Clicking one opens it over the page at whatever size the viewport
+   allows. The expanded figure keeps the framing it wears in the page —
+   surface, border, radius — so a screenshot with transparency in it has
+   the same ground underneath either way, and so an opened figure still
+   looks like the thing that was clicked.
+
+   The overlay is built and driven by the lightbox module in js/main.js;
+   no case study carries any markup for it.
+   ========================================================================== */
+
+/* Every image the script picked up, marked so the pointer says the click
+   does something before it's clicked. */
+.is-zoomable {
+  cursor: zoom-in;
+}
+
+/* The page behind an open figure holds still: scrolling it moves nothing
+   the viewer can see and loses the place they were reading. Hiding the
+   scrollbar hands its width back to the layout, which slides the whole
+   page sideways under the scrim — so the padding holds open exactly the
+   width the bar was taking (measured by the script; 0 where the OS draws
+   scrollbars over the content rather than beside it). */
+.lightbox-open {
+  overflow: hidden;
+  padding-right: var(--lightbox-gutter, 0px);
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  /* Over everything: the side rail (90), the jump nav (80), and the hero
+     cursor (200) all draw over the page and would draw over this too. */
+  z-index: 500;
+  display: grid;
+  place-items: center;
+  padding: var(--space-xl) var(--space-lg);
+  /* The width an image has to open into: the viewport, less the padding
+     above and the nav buttons parked in it on either side. It can't be a
+     percentage of the figure — the figure is content-sized, so the image
+     would end up as wide as its own caption happened to be. */
+  --lightbox-space-w: calc(100vw - 10rem);
+  background: var(--lightbox-scrim);
+  /* The closed state is visibility rather than display or [hidden], so
+     opening and closing is one class and the fade runs both ways off it
+     — no waiting a frame to fade in and no waiting for transitionend to
+     take it back out of the layout. visibility also takes the dialog out
+     of the accessibility tree and out of the tab order while it's shut,
+     which opacity alone would not, and delaying it by the length of the
+     fade is what lets it fade out instead of vanishing. */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity var(--transition-base),
+    visibility 0s linear var(--transition-base);
+}
+
+.lightbox.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity var(--transition-base), visibility 0s;
+}
+
+.lightbox__figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2xs);
+  margin: 0;
+  max-width: 100%;
+  min-height: 0;
+}
+
+/* The image is sized by width alone, in one expression, so it keeps its
+   own proportions without a max-height that could squash them:
+     --lightbox-space-w         — the width the overlay has to give;
+     --lightbox-max-w           — twice the file's own pixel width, set by
+                                  the script. A figure exported at 550px
+                                  would otherwise open at the size it
+                                  already is in the page, which is the one
+                                  case where clicking it looks broken; and
+                                  past 2x an upscale is mush, not detail;
+     (100vh - 12rem) * aspect   — the width at which the image is exactly
+                                  as tall as the room left under the
+                                  overlay's padding, its caption, and the
+                                  nav buttons on the phone layout.
+   Whichever is smallest wins, so a wide image is held by the viewport's
+   width, a tall one by its height, and a small one by its own resolution. */
+.lightbox__img {
+  display: block;
+  width: min(
+    var(--lightbox-space-w),
+    var(--lightbox-max-w, 100vw),
+    calc((100vh - 12rem) * var(--lightbox-aspect, 1))
+  );
+  height: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+}
+
+.lightbox__caption {
+  max-width: 46rem;
+  text-align: center;
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
+  /* The scrim is dark in both themes, so the caption can't follow
+     --color-text-muted the way the caption in the page does. */
+  color: var(--color-text-inverse);
+  opacity: 0.82;
+}
+
+.lightbox__caption:empty {
+  display: none;
+}
+
+.lightbox__close,
+.lightbox__nav {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-full);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.lightbox__close:hover,
+.lightbox__nav:hover {
+  transform: scale(1.08);
+}
+
+.lightbox__close {
+  top: var(--space-md);
+  right: var(--space-md);
+}
+
+/* Centred with the `translate` property rather than inside `transform`,
+   which the hover scale above owns — declared together, one would
+   overwrite the other and the button would jump half its height on
+   hover. */
+.lightbox__nav {
+  top: 50%;
+  translate: 0 -50%;
+}
+
+.lightbox__nav--prev {
+  left: var(--space-md);
+}
+
+.lightbox__nav--next {
+  right: var(--space-md);
+}
+
+.lightbox__nav[hidden] {
+  display: none;
+}
+
+/* Phone: side buttons would sit on top of an image that now runs the
+   full width of the screen, so they drop to the bottom corners and the
+   overlay keeps the room for them. */
+@media (max-width: 699px) {
+  .lightbox {
+    padding: var(--space-lg) var(--space-sm) var(--space-3xl);
+    /* The buttons are out of the image's way down here, so it gets the
+       full width between the overlay's own padding. */
+    --lightbox-space-w: calc(100vw - 2rem);
+  }
+
+  .lightbox__img {
+    width: min(
+      var(--lightbox-space-w),
+      var(--lightbox-max-w, 100vw),
+      calc((100vh - 14rem) * var(--lightbox-aspect, 1))
+    );
+  }
+
+  .lightbox__nav {
+    top: auto;
+    bottom: var(--space-md);
+    translate: none;
+  }
+}
+
+
+/* ---------- Research findings (.rfind — AI command bar case study) ----------
+   Two figures in the research section, drawn rather than described. Same
+   approach as .vbd and .rdemo: no chart library, no images, everything in
+   HTML and the site's own tokens, so they follow the theme and the type
+   scale for free. They sit in a plain .figure-solo with a figcaption, the
+   way every other captioned artifact in a case study does — no card of
+   their own, because the section around them isn't made of cards.
+
+   One rule holds across both. Length is the only thing carrying a value;
+   colour separates "filtering, which is what the feature was built to do"
+   from "everything else people asked it for", and nothing else. No ramp:
+   colouring a bar darker for being longer would spend the only free
+   channel on information the bar already shows. */
+
+/* ---------- The split ----------
+   One bar, all 2,239 searches, cut in two. The whole finding is that cut,
+   so it gets the bar to itself and the labels sit underneath, flexed to
+   the same proportions — each one over its own share, wearing a rule in
+   its own colour. Same 2px-top-rule gesture as .stat-band__item. */
+.rfind-split__bar {
+  display: flex;
+  /* A gap in the surface rather than a border drawn around each fill. */
+  gap: 2px;
+  height: 2.5rem;
+}
+
+.rfind-split__seg {
+  min-width: 2px;
+  background: var(--rfind-other);
+  border-radius: var(--radius-sm);
+}
+
+.rfind-split__seg--filter {
+  background: var(--color-accent);
+}
+
+.rfind-split__legend {
+  display: flex;
+  gap: 2px;
+  margin: 0;
+}
+
+.rfind-split__legend > p {
+  min-width: 0;
+  margin: 0;
+  padding-top: var(--space-2xs);
+  border-top: 2px solid var(--rfind-other);
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
+  color: var(--color-text-muted);
+}
+
+.rfind-split__legend > p:first-child {
+  border-top-color: var(--color-accent);
+}
+
+.rfind-split__legend b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-semibold);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+/* ---------- What the other third was asking for ----------
+   Four destinations, each with the real queries that went to it. The
+   queries are the unpacking — a second set of bars would only have
+   restated the split above, and these say the same thing in the user's
+   own words, which is the part worth reading. */
+.rfind-asks {
+  margin: var(--space-lg) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rfind-asks__row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-2xs);
+  padding-block: var(--space-sm);
+  border-top: 1px solid var(--color-border);
+}
+
+@media (min-width: 700px) {
+  .rfind-asks__row {
+    grid-template-columns: 15rem minmax(0, 1fr);
+    gap: var(--space-md);
+    align-items: baseline;
+  }
+}
+
+.rfind-asks__label {
+  margin: 0;
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-tight);
+}
+
+.rfind-asks__share {
+  display: block;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-regular);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+.rfind-asks__queries {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A real query, set as it was typed — lowercase, misspellings and all.
+   The well and the quote marks are what mark these as verbatim rather
+   than written; nothing in them is cleaned up. */
+.rfind-q {
+  padding: 0.25em 0.7em;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: var(--fs-sm);
+  color: var(--color-text);
+}
+
+/* ---------- Accuracy, sorted into worked and didn't ----------
+   The question this figure answers is "which of these could it get
+   right?", so the answer is the layout: two columns, split at the 87%
+   average, sorted within each. The meter under each name is the same one
+   series in the same one colour on both sides — the column it's in is
+   what says whether it cleared the line. */
+.rfind-acc {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+  margin: var(--space-lg) 0 0;
+}
+
+@media (min-width: 700px) {
+  .rfind-acc {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-xl);
+  }
+}
+
+.rfind-acc__head {
+  margin: 0 0 var(--space-2xs);
+  padding-bottom: var(--space-3xs);
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.rfind-acc__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rfind-acc__row {
+  padding-block: var(--space-2xs);
+}
+
+.rfind-acc__line {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2xs);
+}
+
+.rfind-acc__name {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-base);
+}
+
+.rfind-acc__pct {
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--fw-semibold);
+}
+
+/* How many searches that category got. Small and muted, but on the same
+   line: a 33% that turns out to be four searches is a different fact
+   from a 33% out of four hundred. */
+.rfind-acc__n {
+  min-width: 3.5rem;
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--color-text-muted);
+}
+
+.rfind-acc__meter {
+  height: 3px;
+  margin-top: var(--space-3xs);
+  background: var(--rfind-track);
+  border-radius: var(--radius-full);
+}
+
+.rfind-acc__meter > span {
+  display: block;
+  height: 100%;
+  /* A 0% still has to read as a mark at zero rather than a missing row. */
+  min-width: 2px;
+  background: var(--color-accent);
+  border-radius: var(--radius-full);
+}
+
+/* ---------- Table view ----------
+   Both figures' numbers as text, folded away, so no value is reachable
+   only by measuring a bar. */
+.rfind-table-toggle {
+  margin-top: var(--space-md);
+  font-size: var(--fs-sm);
+}
+
+.rfind-table-toggle > summary {
+  cursor: pointer;
+  color: var(--color-text-muted);
+  list-style: none;
+}
+
+.rfind-table-toggle > summary::-webkit-details-marker {
+  display: none;
+}
+
+.rfind-table-toggle > summary::before {
+  content: "+ ";
+  font-weight: var(--fw-semibold);
+}
+
+.rfind-table-toggle[open] > summary::before {
+  content: "\2013 ";
+}
+
+.rfind-table-toggle > summary:hover {
+  color: var(--color-text);
+}
+
+.rfind-table-toggle > summary:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+.rfind-table {
+  width: 100%;
+  margin-top: var(--space-sm);
+  border-collapse: collapse;
+  /* Figures line up column-wise here, which is the one place equal-width
+     digits earn their keep. */
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fs-sm);
+}
+
+.rfind-table th,
+.rfind-table td {
+  padding: var(--space-3xs) var(--space-2xs);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.rfind-table thead th {
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-muted);
+}
+
+.rfind-table th:not(:first-child),
+.rfind-table td:not(:first-child) {
+  text-align: right;
+}
+
+/* The tables are folded by default, which on paper would lose every
+   number in the section. */
+@media print {
+  .rfind-table-toggle > summary {
+    display: none;
+  }
+
+  .rfind-table-toggle .rfind-table {
+    display: table;
+  }
 }

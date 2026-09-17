@@ -25,6 +25,7 @@
       }
     })();
   </script>
+  <script defer src="js/analytics.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -213,11 +214,82 @@
             submitted at all.
           </p>
 
-          <figure class="figure-solo figure-solo--small mt-lg">
-            <img src="assets/img/alignment-collection-pipeline.png" alt="Diagram of the video collection pipeline, marking what could be solved at each stage and where a user touches the UI" />
+          <figure class="journey-probe mt-lg">
+            <!-- One grid holds the photo strip, the track and the question
+                 cards, so all three rows share the column maths that keeps
+                 each card's drop line on its marker. Stacked, CSS `order`
+                 interleaves it back into photo-then-card pairs. -->
+            <div class="journey-probe__grid">
+              <svg class="journey-probe__track" viewBox="0 0 1120 98" role="img" aria-labelledby="journeyTitle journeyDesc">
+                <title id="journeyTitle">A coach&rsquo;s journey, with three stretches marked</title>
+                <desc id="journeyDesc">A single line runs left to right through five moments: plans to film, films the game, submits it and spends a credit, waits in the queue, data comes back. Three numbered markers sit on the line &mdash; one between planning and filming, one between filming and submitting, one between the queue and the data coming back &mdash; and each leads down to an open question about that stretch.</desc>
+
+                <text x="0" y="12" font-size="11" font-weight="700" letter-spacing="1.3" fill="var(--color-text-muted)">A COACH&rsquo;S JOURNEY, START TO FINISH</text>
+
+                <g font-size="13" text-anchor="middle" fill="var(--color-text-muted)">
+                  <text x="64" y="66">Plans to film</text>
+                  <text x="288" y="66">Films the game</text>
+                  <text x="672" y="52">Submits it</text>
+                  <text x="672" y="66">(spends a credit)</text>
+                  <text x="848" y="66">Waits in the queue</text>
+                  <text x="1056" y="66">Data comes back</text>
+                </g>
+
+                <line x1="44" y1="84" x2="1076" y2="84" stroke="var(--color-border)" stroke-width="2" stroke-linecap="round" />
+                <g fill="var(--color-border)">
+                  <circle cx="64" cy="84" r="5" /><circle cx="288" cy="84" r="5" /><circle cx="672" cy="84" r="5" />
+                  <circle cx="848" cy="84" r="5" /><circle cx="1056" cy="84" r="5" />
+                </g>
+
+                <g font-size="13" font-weight="700" text-anchor="middle">
+                  <circle cx="170" cy="84" r="13" fill="var(--color-accent)" /><text x="170" y="89" fill="var(--color-accent-text)">1</text>
+                  <circle cx="560" cy="84" r="13" fill="var(--color-accent)" /><text x="560" y="89" fill="var(--color-accent-text)">2</text>
+                  <circle cx="950" cy="84" r="13" fill="var(--color-accent)" /><text x="950" y="89" fill="var(--color-accent-text)">3</text>
+                </g>
+              </svg>
+
+              <div class="journey-probe__photo" style="--probe-index: 1">Photo &mdash; before the game</div>
+              <div class="journey-probe__photo" style="--probe-index: 2">Photo &mdash; submitting</div>
+              <div class="journey-probe__photo" style="--probe-index: 3">Photo &mdash; after both are in</div>
+
+              <div class="probe" style="--probe-index: 1">
+                <p class="probe__num" aria-hidden="true">1</p>
+                <p class="probe__q">What if only one recording of the game ever existed?</p>
+                <hr class="probe__rule" />
+                <p class="probe__kicker">What it hinges on</p>
+                <ul class="probe__hinges">
+                  <li>Would a coach skip filming their own game?</li>
+                  <li>Do they trust the other team to film it?</li>
+                </ul>
+              </div>
+
+              <div class="probe" style="--probe-index: 2">
+                <p class="probe__num" aria-hidden="true">2</p>
+                <p class="probe__q">Could we give them their data before a credit is spent?</p>
+                <hr class="probe__rule" />
+                <p class="probe__kicker">What it hinges on</p>
+                <ul class="probe__hinges">
+                  <li>Is the opponent&rsquo;s film good enough to use?</li>
+                  <li>Is their data there in time to matter?</li>
+                </ul>
+              </div>
+
+              <div class="probe" style="--probe-index: 3">
+                <p class="probe__num" aria-hidden="true">3</p>
+                <p class="probe__q">Can one video&rsquo;s tags be mapped onto the other?</p>
+                <hr class="probe__rule" />
+                <p class="probe__kicker">What it hinges on</p>
+                <ul class="probe__hinges">
+                  <li>Can two recordings of one game be aligned?</li>
+                  <li>Can an analyst run it without breaking it?</li>
+                </ul>
+              </div>
+            </div>
+
             <figcaption>
-              <strong>Where in the pipeline could we solve it?</strong> Every stage a video passes through
-              before it has data, what a fix there would have to prevent, and where a user is touching the UI.
+              <strong>Three places to go looking.</strong> The opposing coach walks this same journey, for the
+              same game &mdash; so I split it into stretches and asked what it would take to stop the second
+              copy in each.
             </figcaption>
           </figure>
         </div>
@@ -229,7 +301,7 @@
             could actually work, and whether an analyst could run the winner without breaking it.
           </p>
 
-          <h3 class="mt-xl">Coaches killed the cheap fix</h3>
+          <h3 class="mt-xl">Research stopped the cheap fix no coach would like</h3>
           <p>
             The cheapest solution needed almost no engineering: ask a coach whether they&rsquo;d take their
             opponent&rsquo;s video to get their own data back faster. I interviewed
