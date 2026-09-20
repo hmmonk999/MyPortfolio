@@ -27,7 +27,13 @@
        colour by the time it touches that shape and the two merge as one
        substance, and between two shapes it runs from one colour to the
        other rather than switching. Both copies of a part are recoloured
-       together so the hand-off stays invisible.
+       together so the hand-off stays invisible,
+     - the halo: an invisible copy of each run of type under the run,
+       its letters blurred wide and faint, masked to a disc around each
+       drop. It is the field the drops merge into — on its own it never
+       shows, with a drop's tail added it crosses the wrapper's
+       threshold, so a drop is pulled into a letter rather than docking
+       against it as a circle (see --liquid-halo-* in tokens.css).
 
    Nothing else moves: the letters and decorations stay exactly where
    they are and exactly what they are, and only the ink bridges to them.
@@ -124,22 +130,25 @@
      Two things still answer to nearby ink, and both are size, not shape:
 
        - the swell: both bodies grow a little with the melt, on both
-         axes. Partly because that is what a drop does as it gives up its
-         surface, and partly because it has to: the melt widens their
-         blur, and past about a third of a body's diameter the wrapper's
-         threshold starts eating it from the edge inward (see
-         --liquid-blur-trail in tokens.css). Without the swell they thin
-         out at exactly the moment they should be merging,
-       - the blur ramp, which lives in the CSS: --melt runs each twin's
-         blur up as it closes on ink, so its edge reaches furthest
-         exactly when there is a letter in reach and it loses its own
-         edge into the letter rather than docking against it (see
+         axes, tail and all — that is what a drop does as it gives up
+         its surface, and the longer tail is more reach into the letter
+         (see the drops' tokens in tokens.css for what a body's tail
+         is),
+       - the blur ramp, which lives in the CSS: --melt eases each twin's
+         blur up a touch as it closes on ink, a little more give at the
+         core's edge exactly when there is a letter in reach (see
          .hero__blob--trail in layout.css).
 
      Distances here are to the same shapes the ink blend uses, so a drop
-     swells toward the same thing whose colour it is already taking on. */
-  const MELT_REACH = 96;
-  const MELT_SWELL = 0.28;
+     swells toward the same thing whose colour it is already taking on.
+
+     The reach is short — about the halo's (see --liquid-halo-reach in
+     tokens.css, at the wordmark's size) — so the swell is part of the
+     merge rather than something that happens on the way in: a drop
+     that grew from a hundred pixels out read as approaching, not as
+     being drawn in. */
+  const MELT_REACH = 48;
+  const MELT_SWELL = 0.12;
 
   /* How long after the pointer leaves the hero the drop is still
      shrinking — the length of --cursor-exit — and so how long the
@@ -210,6 +219,32 @@
   const trail = makeDrop("hero__blob hero__blob--trail");
   const wake = makeDrop("hero__blob hero__blob--wake");
   liquid.append(wake, trail, lead);
+
+  /* ---- The halos ----
+     One per run of type, as the run's first child (see .hero__halo in
+     layout.css for how it lands exactly over the run's text). The
+     wordmark's is a deep clone of its text span, so it keeps the
+     per-letter spans and their ink alternation; the pretitle is plain
+     text, so its copy is too. Built here rather than in the markup for
+     the same reason as the twins: without the drops there is nothing
+     for a halo to do. Each record fills in at measure() with the run's
+     frame and the copy's own box, which is what the mask positions are
+     written against. */
+  const halos = [];
+  hero.querySelectorAll(".hero__pretitle, .hero__title-main").forEach((run) => {
+    const text = run.querySelector(".hero__title-text");
+    let halo;
+    if (text) {
+      halo = text.cloneNode(true);
+    } else {
+      halo = document.createElement("span");
+      halo.textContent = run.textContent;
+    }
+    halo.className = "hero__halo";
+    halo.setAttribute("aria-hidden", "true");
+    run.prepend(halo);
+    halos.push({ el: halo, run: run, frame: null, left: 0, top: 0 });
+  });
 
   /* The filter's region as fractions of the wrapper's box, read off the
      markup so the hand-off can't drift from it. */
@@ -325,11 +360,22 @@
       const frame = readFrame(run);
       run.style.transform = "none";
 
+      /* The halo's box, in the same unrotated frame as the shapes. */
+      const halo = halos.find((h) => h.run === run);
+      if (halo) {
+        const box = halo.el.getBoundingClientRect();
+        halo.frame = frame;
+        halo.left = box.left;
+        halo.top = box.top;
+      }
+
       const rects = [];
       const walker = document.createTreeWalker(run, NodeFilter.SHOW_TEXT);
       let node;
       while ((node = walker.nextNode())) {
         if (!node.nodeValue.trim()) continue;
+        /* The halo's text is the run's text again; it is not a shape. */
+        if (node.parentNode.closest(".hero__halo")) continue;
         range.selectNodeContents(node);
         for (const rect of range.getClientRects()) {
           if (rect.width && rect.height) rects.push(rect);
@@ -533,6 +579,39 @@
       "is-wake-in-ink",
       inInk(wakeX - wakeRadius, wakeY - wakeRadius, wakeX + wakeRadius, wakeY + wakeRadius)
     );
+
+    placeHalos();
+  }
+
+  /* ---- The halos' masks ----
+     Each body's position in each run's own unrotated frame, relative
+     to that run's halo box, written every frame the bodies move. The
+     mask is in the halo's coordinate space, which rotates with the run,
+     so the same mapping the blend uses for distances (toLocal) is the
+     right one here. */
+  function placeHalos() {
+    halos.forEach((h) => {
+      if (!h.frame) return;
+      const a = toLocal(h.frame, trailX, trailY);
+      const b = toLocal(h.frame, wakeX, wakeY);
+      const style = h.el.style;
+      style.setProperty("--halo-ax", (a.x - h.left).toFixed(1) + "px");
+      style.setProperty("--halo-ay", (a.y - h.top).toFixed(1) + "px");
+      style.setProperty("--halo-bx", (b.x - h.left).toFixed(1) + "px");
+      style.setProperty("--halo-by", (b.y - h.top).toFixed(1) + "px");
+    });
+  }
+
+  /* Back to the stylesheet's defaults, which park both masks off the
+     box: with the drops gone the letters should be exactly themselves,
+     and a halo left where the drops last were would fatten the letters
+     under it by a hair. */
+  function parkHalos() {
+    halos.forEach((h) => {
+      ["--halo-ax", "--halo-ay", "--halo-bx", "--halo-by"].forEach((name) => {
+        h.el.style.removeProperty(name);
+      });
+    });
   }
 
   let torn = false;
@@ -586,6 +665,8 @@
     cursor.remove();
     lead.remove();
     trail.remove();
+    wake.remove();
+    halos.forEach((h) => h.el.remove());
   }
 
   window.addEventListener(
@@ -742,7 +823,10 @@
     let done = settled;
     if (leaving) {
       done = now - leaving > EXIT_MS;
-      if (done) leaving = 0;
+      if (done) {
+        leaving = 0;
+        parkHalos();
+      }
     }
     raf = done ? 0 : requestAnimationFrame(step);
   }

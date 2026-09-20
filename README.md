@@ -28,7 +28,8 @@ js/
   include.js                  Loads partials/header.html and footer.html into
                               every page
   main.js                     Active nav link, footer year, project tag filter
-  analytics.js                Google Analytics 4 + Hotjar tags; skips localhost
+  analytics.js                Google Analytics 4 + Hotjar tags. Skips localhost, and
+                              any browser opted out with ?tracking=off
 assets/img/                   Images, favicon
 ```
 

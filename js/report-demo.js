@@ -648,14 +648,17 @@
        sample takes every nth shot, and an unshuffled list would hand it
        all the kills first. */
     slices.forEach((slice) => {
-      const kills = ROSTER.reduce((sum, a) => sum + slice.ath[a.id].kill, 0);
-      const errs = ROSTER.reduce((sum, a) => sum + slice.ath[a.id].aerr, 0);
-      const atts = ROSTER.reduce((sum, a) => sum + slice.ath[a.id].aatt, 0);
-
+      // Each swing is one athlete's, so the card can follow an athlete
+      // filter the way the table does: her A Att column is her lines.
       const outcomes = [];
-      for (let i = 0; i < kills; i += 1) outcomes.push("kill");
-      for (let i = 0; i < errs; i += 1) outcomes.push("err");
-      for (let i = kills + errs; i < atts; i += 1) outcomes.push("play");
+      ROSTER.forEach((a) => {
+        const counts = slice.ath[a.id];
+        for (let i = 0; i < counts.kill; i += 1) outcomes.push({ o: "kill", a: a.id });
+        for (let i = 0; i < counts.aerr; i += 1) outcomes.push({ o: "err", a: a.id });
+        for (let i = counts.kill + counts.aerr; i < counts.aatt; i += 1) {
+          outcomes.push({ o: "play", a: a.id });
+        }
+      });
       for (let i = outcomes.length - 1; i > 0; i -= 1) {
         const j = Math.floor(rand() * (i + 1));
         const held = outcomes[i];
@@ -663,7 +666,7 @@
         outcomes[j] = held;
       }
 
-      slice.shots = outcomes.map((outcome) => makeShot(rand, outcome));
+      slice.shots = outcomes.map((swing) => Object.assign(makeShot(rand, swing.o), { a: swing.a }));
     });
 
     const data = { sets, slices };
@@ -674,16 +677,53 @@
   /* ---------- State ----------
      The match selection lives on the tiles (aria-pressed, written by
      setupMatchSelects in main.js) and is read back off them rather than
-     mirrored here. The filters are the only state this file owns. An
-     empty filter set means "everything", which is why the funnel starts
-     at zero rather than at eleven. */
-  const filters = { set: new Set(), rot: new Set() };
+     mirrored here. The filters, and which count is open in the clip
+     panel, are the only state this file owns. An empty filter set means
+     "everything", which is why the funnel starts at zero rather than at
+     thirty-odd.
+
+     Four dimensions, of two kinds. Sets and rotations narrow: a cell the
+     filter excludes is not counted. Athletes and events highlight: the
+     numbers stay exactly what they were and the cell where an athlete
+     meets an event is marked — which is what a click on a count
+     applies, so the report shows where the clips came from. `ath` holds
+     roster ids (strings), `ev` holds stat keys. */
+  const filters = { set: new Set(), rot: new Set(), ath: new Set(), ev: new Set() };
+
+  /* The count whose clips are open: which row (an athlete, a rotation,
+     or the team), which stat, the cell it sits in (for putting focus
+     back — the button inside it is replaced if the count drops to
+     nothing), and which filters the click itself applied, so closing
+     the panel can take those off and leave the rest alone. */
+  let selected = null;
 
   const selectedMatches = () =>
     SEASON.filter((match) => match.tile.getAttribute("aria-pressed") === "true");
 
   const setAllowed = (set) => !filters.set.size || filters.set.has(set);
   const rotAllowed = (rot) => !filters.rot.size || filters.rot.has(rot);
+
+  /* The courts follow every filter, the highlights included: a table
+     can show a lit cell among the rest, but a court drawn for everyone
+     has nowhere to put "this one" except by drawing only this one. So
+     an athlete filter narrows the shots to hers, and an event filter to
+     the outcomes it names — kills, errors, or every swing for A Att.
+     An event that isn't an attack at all (an ace, say) leaves no attack
+     in the report, and the court says so. */
+  const athAllowed = (id) => !filters.ath.size || filters.ath.has(id);
+
+  const OUTCOME_KEYS = { kill: ["kill", "aatt"], err: ["aerr", "aatt"], play: ["aatt"] };
+  const shotAllowed = (outcome) =>
+    !filters.ev.size || OUTCOME_KEYS[outcome].some((key) => filters.ev.has(key));
+
+  // Who a court is about, when the filters say: one athlete, else one
+  // rotation, else the team.
+  const scopeName = () =>
+    filters.ath.size === 1
+      ? rowName("ath", [...filters.ath][0])
+      : !filters.ath.size && filters.rot.size === 1
+      ? rowName("rot", [...filters.rot][0])
+      : "FHS";
 
   /* ---------- Aggregation ----------
      One pass over the season's cells, into per-athlete, per-rotation and
@@ -743,7 +783,9 @@
           });
         });
 
-        agg.shots.push(...slice.shots);
+        slice.shots.forEach((shot) => {
+          if (athAllowed(shot.a) && shotAllowed(shot.o)) agg.shots.push(shot);
+        });
       });
 
       // The trends chart's series. Every match keeps a point whether or
@@ -859,6 +901,41 @@
     Setting: { "S Err": "seterr" },
   };
 
+  /* What a raw count is a count OF, said in words: for the clip panel's
+     title and rows, the buttons' names, and the filter note. One entry
+     per raw() spec above — the two lists have to stay in step, because
+     a count without a name here is a button that can't say what it
+     opens. */
+  const EVENTS = {
+    kill: ["Kill", "Kills"],
+    aerr: ["Attack error", "Attack errors"],
+    aatt: ["Attack", "Attacks"],
+    ace: ["Ace", "Aces"],
+    serr: ["Serve error", "Serve errors"],
+    satt: ["Serve", "Serves"],
+    r3: ["Rtg 3 pass", "Rtg 3 passes"],
+    r2: ["Rtg 2 pass", "Rtg 2 passes"],
+    r1: ["Rtg 1 pass", "Rtg 1 passes"],
+    rerr: ["Reception error", "Reception errors"],
+    ratt: ["Reception", "Receptions"],
+    ast: ["Assist", "Assists"],
+    seterr: ["Set error", "Set errors"],
+    bhe: ["Ball handling error", "Ball handling errors"],
+    setatt: ["Set", "Sets"],
+    solo: ["Solo block", "Solo blocks"],
+    bassist: ["Block assist", "Block assists"],
+    berr: ["Block error", "Block errors"],
+  };
+
+  const eventName = (key, count) => (EVENTS[key] || [key, key])[count === 1 ? 0 : 1];
+
+  const rowName = (kind, id) =>
+    kind === "ath"
+      ? (ROSTER.find((athlete) => athlete.id === id) || { label: "#" + id }).label
+      : kind === "rot"
+      ? "Rotation " + id
+      : "FHS";
+
   const text = (node) => (node ? node.textContent.replace(/\s+/g, " ").trim() : "");
 
   const TABLES = [...demo.querySelectorAll("table.rdemo__table")]
@@ -891,7 +968,17 @@
     })
     .filter(Boolean);
 
-  function writeCell(cell, key, counts) {
+  const isSelected = (kind, id, key) =>
+    !!selected && selected.kind === kind && selected.id === id && selected.key === key;
+
+  /* A raw count is a button: it opens the clips behind it. Written in
+     place when there already is one, rather than replaced, because the
+     render that follows a click is triggered by the button being
+     clicked, and a button rebuilt under the pointer loses the focus a
+     keyboard user just gave it. It is only rebuilt across the line
+     between something and nothing — a count that drops to zero becomes
+     the dash, and a dash that gains a count becomes a button. */
+  function writeCell(cell, key, counts, entry) {
     const spec = key && STAT_SPECS[key];
     if (!spec) return;
     const value = counts ? spec.value(counts) : null;
@@ -900,9 +987,27 @@
       return;
     }
     const formatted = spec.format(value);
-    cell.innerHTML = spec.raw
-      ? '<span class="rdemo__cell">' + formatted + "</span>"
-      : formatted;
+    if (!spec.raw) {
+      cell.innerHTML = formatted;
+      return;
+    }
+
+    const kind = entry ? entry.kind : "total";
+    const id = entry ? entry.id : undefined;
+    const label = formatted + " " + eventName(key, value).toLowerCase() + " for " + rowName(kind, id);
+    const pressed = String(isSelected(kind, id, key));
+
+    let button = cell.firstElementChild;
+    if (!button || button.tagName !== "BUTTON") {
+      cell.innerHTML =
+        '<button type="button" class="rdemo__cell" data-kind="' + kind + '"' +
+        (id === undefined ? "" : ' data-id="' + id + '"') +
+        ' data-key="' + key + '"></button>';
+      button = cell.firstElementChild;
+    }
+    button.textContent = formatted;
+    button.setAttribute("aria-label", label);
+    button.setAttribute("aria-pressed", pressed);
   }
 
   function renderTables(agg, scope) {
@@ -910,6 +1015,14 @@
       if (table.caption && table.captionPrefix) {
         table.caption.textContent = table.captionPrefix + ", " + scope;
       }
+
+      // The highlights: a cell is lit where a lit event meets a lit row —
+      // the athlete's, the rotation's, or the team's when nobody and no
+      // rotation is picked, since the total row stands for everyone.
+      // Only the cell: the row and the column are what the filters name,
+      // not what they mark.
+      const lit = table.keys.map((key) => !!key && filters.ev.has(key));
+
       table.rows.forEach((entry) => {
         // A rotation the filter has excluded leaves the table rather than
         // sitting in it as a row of dashes: the filter says it isn't in
@@ -918,6 +1031,12 @@
           entry.row.hidden = !rotAllowed(entry.id);
           if (entry.row.hidden) return;
         }
+        const rowLit =
+          entry.kind === "ath"
+            ? filters.ath.has(entry.id)
+            : entry.kind === "rot"
+            ? filters.rot.has(entry.id)
+            : !filters.ath.size && !filters.rot.size;
         const counts =
           entry.kind === "ath"
             ? agg.ath[entry.id]
@@ -925,7 +1044,8 @@
             ? agg.rot[entry.id]
             : agg.team;
         [...entry.row.cells].slice(1).forEach((cell, i) => {
-          writeCell(cell, table.keys[i], counts);
+          writeCell(cell, table.keys[i], counts, entry);
+          cell.toggleAttribute("data-rdemo-hl", rowLit && lit[i]);
         });
       });
     });
@@ -943,6 +1063,7 @@
 
   const shotHost = demo.querySelector("[data-rdemo-shots]");
   const shotSvg = shotHost ? shotHost.closest("svg") : null;
+  const attackNote = demo.querySelector("[data-rdemo-attacknote]");
 
   const round = (value) => Math.round(value * 10) / 10;
 
@@ -1023,19 +1144,36 @@
       })
       .join("");
 
-    // Said here and only here. The key under the court is the design's
-    // two rows, and the attack table beside the card already reports the
-    // totals in its own A Att column — a third line of numbers under the
-    // court was me explaining the card to itself.
-    const counts =
-      agg.team.aatt + " attacks · " + agg.team.kill + " kills · " + agg.team.aerr + " errors";
+    // Whose swings these are and how many, counted off the lines
+    // themselves so the figure under the court is the figure in the
+    // clicked cell: her Kill column when the filter is kills, her A Att
+    // column when it is every swing. Kills and errors are broken out
+    // only when the card holds more than one outcome.
+    const tally = (outcome) => agg.shots.filter((shot) => shot.o === outcome).length;
+    const parts = [];
+    if (total) {
+      const outcomes = ["kill", "err", "play"].filter(tally);
+      if (outcomes.length > 1 || outcomes[0] === "play") {
+        parts.push(total + (total === 1 ? " attack" : " attacks"));
+      }
+      if (outcomes.length > 1 || outcomes[0] !== "play") {
+        if (tally("kill")) parts.push(tally("kill") + (tally("kill") === 1 ? " kill" : " kills"));
+        if (tally("err")) parts.push(tally("err") + (tally("err") === 1 ? " error" : " errors"));
+      }
+    }
+    const counts = parts.join(" · ");
+
+    if (attackNote) {
+      attackNote.textContent = total ? scopeName() + " · " + counts : "Nothing in this report";
+    }
 
     if (shotSvg) {
       shotSvg.setAttribute(
         "aria-label",
         total
-          ? "Shot map: " + counts + ", plotted from where each attack was hit to where it " +
-            "finished" + (drawn.length < total ? ", drawn from a sample of " + drawn.length : "")
+          ? "Shot map, " + scopeName() + ": " + counts + ", plotted from where each attack " +
+            "was hit to where it finished" +
+            (drawn.length < total ? ", drawn from a sample of " + drawn.length : "")
           : "Shot map: no attacks in the current report"
       );
     }
@@ -1057,17 +1195,43 @@
     { min: -1, fill: "none", ink: "dim" },
   ];
 
+  const SETTING_KEYS = ["ast", "seterr", "bhe", "setatt"];
+
   function renderZones(agg) {
     if (!ZONE_GROUPS.length) return;
 
+    // Whose map. An athlete filter says; otherwise whoever set most
+    // among what's selected. With several athletes lit, the one of
+    // them who set most.
     let setter = null;
-    Object.keys(agg.zones).forEach((id) => {
-      const total = agg.zones[id].reduce((a, b) => a + b, 0);
-      if (!setter || total > setter.total) setter = { id, total };
+    ROSTER.forEach((athlete) => {
+      if (!athAllowed(athlete.id)) return;
+      const total = agg.ath[athlete.id].ast || 0;
+      if (!setter || total > setter.total) setter = { id: athlete.id, total };
     });
+    if (filters.ath.size === 1) setter = { id: [...filters.ath][0], total: 0 };
+    if (setter) setter.total = agg.ath[setter.id].ast || 0;
 
-    const counts = setter ? agg.zones[setter.id] : [0, 0, 0, 0, 0, 0];
-    const total = setter ? setter.total : 0;
+    // Which count. The zones are where assists went, so they draw for
+    // assists — an event filter of set errors or ball-handling errors
+    // has a number but no destination, and an event that isn't setting
+    // at all leaves nothing here to count.
+    const evSetting = [...filters.ev].filter((key) => SETTING_KEYS.includes(key));
+    const inReport = !filters.ev.size || evSetting.length > 0;
+    const located = !filters.ev.size || filters.ev.has("ast");
+    const countKeys = evSetting.length ? evSetting : ["ast"];
+
+    const counts =
+      setter && located && inReport
+        ? agg.zones[setter.id] || [0, 0, 0, 0, 0, 0]
+        : [0, 0, 0, 0, 0, 0];
+    const total = counts.reduce((a, b) => a + b, 0);
+    const tallies =
+      setter && inReport
+        ? countKeys
+            .map((key) => ({ key, n: agg.ath[setter.id][key] || 0 }))
+            .filter((entry) => entry.n)
+        : [];
     // Shares are apportioned rather than rounded one by one, so they
     // still add to 100: a distribution that reads 34/22/26/6/4/9 is a
     // distribution nobody trusts.
@@ -1093,11 +1257,12 @@
       }
     });
 
-    const name = setter ? ROSTER.find((a) => a.id === setter.id).label : null;
+    const name = setter ? rowName("ath", setter.id) : null;
+    const said = tallies
+      .map((entry) => entry.n + " " + eventName(entry.key, entry.n).toLowerCase())
+      .join(" · ");
     if (setterNote) {
-      setterNote.textContent = total
-        ? name + " · " + total + (total === 1 ? " set" : " sets")
-        : "Nothing in this report";
+      setterNote.textContent = said ? name + " · " + said : "Nothing in this report";
     }
     if (zoneSvg) {
       zoneSvg.setAttribute(
@@ -1108,6 +1273,8 @@
               const zone = Number(group.getAttribute("data-rdemo-zone"));
               return "zone " + zone + " " + shown[zone - 1] + " percent";
             }).join(", ")
+          : said
+          ? "Half court: " + name + ", " + said + ", none of them located"
           : "Half court: no sets in the current report"
       );
     }
@@ -1128,8 +1295,37 @@
   const filterNote = demo.querySelector("[data-rdemo-filter-note]");
   const filterClear = demo.querySelector("[data-rdemo-filter-clear]");
 
-  const activeFilters = () => filters.set.size + filters.rot.size;
+  const activeFilters = () =>
+    filters.set.size + filters.rot.size + filters.ath.size + filters.ev.size;
 
+  // Sets and rotations are numbers in the data; athletes and events are
+  // the ids and keys the data is keyed by.
+  const parseValue = (dimension, raw) =>
+    dimension === "set" || dimension === "rot" ? Number(raw) : raw;
+
+  const changed = () => demo.dispatchEvent(new CustomEvent("rdemo:selection"));
+
+  const requestSide = (side, open) =>
+    demo.dispatchEvent(new CustomEvent("rdemo:side-request", { detail: { side, open } }));
+
+  /* The chips are written from the filters rather than the filters from
+     the chips, because a click on a count sets three of them at once
+     and the panel closing takes them back off: one source, and the
+     panel can't disagree with the report. */
+  function syncFilterChips() {
+    filterGroups.forEach((group) => {
+      const dimension = group.getAttribute("data-rdemo-filter");
+      const set = filters[dimension];
+      if (!set) return;
+      group.querySelectorAll("[data-value]").forEach((chip) => {
+        const on = set.has(parseValue(dimension, chip.getAttribute("data-value")));
+        chip.setAttribute("aria-pressed", String(on));
+      });
+    });
+  }
+
+  // What the report is narrowed to. Feeds the captions as well as the
+  // note, so it names only the cuts that change the numbers.
   function filterLabel() {
     const parts = [];
     const list = (noun, set) =>
@@ -1139,14 +1335,36 @@
     return parts.join(" and ");
   }
 
+  // What is lit. Kept out of the captions: a highlight changes nothing
+  // about what a table counts.
+  function highlightLabel() {
+    const parts = [];
+    if (filters.ath.size) {
+      parts.push(
+        [...filters.ath]
+          .map((id) => rowName("ath", id))
+          .join(", ")
+      );
+    }
+    if (filters.ev.size) {
+      parts.push([...filters.ev].map((key) => eventName(key, 2).toLowerCase()).join(", "));
+    }
+    return parts.join(" and ");
+  }
+
   function renderFilterChrome() {
     const active = activeFilters();
     if (filterCount) {
       filterCount.textContent = active + (active === 1 ? " Filter" : " Filters");
     }
     if (filterNote) {
-      filterNote.textContent = active
-        ? "Counting " + filterLabel() + ", nothing else."
+      const narrowed = filterLabel();
+      const lit = highlightLabel();
+      const sentences = [];
+      if (narrowed) sentences.push("Counting " + narrowed + ", nothing else.");
+      if (lit) sentences.push("Highlighting " + lit + ".");
+      filterNote.textContent = sentences.length
+        ? sentences.join(" ")
         : "Every set and every rotation is in the report.";
     }
     if (filterClear) filterClear.hidden = !active;
@@ -1158,32 +1376,223 @@
       const chip = event.target.closest("[data-value]");
       if (!chip || !group.contains(chip)) return;
 
-      const value = Number(chip.getAttribute("data-value"));
-      const on = chip.getAttribute("aria-pressed") === "true";
-      if (on) filters[dimension].delete(value);
-      else filters[dimension].add(value);
-      chip.setAttribute("aria-pressed", String(!on));
+      const set = filters[dimension];
+      if (!set) return;
+      const value = parseValue(dimension, chip.getAttribute("data-value"));
+      if (set.has(value)) set.delete(value);
+      else set.add(value);
+      syncFilterChips();
 
       // One event out, and everything drawn from the report redraws off
       // it — these tables, both courts, the trends chart over in main.js.
       // The same event the match picker fires, because narrowing the
       // report and changing which matches are in it are the same kind of
       // change to everything downstream.
-      demo.dispatchEvent(new CustomEvent("rdemo:selection"));
+      changed();
     });
   });
 
-  if (filterClear) {
-    filterClear.addEventListener("click", () => {
-      filters.set.clear();
-      filters.rot.clear();
-      filterGroups.forEach((group) => {
-        group.querySelectorAll("[data-value]").forEach((chip) => {
-          chip.setAttribute("aria-pressed", "false");
+  function clearEverything() {
+    Object.keys(filters).forEach((dimension) => filters[dimension].clear());
+    selected = null;
+    syncFilterChips();
+    changed();
+    requestSide("right", false);
+  }
+
+  if (filterClear) filterClear.addEventListener("click", clearEverything);
+
+  // A different report is a fresh start: the filters and the open clips
+  // belonged to the one being left.
+  demo.addEventListener("rdemo:report-change", clearEverything);
+
+  /* ---------- The clips ----------
+     What a count opens. Clicking a number in the product plays the clips
+     it was counted from, with the athlete and the event it counts
+     applied as filters so the report shows where you are; here it does
+     the same, minus the video. The panel lists one row per event, and
+     the rows are read off the same cells the tables were totalled from
+     — match by match, set by set, rotation by rotation — so the list is
+     exactly as long as the number says, and a rotation's kills name a
+     different hitter on every row because they were different hitters. */
+  const sideTitle = demo.querySelector('[data-rdemo-side-title="right"]');
+  const sideBody = demo.querySelector('[data-rdemo-side-body="right"]');
+  const sidePanel = demo.querySelector('[data-rdemo-side="right"]');
+
+  const icon = (paths) =>
+    '<svg class="rdemo__icon rdemo__clipicon" viewBox="0 0 24 24" fill="none" ' +
+    'stroke="currentColor" stroke-width="1.8" stroke-linecap="round" ' +
+    'stroke-linejoin="round" aria-hidden="true" focusable="false">' +
+    paths.map((d) => '<path d="' + d + '" />').join("") +
+    "</svg>";
+
+  const ICON_BOOKMARK = icon(["M7 4.5h10v15l-5-3.6-5 3.6z"]);
+  const ICON_PLUS = icon(["M12 5v14M5 12h14"]);
+  const ICON_PENCIL = icon([
+    "M4 20l1-4.2L15.7 5.1a1.6 1.6 0 0 1 2.3 0l.9.9a1.6 1.6 0 0 1 0 2.3L8.2 19z",
+    "M14.4 6.4l3.2 3.2",
+  ]);
+  const ICON_COMMENT = icon([
+    "M5.5 5h13A1.5 1.5 0 0 1 20 6.5v8a1.5 1.5 0 0 1-1.5 1.5h-7L7.5 19.5V16h-2A1.5 1.5 0 0 1 4 14.5v-8A1.5 1.5 0 0 1 5.5 5z",
+  ]);
+
+  const CLIP_ACTIONS =
+    '<span class="rdemo__clipicons" aria-hidden="true">' +
+    ICON_PENCIL + ICON_COMMENT + ICON_BOOKMARK + ICON_PLUS +
+    "</span>";
+
+  const escapeHtml = (value) =>
+    String(value).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  /* The events behind the open count, one per row. The same walk
+     aggregate() makes — picked matches, allowed sets and rotations —
+     and the same partition into athlete, rotation and team, so this
+     list and that cell can't come out different lengths. */
+  function clipRows() {
+    const { kind, id, key } = selected;
+    const rows = [];
+    selectedMatches().forEach((match) => {
+      matchData(match).slices.forEach((slice) => {
+        if (!setAllowed(slice.set) || !rotAllowed(slice.rot)) return;
+        if (kind === "rot" && slice.rot !== id) return;
+        ROSTER.forEach((athlete) => {
+          if (kind === "ath" && athlete.id !== id) return;
+          const n = slice.ath[athlete.id][key] || 0;
+          for (let i = 0; i < n; i += 1) {
+            rows.push({ athlete, set: slice.set, rot: slice.rot, match });
+          }
         });
       });
-      demo.dispatchEvent(new CustomEvent("rdemo:selection"));
     });
+    return rows;
+  }
+
+  function renderClips() {
+    if (!selected || !sideBody) return;
+    const { kind, id, key } = selected;
+    const rows = clipRows();
+    const many = selectedMatches().length > 1;
+    const title = rowName(kind, id) + " · " + eventName(key, 2);
+
+    if (sideTitle) sideTitle.textContent = title;
+    if (sidePanel) sidePanel.setAttribute("aria-label", title);
+
+    const list = rows
+      .map((row, i) => {
+        const meta =
+          escapeHtml(row.athlete.label) +
+          " • S" + row.set + " R" + row.rot +
+          (many ? " • " + escapeHtml(row.match.opponent) : "");
+        return (
+          '<li class="rdemo__clip"' + (i === 0 ? ' aria-current="true"' : "") + ">" +
+          '<span class="rdemo__tablecrest" aria-hidden="true">F</span>' +
+          '<span class="rdemo__clipevent">' + eventName(key, 1) + "</span>" +
+          CLIP_ACTIONS +
+          '<span class="rdemo__clipmeta">' + meta + "</span>" +
+          "</li>"
+        );
+      })
+      .join("");
+
+    // The still and the count are pinned together (.rdemo__clipspin) and
+    // the rows scroll under them.
+    sideBody.innerHTML =
+      '<div class="rdemo__clips">' +
+      '<div class="rdemo__clipspin">' +
+      '<img class="rdemo__clipstill" src="assets/img/placeholder-still-a.png" ' +
+      'width="876" height="490" alt="" decoding="async" />' +
+      '<div class="rdemo__clipshead">' +
+      "<span>" + rows.length + (rows.length === 1 ? " Clip" : " Clips") + "</span>" +
+      '<span class="rdemo__clipicons" aria-hidden="true">' + ICON_BOOKMARK + ICON_PLUS + "</span>" +
+      "</div>" +
+      "</div>" +
+      '<ol class="rdemo__cliplist">' + list + "</ol>" +
+      "</div>";
+  }
+
+  /* Letting go of the open count. One routine behind every way out —
+     the panel's close button, Escape, the scrim, the same count clicked
+     again, the clear button — so they all leave the report in the same
+     state. `clearApplied` takes off what the click put on: the athlete
+     and the event always, the rotation only if it was the click that
+     set it. A set the coach chose by hand is theirs and stays. */
+  function dropSelection({ clearApplied = true, close = true, refocus = false } = {}) {
+    if (!selected) return;
+    const { td, applied } = selected;
+    selected = null;
+
+    if (clearApplied) {
+      filters.ath.clear();
+      filters.ev.clear();
+      if (applied.rot) filters.rot.clear();
+    }
+    syncFilterChips();
+    changed();
+    if (close) requestSide("right", false);
+
+    if (refocus && td) {
+      // Back to the count, or to its report if the count has since gone
+      // to nothing — never left on a button that just became invisible.
+      const target = td.querySelector("button.rdemo__cell") || td.closest(".rdemo__panel");
+      if (target) target.focus();
+    }
+  }
+
+  demo.addEventListener("click", (event) => {
+    const button = event.target.closest("button.rdemo__cell");
+    if (!button || !demo.contains(button)) return;
+
+    const kind = button.getAttribute("data-kind");
+    const key = button.getAttribute("data-key");
+    const rawId = button.getAttribute("data-id");
+    const id = kind === "rot" ? Number(rawId) : kind === "ath" ? rawId : undefined;
+
+    if (isSelected(kind, id, key)) {
+      dropSelection({ clearApplied: true, close: true, refocus: true });
+      return;
+    }
+
+    // The related filters: the row's athlete or rotation, and the
+    // column's event. Replaced rather than added to — the click says
+    // "this cell", not "this cell as well".
+    filters.ath.clear();
+    filters.ev.clear();
+    filters.ev.add(key);
+    const applied = { rot: false };
+    if (kind === "ath") filters.ath.add(id);
+    if (kind === "rot") {
+      filters.rot.clear();
+      filters.rot.add(id);
+      applied.rot = true;
+    }
+
+    selected = { kind, id, key, td: button.closest("td"), applied };
+    syncFilterChips();
+    // Redraw first, open second: the panel should arrive with its rows
+    // already in it rather than fill while it is sliding.
+    changed();
+    requestSide("right", true);
+  });
+
+  // The panel closing by any of main.js's routes — its close button,
+  // Escape, the scrim on touch — is the report's cue to take the
+  // click's filters back off.
+  demo.addEventListener("rdemo:side-close", (event) => {
+    if (!event.detail || event.detail.side !== "right") return;
+    dropSelection({ clearApplied: true, close: false, refocus: true });
+  });
+
+  /* Whether the open count is still a count. A chip turned off by hand,
+     a set filter that empties the cell, a rotation filtered away: any
+     of those and the panel is describing something the report no
+     longer shows, so it goes. */
+  function selectionHolds(agg) {
+    const { kind, id, key } = selected;
+    if (!filters.ev.has(key)) return false;
+    if (kind === "ath" && !filters.ath.has(id)) return false;
+    if (kind === "rot" && !rotAllowed(id)) return false;
+    const counts = kind === "ath" ? agg.ath[id] : kind === "rot" ? agg.rot[id] : agg.team;
+    return !!(counts && counts[key]);
   }
 
   /* ---------- Drawing the lot ---------- */
@@ -1202,13 +1611,19 @@
 
   function render() {
     current = aggregate();
+    if (selected && !selectionHolds(current)) {
+      selected = null;
+      requestSide("right", false);
+    }
     renderTables(current, scopeLabel(current));
     renderShots(current);
     renderZones(current);
+    renderClips();
     renderFilterChrome();
   }
 
   demo.addEventListener("rdemo:selection", render);
+  syncFilterChips();
   render();
 
   /* What the trends chart plots. It asks for this rather than reading the

@@ -381,13 +381,98 @@
         </a>
       </div>
 
-      <!-- One project split across three case studies, in the lead slot.
+      <div class="grid grid--2up">
+        <article class="card card--project" data-project-card data-tags="ai,web">
+          <div class="card__media card__media--demo">
+            <!-- The AI command bar, drawn rather than filmed: see
+                 "AI COMMAND BAR DEMO" in css/components.css. The only
+                 image left in it is the match frame at the bottom. -->
+            <div class="cmdbar" role="img" aria-label="Hudl's AI command bar searching a volleyball match, its search field ringed by a sweeping gradient">
+              <div class="cmdbar__panel">
+                <div class="cmdbar__row">
+                  <span class="cmdbar__btn">
+                    <svg class="cmdbar__icon cmdbar__icon--btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                      <path d="M3.5 5h17l-6.6 7.8v6.4l-3.8-2.1v-4.3z" />
+                    </svg>
+                    0 Filters
+                  </span>
+
+                  <span class="cmdbar__field">
+                    <svg class="cmdbar__icon cmdbar__icon--search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false">
+                      <circle cx="10.5" cy="10.5" r="7" />
+                      <path d="m15.6 15.6 5 5" />
+                    </svg>
+                    <svg class="cmdbar__icon cmdbar__icon--spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                      <path d="M9 3 Q10.3 7.7 15 9 Q10.3 10.3 9 15 Q7.7 10.3 3 9 Q7.7 7.7 9 3 Z" />
+                      <path d="M17.5 13 Q18.3 15.7 21 16.5 Q18.3 17.3 17.5 20 Q16.7 17.3 14 16.5 Q16.7 15.7 17.5 13 Z" />
+                      <path d="M18 3.5 Q18.5 5.5 20.5 6 Q18.5 6.5 18 8.5 Q17.5 6.5 15.5 6 Q17.5 5.5 18 3.5 Z" />
+                    </svg>
+                    <span class="cmdbar__placeholder">Finding moments</span>
+                    <svg class="cmdbar__icon cmdbar__icon--clear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false">
+                      <path d="M5.5 5.5 18.5 18.5M18.5 5.5 5.5 18.5" />
+                    </svg>
+                    <span class="cmdbar__divider"></span>
+                    <svg class="cmdbar__icon cmdbar__icon--mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                      <rect x="9" y="2" width="6" height="11" rx="3" />
+                      <path d="M5 11a7 7 0 0 0 14 0" />
+                      <path d="M12 18v3.2M9.2 21.2h5.6" />
+                    </svg>
+                  </span>
+
+                  <span class="cmdbar__btn">
+                    <svg class="cmdbar__icon cmdbar__icon--btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                      <path d="M8 7l4-4 4 4" />
+                      <path d="M12 3v12" />
+                      <path d="M4.5 12v6.5a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V12" />
+                    </svg>
+                    Share
+                  </span>
+                </div>
+
+                <img
+                  class="cmdbar__footage"
+                  src="assets/img/ai-command-bar-footage.webp"
+                  alt=""
+                  width="900"
+                  height="375"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="card__body">
+            <div class="card__tags">
+              <span class="tag">AI</span>
+              <span class="tag tag--neutral">Web App</span>
+            </div>
+            <h3 class="card__title"><a href="case-study-ai-command-bar.html">AI Command Bar</a></h3>
+            <p class="card__excerpt">A skunkworks week that shipped straight to production &mdash; then 20,239 real searches redrew the roadmap.</p>
+          </div>
+        </article>
+
+        <article class="card card--project" data-project-card data-tags="internal,research">
+          <div class="card__media">
+            <img src="assets/img/video-alignment.png" alt="Diagram of aligning event tags between two recordings of the same game" />
+          </div>
+          <div class="card__body">
+            <div class="card__tags">
+              <span class="tag">Internal Tools</span>
+              <span class="tag tag--neutral">Kindof Technical</span>
+            </div>
+            <h3 class="card__title"><a href="case-study-video-alignment.html">Tagging a game once &mdash; $500K saved a year</a></h3>
+            <p class="card__excerpt">A math trick found in a video editor cut duplicate analyst work in half and saved $500K a year.</p>
+          </div>
+        </article>
+      </div>
+
+      <!-- One project split across three case studies, closing the section.
            The triptych media and the numbered part rows are what carry
            the "three in one" read; see .card--feature .card__parts and
            .card__media--triptych in components.css. projects.html breaks
            the same three parts out into three ordinary cards so each can
            be filtered on; this is the only place they are shown as one. -->
-      <article class="card card--project card--feature card--series" data-project-card data-tags="research,web">
+      <article class="card card--project card--feature card--series mt-lg" data-project-card data-tags="research,web">
         <div class="card__media card__media--triptych">
           <!-- The three panels, drawn rather than filmed: see "VOLLEYBALL
      PRODUCT DEMOS" in css/components.css. Each one picks its
@@ -600,16 +685,18 @@
           </a>
         </div>
         <div class="card__body">
-          <p class="card__flag">Featured case study &middot; 3 parts</p>
-          <div class="card__tags">
-            <span class="tag">Web + Mobile</span>
-            <span class="tag tag--neutral">New Components</span>
+          <div class="card__series-head">
+            <p class="card__flag">Featured case study &middot; 3 parts</p>
+            <div class="card__tags">
+              <span class="tag">Web + Mobile</span>
+              <span class="tag tag--neutral">New Components</span>
+            </div>
+            <h3 class="card__title"><a href="case-study-volleyball-consolidation.html">Merging a tangle of products into one</a></h3>
+            <p class="card__excerpt">
+              Several volleyball products folded into one. Too big for a single read, so it's told in three
+              case studies that each stand on their own.
+            </p>
           </div>
-          <h3 class="card__title"><a href="case-study-volleyball-consolidation.html">Merging a tangle of products into one</a></h3>
-          <p class="card__excerpt">
-            Several volleyball products folded into one. Too big for a single read, so it's told in three
-            case studies that each stand on their own.
-          </p>
           <ul class="card__parts">
             <li class="card__part">
               <a class="card__part-link" href="case-study-volleyball-reports.html">
@@ -629,89 +716,6 @@
           </ul>
         </div>
       </article>
-
-      <div class="grid grid--2up mt-lg">
-        <article class="card card--project" data-project-card data-tags="ai,web">
-          <div class="card__media card__media--demo">
-            <!-- The AI command bar, drawn rather than filmed: see
-                 "AI COMMAND BAR DEMO" in css/components.css. The only
-                 image left in it is the match frame at the bottom. -->
-            <div class="cmdbar" role="img" aria-label="Hudl's AI command bar searching a volleyball match, its search field ringed by a sweeping gradient">
-              <div class="cmdbar__panel">
-                <div class="cmdbar__row">
-                  <span class="cmdbar__btn">
-                    <svg class="cmdbar__icon cmdbar__icon--btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                      <path d="M3.5 5h17l-6.6 7.8v6.4l-3.8-2.1v-4.3z" />
-                    </svg>
-                    0 Filters
-                  </span>
-
-                  <span class="cmdbar__field">
-                    <svg class="cmdbar__icon cmdbar__icon--search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false">
-                      <circle cx="10.5" cy="10.5" r="7" />
-                      <path d="m15.6 15.6 5 5" />
-                    </svg>
-                    <svg class="cmdbar__icon cmdbar__icon--spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                      <path d="M9 3 Q10.3 7.7 15 9 Q10.3 10.3 9 15 Q7.7 10.3 3 9 Q7.7 7.7 9 3 Z" />
-                      <path d="M17.5 13 Q18.3 15.7 21 16.5 Q18.3 17.3 17.5 20 Q16.7 17.3 14 16.5 Q16.7 15.7 17.5 13 Z" />
-                      <path d="M18 3.5 Q18.5 5.5 20.5 6 Q18.5 6.5 18 8.5 Q17.5 6.5 15.5 6 Q17.5 5.5 18 3.5 Z" />
-                    </svg>
-                    <span class="cmdbar__placeholder">Finding moments</span>
-                    <svg class="cmdbar__icon cmdbar__icon--clear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false">
-                      <path d="M5.5 5.5 18.5 18.5M18.5 5.5 5.5 18.5" />
-                    </svg>
-                    <span class="cmdbar__divider"></span>
-                    <svg class="cmdbar__icon cmdbar__icon--mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                      <rect x="9" y="2" width="6" height="11" rx="3" />
-                      <path d="M5 11a7 7 0 0 0 14 0" />
-                      <path d="M12 18v3.2M9.2 21.2h5.6" />
-                    </svg>
-                  </span>
-
-                  <span class="cmdbar__btn">
-                    <svg class="cmdbar__icon cmdbar__icon--btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                      <path d="M3.5 5h17l-6.6 7.8v6.4l-3.8-2.1v-4.3z" />
-                    </svg>
-                    Share
-                  </span>
-                </div>
-
-                <img
-                  class="cmdbar__footage"
-                  src="assets/img/ai-command-bar-footage.webp"
-                  alt=""
-                  width="900"
-                  height="375"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="card__body">
-            <div class="card__tags">
-              <span class="tag">AI</span>
-              <span class="tag tag--neutral">Web App</span>
-            </div>
-            <h3 class="card__title"><a href="case-study-ai-command-bar.html">AI Command Bar</a></h3>
-            <p class="card__excerpt">A skunkworks week that shipped straight to production &mdash; then 2,239 real searches redrew the roadmap.</p>
-          </div>
-        </article>
-
-        <article class="card card--project" data-project-card data-tags="internal,research">
-          <div class="card__media">
-            <img src="assets/img/video-alignment.png" alt="Diagram of aligning event tags between two recordings of the same game" />
-          </div>
-          <div class="card__body">
-            <div class="card__tags">
-              <span class="tag">Internal Tools</span>
-              <span class="tag tag--neutral">Kindof Technical</span>
-            </div>
-            <h3 class="card__title"><a href="case-study-video-alignment.html">Tagging a game once &mdash; $500K saved a year</a></h3>
-            <p class="card__excerpt">A math trick found in a video editor cut duplicate analyst work in half and saved $500K a year.</p>
-          </div>
-        </article>
-      </div>
     </section>
 
     <section id="about-me" class="section container">
@@ -732,9 +736,9 @@
           <p>I love the kind of problems that don't have obvious answers, the ones that require curiosity, experimentation, and a lot of whiteboarding before the interface ever takes shape.
           </p>
           <div class="cluster">
-            <span class="tag tag--neutral">Systems Thinking</span>
-            <span class="tag tag--neutral">Prototyping</span>
-            <span class="tag tag--neutral">AI and ML Solutions</span>
+            <span class="tag tag--contrast">Systems Thinking</span>
+            <span class="tag tag--contrast">Prototyping</span>
+            <span class="tag tag--contrast">AI and ML Solutions</span>
           </div>
         </div>
 

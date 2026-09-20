@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Volleyball Consolidation — Hannah Monk</title>
-  <meta name="description" content="A multi-part case study on consolidating Hudl's volleyball products: reports, video overlays and playback, and frictionless submission." />
+  <meta name="description" content="Hudl, Volleymetrics and BallTime each did volleyball their own way. Folding them into one product, told in three case studies: reports, video playback, and submission." />
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -43,12 +43,15 @@
         </a>
 
         <h1 class="case-hero__title">Merging a tangle of products into one</h1>
-        <p class="case-hero__tagline">One product out of several, told in three parts</p>
+        <p class="case-hero__tagline">Hudl, Volleymetrics and BallTime, folded into one product and told in three parts</p>
         <p class="case-hero__client">Hudl</p>
 
         <p class="case-hero__summary">
-          Overview coming soon &mdash; the shared context behind all three parts: why volleyball needed
-          consolidating, the constraints we worked under, and my role across the effort.
+          Hudl had three volleyball products under one roof: its own, Volleymetrics, and BallTime. Each got a
+          match in its own way, played it in its own player, and reported on it in its own reports &mdash; and
+          coaches were fiercely loyal to whichever one they learned first. I was the designer folding the three
+          into one. It&rsquo;s too much for a single read, so it&rsquo;s told in three parts, one for each job a
+          coach needs the product to do.
         </p>
       </div>
 
@@ -211,58 +214,67 @@
       <dl class="fact-grid">
         <div class="fact">
           <dt class="fact__label">Experience goal</dt>
-          <dd class="fact__value">Coming soon.</dd>
+          <dd class="fact__value">Feel like the product each coach already knows, with nothing they relied on gone.</dd>
         </div>
         <div class="fact">
           <dt class="fact__label">Business goal</dt>
-          <dd class="fact__value">Coming soon.</dd>
+          <dd class="fact__value">Three products maintained in parallel become one.</dd>
         </div>
         <div class="fact">
           <dt class="fact__label">Timeline</dt>
-          <dd class="fact__value">Coming soon.</dd>
+          <dd class="fact__value">Over a year, on and off the roadmap.</dd>
         </div>
         <div class="fact">
-          <dt class="fact__label">Team</dt>
-          <dd class="fact__value">Coming soon.</dd>
+          <dt class="fact__label">My role</dt>
+          <dd class="fact__value">Designer on all three parts &mdash; research, systems, shipped UI.</dd>
         </div>
       </dl>
     </section>
 
     <section class="container section">
-      <div class="case-body">
-        <h2>The effort</h2>
-        <p class="text-muted">
-          Shared context coming soon &mdash; the problem behind the consolidation, how the work was scoped,
-          and how the three parts below relate to each other.
-        </p>
-      </div>
-
-      <!-- Each part is its own case study so none of them has to be read
-           end-to-end to make sense. Reordering these tiles renumbers them
-           automatically (see .chapter__index in components.css) — but the
-           .series-bar position pills on the chapter pages themselves are
-           hardcoded, so those need updating by hand to match. -->
-      <div class="section-heading mt-lg">
+      <div class="section-heading mt-xl">
         <h2 class="section-heading__title">Read it in parts</h2>
       </div>
 
+      <!-- The thumbnails are the same motion clips the landing card uses,
+           playing on hover (setupHoverVideos in main.js) and showing their
+           poster frame otherwise. The whole tile is the trigger, since the
+           title link already covers the whole tile. -->
       <div class="chapters">
         <article class="chapter">
+          <div class="chapter__media">
+            <video data-hover-video muted loop playsinline preload="none" tabindex="-1" aria-hidden="true"
+              poster="assets/video/volleyball-reports-poster.jpg">
+              <source src="assets/video/volleyball-reports.mp4" type="video/mp4" />
+            </video>
+          </div>
           <p class="chapter__index"></p>
           <h3 class="chapter__title"><a href="case-study-volleyball-reports.html">Reports</a></h3>
-          <p class="chapter__text">Coming soon.</p>
+          <p class="chapter__text">Three reporting systems become one layout system and three components, built around the report-first loop 93% of coaches described.</p>
         </article>
 
         <article class="chapter">
+          <div class="chapter__media">
+            <video data-hover-video muted loop playsinline preload="none" tabindex="-1" aria-hidden="true"
+              poster="assets/video/volleyball-playback-poster.jpg">
+              <source src="assets/video/volleyball-playback.mp4" type="video/mp4" />
+            </video>
+          </div>
           <p class="chapter__index"></p>
           <h3 class="chapter__title"><a href="case-study-volleyball-playback.html">Video overlays &amp; playback</a></h3>
-          <p class="chapter__text">Coming soon.</p>
+          <p class="chapter__text">One player for every match, with the ball&rsquo;s flight drawn over the court and coaches choosing what stays on screen.</p>
         </article>
 
         <article class="chapter">
+          <div class="chapter__media">
+            <video data-hover-video muted loop playsinline preload="none" tabindex="-1" aria-hidden="true"
+              poster="assets/video/volleyball-submission-poster.jpg">
+              <source src="assets/video/volleyball-submission.mp4" type="video/mp4" />
+            </video>
+          </div>
           <p class="chapter__index"></p>
           <h3 class="chapter__title"><a href="case-study-volleyball-submission.html">Frictionless submission</a></h3>
-          <p class="chapter__text">Coming soon.</p>
+          <p class="chapter__text">Getting a match from the camera to a finished breakdown with as little asked of the coach as possible.</p>
         </article>
       </div>
     </section>

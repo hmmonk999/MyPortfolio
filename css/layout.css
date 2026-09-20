@@ -77,13 +77,13 @@
   .grid--2up,
   .grid--3up,
   .grid--4up {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (min-width: 900px) {
   .grid--3up {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
   .grid--2up {
     grid-template-columns: repeat(2, 1fr);
@@ -1155,6 +1155,62 @@ body {
   filter: blur(var(--liquid-blur-deco));
 }
 
+/* The halo: each run of type's invisible copy, dropped in by the
+   script as the run's first child and laid exactly over the run's
+   text — same box, same font, same wrap, since it inherits everything
+   and its content box is the run's — with its fill made transparent
+   and only a wide, faint text-shadow left, in the run's own ink (the
+   ink alternation included: the wordmark's copy keeps the .ink-glyph
+   spans). That shadow is the field the drops merge into; see
+   --liquid-halo-* in tokens.css for what it does and why. Under the
+   letters (z-index: -1 in the run's own stacking context, which its
+   rotation makes) so the letters paint over it where they overlap.
+
+   Masked to a disc around each of the trail's two bodies, so it exists
+   only where a drop is: the script writes each body's position in the
+   run's own unrotated frame, relative to this box's corner, into the
+   four custom properties every frame, and the two gradient layers add
+   up. Parked off the box by default, and again once the drops have
+   left, so the letters are exactly themselves whenever nothing is
+   merging with them. The box is padded out past the text because the
+   mask clips to it and the shadow bleeds past the letters; the
+   negative margin puts the content box back on the run's. */
+.hero__halo {
+  --halo-ax: -9999px;
+  --halo-ay: -9999px;
+  --halo-bx: -9999px;
+  --halo-by: -9999px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  box-sizing: content-box;
+  width: 100%;
+  margin: calc(-1 * var(--liquid-halo-pad));
+  padding: var(--liquid-halo-pad);
+  pointer-events: none;
+  user-select: none;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 var(--liquid-halo-blur)
+    color-mix(in srgb, currentColor var(--liquid-halo-strength), transparent);
+  -webkit-mask-image:
+    radial-gradient(closest-side, #000 45%, transparent 100%),
+    radial-gradient(closest-side, #000 45%, transparent 100%);
+  -webkit-mask-size: calc(var(--liquid-halo-reach) * 2) calc(var(--liquid-halo-reach) * 2);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position:
+    calc(var(--halo-ax) - var(--liquid-halo-reach)) calc(var(--halo-ay) - var(--liquid-halo-reach)),
+    calc(var(--halo-bx) - var(--liquid-halo-reach)) calc(var(--halo-by) - var(--liquid-halo-reach));
+  mask-image:
+    radial-gradient(closest-side, #000 45%, transparent 100%),
+    radial-gradient(closest-side, #000 45%, transparent 100%);
+  mask-size: calc(var(--liquid-halo-reach) * 2) calc(var(--liquid-halo-reach) * 2);
+  mask-repeat: no-repeat;
+  mask-position:
+    calc(var(--halo-ax) - var(--liquid-halo-reach)) calc(var(--halo-ay) - var(--liquid-halo-reach)),
+    calc(var(--halo-bx) - var(--liquid-halo-reach)) calc(var(--halo-by) - var(--liquid-halo-reach));
+}
+
 /* The cursor's twin, dropped into the wrapper by the script: the same
    arrow and drop as the fixed cursor (see .cursor in components.css),
    placed in the wrapper's own coordinate space so they go through the
@@ -1216,6 +1272,18 @@ body {
    .cursor__wake in components.css so twin and fixed copy are the one
    shape for the hand-off.
 
+   What a twin is made of is a radial gradient, not a filled disc (see
+   the drops' tokens in tokens.css for why): a solid core with a steep
+   edge, which is the fixed copy's circle and snaps as crisp as a
+   letter, and past it a tail that sits under the wrapper's threshold
+   and fades out over the tail length — the drop's reach, which only
+   shows where it adds to a letter's halo or the other body's tail. So
+   the element is wider than the drop by the tail on each side, and the
+   negative margin centres the core on the element's origin. The core
+   stop sits the blur inside the drop's radius, since a blurred edge
+   snaps about one blur outside the stop, so the visible core comes out
+   at the fixed copy's size.
+
    transform is left free for the script, which uses it for the swell as
    a body nears ink, and is why it is in will-change: scale is the enter
    and exit (below), translate is the position (also the script), and the
@@ -1223,23 +1291,28 @@ body {
 
    Blur is the part of the melt that lives here. It runs from
    --liquid-blur-trail to --liquid-blur-trail-melt as --melt goes 0 to 1,
-   so a body's edge reaches furthest exactly when there is a letter in
-   reach: the neck to the letter starts earlier and comes out thicker,
-   and the body loses its own edge into the letter rather than docking
-   against it. --melt is set by the script per body and on the twins
+   a little more give at the core's edge exactly when there is a letter
+   in reach. --melt is set by the script per body and on the twins
    only — the fixed copies in components.css have no goo filter behind
-   them, so a wider blur out there would just be a fuzzy blob. */
+   them, so a wider blur out there would just be a fuzzy disc. */
 .hero__blob--trail,
 .hero__blob--wake {
   border-radius: 50%;
-  background: var(--ink, var(--goo-cursor));
   will-change: translate, transform;
 }
 
 .hero__blob--trail {
-  width: var(--cursor-trail-size);
-  height: var(--cursor-trail-size);
-  margin: calc(var(--cursor-trail-size) / -2) 0 0 calc(var(--cursor-trail-size) / -2);
+  width: calc(var(--cursor-trail-size) + var(--liquid-tail-trail) * 2);
+  height: calc(var(--cursor-trail-size) + var(--liquid-tail-trail) * 2);
+  margin: calc(var(--cursor-trail-size) / -2 - var(--liquid-tail-trail)) 0 0
+    calc(var(--cursor-trail-size) / -2 - var(--liquid-tail-trail));
+  background: radial-gradient(
+    closest-side,
+    var(--ink, var(--goo-cursor)) calc(var(--cursor-trail-size) / 2 - var(--liquid-blur-trail)),
+    color-mix(in srgb, var(--ink, var(--goo-cursor)) var(--liquid-tail-strength), transparent)
+      calc(var(--cursor-trail-size) / 2 - var(--liquid-blur-trail) + 0.5px),
+    transparent 100%
+  );
   filter: blur(
     calc(
       var(--liquid-blur-trail) +
@@ -1249,9 +1322,17 @@ body {
 }
 
 .hero__blob--wake {
-  width: var(--cursor-wake-size);
-  height: var(--cursor-wake-size);
-  margin: calc(var(--cursor-wake-size) / -2) 0 0 calc(var(--cursor-wake-size) / -2);
+  width: calc(var(--cursor-wake-size) + var(--liquid-tail-wake) * 2);
+  height: calc(var(--cursor-wake-size) + var(--liquid-tail-wake) * 2);
+  margin: calc(var(--cursor-wake-size) / -2 - var(--liquid-tail-wake)) 0 0
+    calc(var(--cursor-wake-size) / -2 - var(--liquid-tail-wake));
+  background: radial-gradient(
+    closest-side,
+    var(--ink, var(--goo-cursor)) calc(var(--cursor-wake-size) / 2 - var(--liquid-blur-wake)),
+    color-mix(in srgb, var(--ink, var(--goo-cursor)) var(--liquid-tail-strength), transparent)
+      calc(var(--cursor-wake-size) / 2 - var(--liquid-blur-wake) + 0.5px),
+    transparent 100%
+  );
   filter: blur(
     calc(
       var(--liquid-blur-wake) +

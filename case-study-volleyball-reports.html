@@ -174,7 +174,7 @@
           <h3>Where coaches look for reports</h3>
           <p>
             Before designing anything, I mapped where each product hid its reports &mdash; which nav slot, and
-            what it was called. All three buried it in nearly the same place. So we left it there.re
+            what it was called. All three buried it in nearly the same place. So we left it there.
           </p>
           <p><b>This was the key to keeping reports familiar, while adding new features and making some changes to layouts and components.</b> How do you replace three reports coaches already love with one they’ll love even more? You keep their wayfinding the same—a lesson, unfortunately, we had to learn the hard way (more context below).</p>
           <img class="mt-lg" src="assets/img/reports-nav-comparison.webp" alt="Reports navigation entry points highlighted in Volleymetrics, BallTime, and Hudl" />
@@ -200,7 +200,7 @@
 
           <div class="stack mt-lg" style="--gap: var(--space-xl);">
             <div class="figure-row">
-              <img src="assets/img/reports-mistake-video-first.png" alt="Placeholder: the video-first entry point beside the rerouted Reports button" />
+              <img src="assets/img/reports-mistake-video-first.png" alt="The video-first entry point beside the rerouted Reports button" />
               <div>
                 <h4>We shipped reports before they were ready. A new data system forced us into a video-first approach. User sentiment was rough...</h4>
                 <div class="chip-row">
@@ -219,7 +219,7 @@
             </div>
 
             <div class="figure-row">
-              <img src="assets/img/reports-mistake-report-collapse.png" alt="Placeholder: a full-screen report collapsing into a side panel beside the grid opening under the video" />
+              <img src="assets/img/reports-mistake-report-collapse.png" alt="A full-screen report collapsing into a side panel beside the grid opening under the video" />
               <div>
                 <h4>The existing layout system made reports too flexible</h4>
                 <div class="chip-row">
@@ -256,14 +256,14 @@
               <div class="figure-row mt-lg">
                 <img src="assets/img/reports-header.png" alt="" />
                 <div>
-                  <h4>One header, every report</h4>
+                  <h4>One header across every report</h4>
                   <div class="chip-row">
                     <span class="tag">Familiarity</span>
                   </div>
                   <p class="text-muted">
-                    Team, matches, and the tabs between report types &mdash; in the same place all three old products
-                    put them. A coach opening the new system doesn&rsquo;t hunt for anything. The frame was
-                    already familiar, even when the data underneath was new.
+                    Tabs for report &mdash; in the same place all three old products put them. A coach opening the new system doesn&rsquo;t hunt for the report they were use to using every day.
+                    <br><br>
+                    Multi-select match tiles were pulled from Volleymetrics because it was important to them, but given a show/hide option for Hudl and BallTime users who had mixed reactions. And multi-select scope works on every report, unlike the old reports so scope would be consistent across tabs.
                   </p>
                 </div>
               </div>
@@ -274,7 +274,7 @@
               <div class="figure-row mt-lg">
                 <img src="assets/img/reports-layout-system.png" alt="" />
                 <div>
-                  <h4>A layout system, not one-off reports</h4>
+                  <h4>A layout system for consistent responsive behavior</h4>
                   <div class="chip-row">
                     <span class="tag">Familiarity</span>
                     <span class="tag">Responsiveness</span>
@@ -284,10 +284,31 @@
                     start building their own.
                   </p>
                   <p class="text-muted">
-                    So we defined the four layouts volleyball needed and made it easy to add more. Designers and
-                    engineers plug components into cards; the system handles responsiveness and spacing. Nobody
-                    reinvents a report again &mdash; with guardrails, added later, on what a layout isn&rsquo;t
-                    allowed to do.
+                    So we defined a reusable layout system that had cards that would adapt to different screen sizes for consistent responsive behavior. And we made it easy to add more layout types. Volleyball needed 4 different layouts to account for all of the reports across BallTime, Hudl, and Volleymetrics.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3>Connecting Data to Video Without a Loop</h3>
+              <div class="figure-row mt-lg">
+                <img src="assets/img/reports-loopless.png" alt="A stat table with a side panel open beside it, showing a clip list with edit, comment, bookmark, and add-to-playlist controls" />
+                <div>
+                  <h4>The table opens a side panel, not a new page</h4>
+                  <div class="chip-row">
+                    <span class="tag">Path to action</span>
+                    <span class="tag">Interactive-ness</span>
+                  </div>
+                  <p class="text-muted">
+                    Click a count in the table and the clips behind it open in a panel beside the report
+                    &mdash; not a jump to another screen. The table stays put, the filters stay put, and the
+                    coach never loses the row they were on.
+                  </p>
+                  <p class="text-muted">
+                    From that panel they can act on what they find: edit the clip, leave a comment, bookmark
+                    it, or add it straight to a playlist. Everything that used to mean leaving the report to
+                    reach the video &mdash; and then finding the way back &mdash; happens without leaving it.
                   </p>
                 </div>
               </div>
@@ -423,19 +444,6 @@
                   </div>
 
                   <div class="rdemo__group rdemo__group--trail">
-                    <button
-                      type="button"
-                      class="rdemo__btn rdemo__btn--icon rdemo__btn--live"
-                      data-rdemo-side-toggle="right"
-                      aria-controls="rdemo-side-right"
-                      aria-expanded="false"
-                      aria-label="Video panel"
-                    >
-                      <svg class="rdemo__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                        <rect x="3" y="4.5" width="18" height="15" rx="2" />
-                        <path d="M14.5 4.5v15" />
-                      </svg>
-                    </button>
                     <span class="rdemo__btn rdemo__btn--icon" aria-hidden="true">
                       <svg class="rdemo__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
                         <circle cx="12" cy="12" r="8.5" />
@@ -477,12 +485,16 @@
                    of it. Closed by default — the report is the subject. -->
               <div class="rdemo__stage">
                 <!-- The left-hand panel: the filters over whatever matches
-                     the picker has selected. Two dimensions, and both are
-                     real cuts rather than a scale factor over a total —
-                     the report's data is generated per set and per
-                     rotation precisely so they can be (report-demo.js).
-                     An empty group means all of it, which is why the
-                     funnel starts at "0 Filters" and not at eleven. -->
+                     the picker has selected. Sets and rotations are real
+                     cuts rather than a scale factor over a total — the
+                     report's data is generated per set and per rotation
+                     precisely so they can be (report-demo.js). Athletes
+                     and events are highlights: they mark the cell where
+                     the two meet, and they are what a click on a count
+                     applies before it opens the clips behind the number.
+                     Switching report clears the lot. An empty group means
+                     all of it, which is why the funnel starts at
+                     "0 Filters". -->
                 <aside
                   class="rdemo__side rdemo__side--left"
                   id="rdemo-side-left"
@@ -592,6 +604,217 @@
                         >R6</button>
                         </div>
                       </fieldset>
+                      <!-- The highlights. Athletes are the rows; each event group
+                           is one stat group's columns, labelled the way the column
+                           is so a coach can find the chip from the table. The two
+                           S Errs are different events — a serve error under Serves,
+                           a set error under Setting — which is why the value is the
+                           stat key rather than the label. -->
+                      <fieldset class="rdemo__filtergroup">
+                        <legend class="rdemo__filterlegend">Athletes</legend>
+                        <div class="rdemo__filterchips rdemo__filterchips--ath" data-rdemo-filter="ath">
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="4"
+                          aria-label="#4 V. Will"
+                          aria-pressed="false"
+                        >#4</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="13"
+                          aria-label="#13 M. Herbert"
+                          aria-pressed="false"
+                        >#13</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="8"
+                          aria-label="#8 L. Vigil"
+                          aria-pressed="false"
+                        >#8</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="31"
+                          aria-label="#31 L. Lee"
+                          aria-pressed="false"
+                        >#31</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="2"
+                          aria-label="#2 J. Eny"
+                          aria-pressed="false"
+                        >#2</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="10"
+                          aria-label="#10 J. Roth"
+                          aria-pressed="false"
+                        >#10</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="22"
+                          aria-label="#22 B. Mason"
+                          aria-pressed="false"
+                        >#22</button>
+                        </div>
+                      </fieldset>
+                      <fieldset class="rdemo__filtergroup">
+                        <legend class="rdemo__filterlegend">Attacks</legend>
+                        <div class="rdemo__filterchips rdemo__filterchips--ev" data-rdemo-filter="ev">
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="kill"
+                          aria-label="Kills"
+                          aria-pressed="false"
+                        >Kill</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="aerr"
+                          aria-label="Attack errors"
+                          aria-pressed="false"
+                        >A Err</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="aatt"
+                          aria-label="Attacks"
+                          aria-pressed="false"
+                        >A Att</button>
+                        </div>
+                      </fieldset>
+                      <fieldset class="rdemo__filtergroup">
+                        <legend class="rdemo__filterlegend">Serves</legend>
+                        <div class="rdemo__filterchips rdemo__filterchips--ev" data-rdemo-filter="ev">
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="ace"
+                          aria-label="Aces"
+                          aria-pressed="false"
+                        >Ace</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="serr"
+                          aria-label="Serve errors"
+                          aria-pressed="false"
+                        >S Err</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="satt"
+                          aria-label="Serves"
+                          aria-pressed="false"
+                        >S Att</button>
+                        </div>
+                      </fieldset>
+                      <fieldset class="rdemo__filtergroup">
+                        <legend class="rdemo__filterlegend">Receptions</legend>
+                        <div class="rdemo__filterchips rdemo__filterchips--ev" data-rdemo-filter="ev">
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="r3"
+                          aria-label="Rtg 3 passes"
+                          aria-pressed="false"
+                        >Rtg 3</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="r2"
+                          aria-label="Rtg 2 passes"
+                          aria-pressed="false"
+                        >Rtg 2</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="r1"
+                          aria-label="Rtg 1 passes"
+                          aria-pressed="false"
+                        >Rtg 1</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="rerr"
+                          aria-label="Reception errors"
+                          aria-pressed="false"
+                        >SR Err</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="ratt"
+                          aria-label="Receptions"
+                          aria-pressed="false"
+                        >SR Att</button>
+                        </div>
+                      </fieldset>
+                      <fieldset class="rdemo__filtergroup">
+                        <legend class="rdemo__filterlegend">Setting</legend>
+                        <div class="rdemo__filterchips rdemo__filterchips--ev" data-rdemo-filter="ev">
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="ast"
+                          aria-label="Assists"
+                          aria-pressed="false"
+                        >Ast</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="seterr"
+                          aria-label="Set errors"
+                          aria-pressed="false"
+                        >S Err</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="bhe"
+                          aria-label="Ball handling errors"
+                          aria-pressed="false"
+                        >BHE</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="setatt"
+                          aria-label="Sets"
+                          aria-pressed="false"
+                        >Set Att</button>
+                        </div>
+                      </fieldset>
+                      <fieldset class="rdemo__filtergroup">
+                        <legend class="rdemo__filterlegend">Blocks</legend>
+                        <div class="rdemo__filterchips rdemo__filterchips--ev" data-rdemo-filter="ev">
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="solo"
+                          aria-label="Solo blocks"
+                          aria-pressed="false"
+                        >Solo</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="bassist"
+                          aria-label="Block assists"
+                          aria-pressed="false"
+                        >Assist</button>
+                        <button
+                          type="button"
+                          class="rdemo__filterchip"
+                          data-value="berr"
+                          aria-label="Block errors"
+                          aria-pressed="false"
+                        >B Err</button>
+                        </div>
+                      </fieldset>
                       <p class="rdemo__filternote" data-rdemo-filter-note>
                         Every set and every rotation is in the report.
                       </p>
@@ -631,9 +854,6 @@
                       </span>
                       <span class="rdemo__scout">Scout a different team</span>
                     </span>
-                    <svg class="rdemo__icon rdemo__collapse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                      <path d="M10 4v6H4M14 20v-6h6" />
-                    </svg>
                   </div>
 
                   <!-- A real tablist: these switch the panel below (see
@@ -715,12 +935,6 @@
                     <button
                       type="button"
                       class="rdemo__chip"
-                      data-rdemo-quick="tournaments"
-                      aria-pressed="false"
-                    >Tournaments</button>
-                    <button
-                      type="button"
-                      class="rdemo__chip"
                       data-rdemo-quick="home"
                       aria-pressed="false"
                     >Home</button>
@@ -742,7 +956,9 @@
                       data-rdemo-quick="losses"
                       aria-pressed="false"
                     >Losses</button>
-                    <span class="rdemo__more">Select other matches</span>
+                    <!-- Shortens to "Select others" while the clip panel has
+                         some of the row's width (see .rdemo__more--short). -->
+                    <span class="rdemo__more">Select other<span class="rdemo__more--long"> matches</span><span class="rdemo__more--short">s</span></span>
                     <button
                       type="button"
                       class="rdemo__tilestoggle"
@@ -2005,7 +2221,7 @@
                            report's attacks that took it. -->
                       <div class="rdemo__layout rdemo__layout--split">
                         <div class="rdemo__card">
-                          <div class="rdemo__court">
+                          <div class="rdemo__court rdemo__court--full">
                             <!-- The court as drawn, and the frame it is drawn in: the
                                    shots inside it are generated to land within
                                    this viewBox rather than the box being sized to
@@ -2075,6 +2291,10 @@
                               <span class="rdemo__keyitem"><span class="rdemo__keyline rdemo__keyline--clean"></span>Clean Atk</span>
                               <span class="rdemo__keyitem"><span class="rdemo__keyline rdemo__keyline--deflected"></span>Deflected Atk</span>
                             </div>
+                            <!-- Whose swings, and how many: the same figure as
+                                 the cell that was clicked, so the court and the
+                                 table can be checked against each other. -->
+                            <span class="rdemo__keystat rdemo__keystat--attack" data-rdemo-attacknote>FHS &middot; 126 attacks &middot; 54 kills &middot; 19 errors</span>
                           </div>
                         </div>
                         <div class="rdemo__card">
@@ -2206,7 +2426,7 @@
                            percentages and the heat both come out of it. -->
                       <div class="rdemo__layout rdemo__layout--split">
                         <div class="rdemo__card">
-                          <div class="rdemo__court">
+                          <div class="rdemo__court rdemo__court--half">
                             <svg viewBox="-40 -60 980 1000" role="img" aria-label="Half court: where #2 J. Eny set the ball, zone 4 taking 34 percent and the back row 18 percent between them">
                               <line class="rdemo__courtnet" x1="-30" y1="-18" x2="930" y2="-18" />
                               <g>
@@ -2254,7 +2474,7 @@
                             Fewer sets
                             <span class="rdemo__keyscale"><span></span><span></span><span></span><span></span></span>
                             More
-                            <span class="rdemo__keystat" data-rdemo-setternote>#31 L. Lee &middot; 45 sets</span>
+                            <span class="rdemo__keystat" data-rdemo-setternote>#31 L. Lee &middot; 45 assists</span>
                           </div>
                         </div>
                         <div class="rdemo__card">
@@ -2394,23 +2614,27 @@
                 </div>
               </div>
 
-                <!-- The right-hand panel. Empty until something is loaded
-                     into its body (setupSidePanels in main.js fires
-                     rdemo:side-open, which is where that goes). -->
+                <!-- The right-hand panel: the clips behind a number. It has
+                     no button in the bar; a count in any table opens it
+                     (report-demo.js), and the body is written then — the
+                     still, how many clips, and one row per event, the same
+                     rows the product lists under its player. Closing it
+                     takes the athlete and event highlights the click
+                     applied back off the report. -->
                 <aside
                   class="rdemo__side rdemo__side--right"
                   id="rdemo-side-right"
                   data-rdemo-side="right"
-                  aria-label="Video"
+                  aria-label="Clips"
                 >
                   <span class="rdemo__grabber" aria-hidden="true"></span>
                   <div class="rdemo__sidehead">
-                    <span class="rdemo__sidetitle" data-rdemo-side-title="right">Video</span>
+                    <span class="rdemo__sidetitle" data-rdemo-side-title="right">Clips</span>
                     <button
                       type="button"
                       class="rdemo__sideclose"
                       data-rdemo-side-close="right"
-                      aria-label="Close video"
+                      aria-label="Close clips"
                     >
                       <svg class="rdemo__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
                         <path d="M6 6l12 12M18 6L6 18" />
@@ -2426,29 +2650,12 @@
                    path that gets announced. -->
               <div class="rdemo__scrim" data-rdemo-scrim aria-hidden="true"></div>
             </div>
-            <figcaption>
-              The header every report in the system opens with &mdash; the team, the report types, and the
-              matches the numbers come from. It counts: change which matches are selected, or narrow the
-              report to particular sets or rotations in the filters panel, and every table, both court
-              cards and the trend re-total against what you picked. Switch the device above &mdash; each
-              one is that screen&rsquo;s real proportions, so you see how much report is left after the
-              header: the tabs scroll, the labels drop to icons, and the match tiles give way to
-              &ldquo;Select other matches&rdquo;, which is what a coach gets on a phone.
-              <span class="text-muted">The season behind it is generated rather than real &mdash; a
-              school&rsquo;s scouting data isn&rsquo;t mine to publish &mdash; but it is generated per set
-              and per rotation, so the parts add up to the whole however the report is sliced.</span>
-            </figcaption>
           </figure>
         </div>
 
         <div>
-          <h2>What I Would Change</h2>
-          <p class="text-muted">Coming soon &mdash; what I'd revisit with more time or data.</p>
-        </div>
-
-        <div>
-          <h2>What I Learned</h2>
-          <p class="text-muted">Coming soon &mdash; takeaways from this part of the project.</p>
+          <h2>Impact</h2>
+          <p class="text-muted">It's a bit too early to have hard numbers on sales impacts. Early sentiment was not good because of the navigation issues we faced due to data pipeline factors out of our control. But now that we're past the wayfinding problems and users can navigation to their reports by clicking a tab in the top navigation, there's an excitement from users about being able to edit from reports. Repeated interactions about the amount of time they're saving because we ended the report -> video loop and put it all on one screen.</p>
         </div>
       </div>
     </section>
