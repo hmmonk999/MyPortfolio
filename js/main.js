@@ -380,11 +380,11 @@ function setupHoverVideos() {
   videos.forEach((video) => {
     // Each triptych panel triggers on its own hover, so only the clip
     // under the cursor plays — three at once was too much motion. A
-    // single-media card has no panel, so it falls back to the whole
-    // card as the trigger (hovering anywhere, e.g. toward the title,
-    // wakes it).
+    // single-media card (or a chapter tile on the consolidation
+    // overview) has no panel, so it falls back to the whole card as the
+    // trigger (hovering anywhere, e.g. toward the title, wakes it).
     const trigger =
-      video.closest(".card__panel") || video.closest(".card") || video.parentElement;
+      video.closest(".card__panel") || video.closest(".card, .chapter") || video.parentElement;
 
     const play = () => {
       if (!canHover.matches) return;
@@ -596,46 +596,55 @@ function setupReportSizes() {
   });
 }
 
-/* The report's two side panels — filters on the left, video on the
+/* The report's two side panels — filters on the left, clips on the
    right — and the controls that open and shut them.
 
    Which is open lives on the window as data-left / data-right, so the
    stylesheet owns the whole of what open LOOKS like — a column beside
    the report on the desktop, a bottom sheet over it on touch — and this
    owns only the state. The one thing the shape changes here is how many
-   can be open at once; see sheetMode below. The bar's funnel button is the left panel's trigger
-   because in the product that is what the funnel does; the right panel
-   gets a button of its own at the far end of the bar.
+   can be open at once; see sheetMode below. The bar's funnel button is
+   the left panel's trigger because in the product that is what the
+   funnel does. The right panel has no button of its own: it is opened
+   by a count in the report (report-demo.js), the way a clip list is in
+   the product, and asks for that through rdemo:side-request.
 
    Content is not built here. A panel opening fires rdemo:side-open on
-   the window with the side in its detail, which is the hook for loading
-   something into [data-rdemo-side-body] — the same "mount it when it is
-   visible, not before" shape the report panels and their charts use, and
-   for the same reason: whatever lands in there can measure itself once
-   the panel actually has a width. */
+   the window with the side in its detail, and closing fires
+   rdemo:side-close — the hooks for loading something into
+   [data-rdemo-side-body] and for putting the report back when it goes.
+   The same "mount it when it is visible, not before" shape the report
+   panels and their charts use, and for the same reason: whatever lands
+   in there can measure itself once the panel actually has a width. */
 function setupSidePanels() {
   const demo = document.querySelector("[data-report-demo]");
   if (!demo) return;
 
-  const toggles = [...demo.querySelectorAll("[data-rdemo-side-toggle]")];
-  if (!toggles.length) return;
+  const panels = [...demo.querySelectorAll("[data-rdemo-side]")];
+  if (!panels.length) return;
 
+  const toggles = [...demo.querySelectorAll("[data-rdemo-side-toggle]")];
   const stateAttribute = (side) => `data-${side}`;
+  const isOpen = (side) => demo.getAttribute(stateAttribute(side)) === "open";
+  const sides = ["left", "right"];
 
   const setSide = (side, open) => {
+    const was = isOpen(side);
     demo.setAttribute(stateAttribute(side), open ? "open" : "closed");
 
     toggles
       .filter((toggle) => toggle.getAttribute("data-rdemo-side-toggle") === side)
       .forEach((toggle) => toggle.setAttribute("aria-expanded", String(open)));
 
-    if (open) {
+    // Only on a change of state: the closing calls at the bottom of this
+    // function, which exist to write the attributes, would otherwise
+    // announce two panels shutting that were never open.
+    if (open && !was) {
       demo.dispatchEvent(new CustomEvent("rdemo:side-open", { detail: { side } }));
+    } else if (!open && was) {
+      demo.dispatchEvent(new CustomEvent("rdemo:side-close", { detail: { side } }));
     }
   };
-
-  const isOpen = (side) => demo.getAttribute(stateAttribute(side)) === "open";
-  const sides = ["left", "right"];
 
   // On a phone or a tablet these are bottom sheets rather than columns,
   // and two sheets stacked over the same report is nonsense — the second
@@ -644,15 +653,25 @@ function setupSidePanels() {
   // both can be open at once, which is the point of having two.
   const sheetMode = () => demo.getAttribute("data-size") !== "web";
 
+  const openSide = (side, open) => {
+    if (open && sheetMode()) {
+      sides.filter((other) => other !== side).forEach((other) => setSide(other, false));
+    }
+    setSide(side, open);
+  };
+
   toggles.forEach((toggle) => {
     const side = toggle.getAttribute("data-rdemo-side-toggle");
-    toggle.addEventListener("click", () => {
-      const open = !isOpen(side);
-      if (open && sheetMode()) {
-        sides.filter((other) => other !== side).forEach((other) => setSide(other, false));
-      }
-      setSide(side, open);
-    });
+    toggle.addEventListener("click", () => openSide(side, !isOpen(side)));
+  });
+
+  // The report asking for a panel, which is how the clip list arrives:
+  // a count is clicked over in report-demo.js and the panel it wants
+  // opens through the same rule the buttons use, so a sheet still
+  // closes the other sheet.
+  demo.addEventListener("rdemo:side-request", (event) => {
+    const { side, open } = event.detail || {};
+    if (sides.includes(side)) openSide(side, Boolean(open));
   });
 
   const closeAll = () => sides.forEach((side) => setSide(side, false));
@@ -660,15 +679,30 @@ function setupSidePanels() {
   const scrim = demo.querySelector("[data-rdemo-scrim]");
   if (scrim) scrim.addEventListener("click", closeAll);
 
+  const leftPanel = panels.find((panel) => panel.getAttribute("data-rdemo-side") === "left");
+  const leftTrigger = toggles.find(
+    (toggle) => toggle.getAttribute("data-rdemo-side-toggle") === "left"
+  );
+
   // Escape, because a sheet covers what is behind it and every other
-  // overlay on the web closes this way.
+  // overlay on the web closes this way. Focus only moves if it was
+  // about to be stranded inside the filters: the clip panel's close is
+  // answered by the report itself (rdemo:side-close), which puts focus
+  // back on the count that opened it.
   demo.addEventListener("keydown", (event) => {
     if (event.key !== "Escape" || !sides.some(isOpen)) return;
+    const active = document.activeElement;
     closeAll();
-    const trigger = toggles.find((toggle) =>
-      toggle.getAttribute("data-rdemo-side-toggle") === "left"
-    );
-    if (trigger) trigger.focus();
+    if (leftPanel && leftPanel.contains(active)) {
+      if (leftTrigger) leftTrigger.focus();
+    } else if (
+      document.activeElement === active &&
+      panels.some((panel) => panel.contains(active))
+    ) {
+      // Still inside a panel that has just shut and nobody claimed it.
+      const tab = demo.querySelector('[role="tab"][aria-selected="true"]');
+      if (tab) tab.focus();
+    }
   });
 
   demo.querySelectorAll("[data-rdemo-side-close]").forEach((close) => {
@@ -677,7 +711,9 @@ function setupSidePanels() {
       setSide(side, false);
       // Focus would otherwise be left on a button that has just become
       // invisible, which strands a keyboard user mid-window. It goes back
-      // to whatever opened the panel.
+      // to whatever opened the panel — the bar's button for the filters;
+      // the clip panel has none, and the report puts focus back on the
+      // count itself when it hears the panel close.
       const trigger = toggles.find(
         (toggle) => toggle.getAttribute("data-rdemo-side-toggle") === side
       );
@@ -1105,6 +1141,12 @@ function setupReportTabs() {
   };
 
   const select = (tab, { focus = false } = {}) => {
+    const was = tabs.find((other) => other.getAttribute("aria-selected") === "true");
+    // Moving to another report is leaving this one: whatever was
+    // narrowed or opened here goes with it (report-demo.js listens).
+    if (was && was !== tab) {
+      list.closest("[data-report-demo]").dispatchEvent(new CustomEvent("rdemo:report-change"));
+    }
     tabs.forEach((other) => {
       const isActive = other === tab;
       other.setAttribute("aria-selected", String(isActive));

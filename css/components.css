@@ -145,6 +145,18 @@
   color: var(--color-text-muted);
 }
 
+/* Solid accent fill, for the tag that should read as the headline
+   category rather than a secondary label (e.g. the About-me skills
+   row). Not color: white like the tag this once was — at 14px/600
+   weight that's ~3.7:1 against the clay, under AA's 4.5:1 floor for
+   normal text. --color-accent-text is the dark ink the rest of the site
+   already uses for this exact situation (.bet__flag, .probe__num,
+   .same-game__cost), at 4.5:1+ in both themes. */
+.tag--contrast {
+  background: var(--color-accent);
+  color: var(--color-accent-text);
+}
+
 /* A row of .tag chips labelling a block of body copy — in a case study,
    which of the project's stated priorities a given decision was serving.
    Spaced to match the heading above it, so title, chips and prose read
@@ -653,10 +665,23 @@
    The whole-card link trick every other .card--project uses
    (.card__title a::after spanning the card) has to be switched off
    here — a transparent layer over the entire card would sit on top of
-   the part links and swallow every click. The title stays an ordinary
-   link to the hub instead, and each part links for itself. */
+   the part links and swallow every click. Instead it's scoped to
+   .card__series-head, the flag/tags/title/excerpt block above the
+   part list: that block gets its own positioned context, so the
+   stretched link only covers the area with no part links in it, and
+   .card__parts below stays untouched. */
 .card--series .card__title a::after {
   content: none;
+}
+
+.card--series .card__series-head {
+  position: relative;
+}
+
+.card--series .card__series-head .card__title a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
 }
 
 .card--series:hover {
@@ -2400,7 +2425,7 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
-  height: 58%;
+  height: 99%;
   border: 1px solid var(--vbd-line);
   border-width: 1px 0 0;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
@@ -2466,10 +2491,15 @@
   display: none;
 }
 
-.rdemo[data-size="web"][data-left="open"] .rdemo__side--left,
+.rdemo[data-size="web"][data-left="open"] .rdemo__side--left {
+  width: 25rem;
+}
+
+/* Wider than the filters: a clip row carries a crest, an event, four
+   actions and who-and-when underneath, and 14rem folds the who-and-
+   when onto a third line. */
 .rdemo[data-size="web"][data-right="open"] .rdemo__side--right {
-  width: 14rem;
-  border-width: 1px;
+  width: 25rem;
 }
 
 /* The gutter belongs to the panel, not to the row: a flex gap would hold
@@ -2537,6 +2567,108 @@
   overflow: auto;
 }
 
+/* ---------- The clip panel ----------
+   What report-demo.js writes into the right panel when a count is
+   clicked: the still, edge to edge like the product's player; how many
+   clips, with the save and add actions the product puts beside that
+   number; then the clips, one row each. The body's own padding comes
+   off so the still can bleed, and each row carries its own instead. */
+.rdemo__side--right .rdemo__sidebody {
+  padding: 0;
+}
+
+/* The still and the count, held at the top while the clips scroll under
+   them, the way the product's player stays put over its list: they are
+   what the rows are about, and it is a poor list that scrolls its
+   subject away. Pinned as one block, because the still's height follows
+   the panel's width and the count row has no fixed offset to sit at
+   otherwise. The panel's own colour, so rows passing under don't show
+   through the count row. */
+.rdemo__clipspin {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--vbd-window);
+}
+
+.rdemo__clipstill {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #000;
+}
+
+.rdemo__clipshead {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid var(--vbd-line);
+  font-size: 0.8125rem;
+  font-weight: var(--fw-semibold);
+}
+
+.rdemo__clipshead > span:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.rdemo__cliplist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Crest, event and actions on one line; who and when on the next.
+   The product fits it all on one, on a panel three times this wide. */
+.rdemo__clip {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  column-gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px dotted var(--vbd-line);
+  font-size: 0.75rem;
+}
+
+/* The clip that would be playing: the same fill a selected count has,
+   so the panel and the table say the same thing. */
+.rdemo__clip[aria-current="true"] {
+  background: var(--vbd-select);
+}
+
+.rdemo__clipevent {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: var(--fw-semibold);
+  color: var(--vbd-text);
+}
+
+.rdemo__clipmeta {
+  grid-column: 2 / -1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.6875rem;
+  color: var(--vbd-text-dim);
+}
+
+.rdemo__clipicons {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex: none;
+  color: var(--vbd-text-dim);
+}
+
+.rdemo__clipicon {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
 /* The two bar buttons that drive the panels are real buttons among a row
    of drawn ones, so they need the reset the drawn spans never did. */
 .rdemo__btn--live {
@@ -2595,6 +2727,17 @@
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 0.25rem;
+}
+
+/* Seven athletes fit four to a row with their numbers readable; an
+   event group's labels ("SR Err", "Set Att") need a third of the panel
+   each. */
+.rdemo__filterchips--ath {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.rdemo__filterchips--ev {
+  grid-template-columns: repeat(3, 1fr);
 }
 
 /* Unlike the match picker's quick selects, these carry a visible box
@@ -2902,14 +3045,45 @@
    touch behaviour in this file — what changes is the screen, not how
    much of the page this window happens to fill.
 
-   The first row is a measured band rather than `auto`, because auto
-   means "as tall as the content" and a court is an absolutely
-   positioned SVG with no content height to give: the row collapsed to
-   nothing and the card came out 44px of legend. 15rem is a court a
-   coach can still read on a phone; the row under it keeps the rest. */
+   The first row is `auto`, which only works because the court box
+   below is given a shape of its own on a phone (aspect-ratio, further
+   down): a court is an absolutely positioned SVG with no content height
+   to give, and an auto row over a bare one collapsed to 44px of legend.
+   The row under it keeps the rest. */
 .rdemo[data-size="mobile"] .rdemo__layout--split {
   grid-template-columns: 1fr;
-  grid-template-rows: 15rem 1fr;
+  grid-template-rows: auto 1fr;
+}
+
+/* A tablet is portrait, and a pair of cards stretched to its height
+   put a court in a tall black field with the drawing at one end of it.
+   So there the row hugs its cards: `auto` for the track, the grid
+   starting at the top, and the two cards still one height — the grid
+   stretches the shorter to the taller, which is the court's. */
+.rdemo[data-size="tablet"] .rdemo__layout--split {
+  grid-template-rows: auto;
+  align-content: start;
+}
+
+/* Where the row hugs its content, the court has to bring a height of
+   its own — out of flow (see .rdemo__court below) it has none to give.
+   The court's real shape, from its own viewBox: the full court is
+   nearly twice as tall as wide, the half court nearly square. Still
+   flex: 1, so when the table beside it is the taller card the court
+   grows into the difference and letterboxes. On a phone the same box
+   is what makes the court bigger than a fixed band could: as wide as
+   the screen, and as tall as that width asks for, up to a ceiling the
+   full court would otherwise blow through. */
+.rdemo[data-size="tablet"] .rdemo__court--full,
+.rdemo[data-size="mobile"] .rdemo__court--full {
+  aspect-ratio: 1080 / 2020;
+  max-height: 30rem;
+}
+
+.rdemo[data-size="tablet"] .rdemo__court--half,
+.rdemo[data-size="mobile"] .rdemo__court--half {
+  aspect-ratio: 980 / 1000;
+  max-height: 30rem;
 }
 
 /* Full width, fit to content — the athlete and team stat reports. The
@@ -3232,16 +3406,26 @@
   height: 2px;
 }
 
-/* Whose map this is, on the setter card — the distribution belongs to
-   one setter, and a heat map that didn't say which would describe
-   nobody. The shot map next door has no counterpart: its key is the
-   design's two rows and nothing else, and the attack table beside it
-   already carries the totals. */
+/* Whose map this is, and how many. On the setter card the distribution
+   belongs to one setter, and a heat map that didn't say which would
+   describe nobody. On the shot map it is the check: the courts follow
+   every filter a click on a count applies, so the figure here is the
+   figure in the clicked cell, and a coach can see the two agree. */
 .rdemo__keystat {
   margin-left: auto;
   padding-left: 0.5rem;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
+}
+
+/* Under the stacked key rather than beside them: the two rows are
+   centred and already fill the card's width. */
+.rdemo__keystat--attack {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font-size: 0.6875rem;
+  color: var(--vbd-text-dim);
 }
 
 .rdemo__keyscale {
@@ -3414,13 +3598,78 @@
   background: none;
 }
 
-/* A count you can click through to video, in the product. Underlined
-   here to say so; it isn't wired up yet, so it stays text rather than
-   becoming a button that does nothing. */
+/* ---------- Highlights ----------
+   What the athlete and event filters do: the cell where a lit athlete
+   (or rotation, or the team) meets a lit event takes a wash of the
+   selection blue. Only that cell — the row and the column are what the
+   filters name, not what they mark. report-demo.js writes data-rdemo-hl.
+   The count that was actually clicked sits on top of this with its own
+   pressed fill (button.rdemo__cell above), so an open cell reads
+   stronger than one a hand-set pair of chips happens to light. Counts
+   are never frozen columns, so no solid variant is needed. */
+.rdemo__table td[data-rdemo-hl] {
+  background-color: color-mix(in srgb, var(--vbd-blue) 18%, transparent);
+}
+
+/* A count you can click through to its clips, as in the product.
+   Underlined to say so. Without JavaScript it is a span and stays text;
+   report-demo.js rewrites it as a button, and the button takes the
+   cell's padding for itself so the number sits exactly where the text
+   did and the pressed fill reaches the cell's edges. */
 .rdemo__cell {
   text-decoration: underline;
   text-decoration-color: var(--vbd-text-dim);
   text-underline-offset: 2px;
+}
+
+.rdemo__table td:has(> button.rdemo__cell) {
+  padding: 0;
+}
+
+button.rdemo__cell {
+  display: block;
+  width: 100%;
+  padding: 0.4375rem 0.5rem;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: right;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+/* The sectioned tables state their row height (see .rdemo__stats
+   below), so the button has to reach it too or the fill stops short of
+   the row's own edges. Filled to the cell rather than given the same
+   length: a stated minimum plus the collapsed border between rows came
+   out half a pixel over, and the rows drifted off their neighbours
+   across the seam. Flex, so the number stays on the baseline the text
+   cells beside it use. */
+.rdemo__stats button.rdemo__cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+button.rdemo__cell:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* The open count: the selection fill the chips and tiles use, ringed
+   from inside so a sticky neighbour can't clip it. */
+button.rdemo__cell[aria-pressed="true"] {
+  background: var(--vbd-select);
+  box-shadow: inset 0 0 0 1px var(--vbd-blue);
+  color: var(--vbd-text);
+  text-decoration-color: currentColor;
+}
+
+button.rdemo__cell:focus-visible {
+  outline: 2px solid var(--vbd-blue);
+  outline-offset: -2px;
 }
 
 /* No attempts at all, rather than a zero: a coach reads "-" as "didn't
@@ -3738,6 +3987,29 @@
 .rdemo__tilestoggle[aria-expanded="true"] .rdemo__tileslabel--show,
 .rdemo__tilestoggle[aria-expanded="false"] .rdemo__tileslabel--hide {
   display: none;
+}
+
+/* With the clip panel open the row has lost 17rem, so the two labels
+   at its right end give up their words: the eye icon stands for the
+   tiles toggle on its own (the label stays in the tree, clipped rather
+   than removed, so the button keeps its name), and "Select other
+   matches" becomes "Select others". */
+.rdemo[data-right="open"] .rdemo__tileslabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.rdemo__more--short,
+.rdemo[data-right="open"] .rdemo__more--long {
+  display: none;
+}
+
+.rdemo[data-right="open"] .rdemo__more--short {
+  display: inline;
 }
 
 /* ---------- Match tiles ----------
@@ -4143,6 +4415,14 @@
   color: var(--color-text-muted);
 }
 
+.pillar img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: var(--space-sm);
+  border-radius: var(--radius-md);
+}
+
 /* ---------- Bento grid (About page) ----------
    A wall of unequal tiles: two big ones carrying the real content — the
    bio and the portrait — and a scatter of small ones holding a single
@@ -4228,7 +4508,7 @@
 .bento__tile--accent {
   background: var(--color-accent);
   border-color: transparent;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 .bento__tile--accent .bento__label,
@@ -5052,15 +5332,280 @@
 }
 
 /* ---------- Rejected flow (case-study "we asked, they said no") ----------
-   A three-step flow struck through, for the cheap solution that
-   research killed. The cross is the only place --color-danger appears
-   in a case study, and it's carrying "we tried this and it failed"
-   rather than an error state. */
+   The cheap solution as a three-step flow, in the same language as
+   .same-game and .journey-probe above it: bordered cards on the page
+   ground, joined by the same arrow, sized in the same tokens.
+
+   Only the first step is struck through, not the whole flow. The two
+   steps after it were never the problem — they follow perfectly well
+   once the first one holds — so crossing all three would say the idea
+   was unworkable when what actually happened is that coaches refused
+   exactly one thing. The cross and the chip under it are the only place
+   --color-danger appears in a case study, and it carries "we asked and
+   they said no" rather than an error state. */
 .rejected-flow {
-  padding: var(--space-md);
-  background: var(--color-bg);
+  /* The container is this wrapper and the grid is the row inside it: an
+     element cannot answer a container query on its own container-type,
+     only on an ancestor's. */
+  container-type: inline-size;
+}
+
+.rejected-flow__row {
+  display: grid;
+  gap: var(--space-2xs);
+  align-items: stretch;
+  justify-items: center;
+}
+
+.rejected-flow__step {
+  position: relative;
+  width: 100%;
+  padding: var(--space-sm);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+  background: var(--color-bg);
+  text-align: center;
+}
+
+.rejected-flow__lead {
+  margin: 0;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--color-text);
+}
+
+.rejected-flow__sub {
+  margin: var(--space-3xs) 0 0;
+  font-size: var(--fs-sm);
+  line-height: 1.35;
+  color: var(--color-text-muted);
+}
+
+/* Step number, same badge as .probe__num on the journey probe, centred
+   over the card's own centred text. */
+.rejected-flow__num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.625rem;
+  height: 1.625rem;
+  margin: 0 auto var(--space-2xs);
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  color: var(--color-accent-text);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+/* Stretched over its own card rather than the whole flow. The viewBox is
+   square and the box is not, so preserveAspectRatio is off and the
+   strokes are pinned with vector-effect to stop them skewing with it. */
+.rejected-flow__cross {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  /* Sized explicitly rather than by `inset`: an inline SVG keeps its
+     viewBox's 1:1 ratio when width/height are auto, so insets alone give
+     a square cross in a card that isn't square. */
+  width: calc(100% - 10px);
+  height: calc(100% - 10px);
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+.rejected-flow__arrow {
+  flex: none;
+  align-self: center;
+  /* A square box, not the arrow's own 34x12 ratio. Rotating a wide box
+     leaves a 12px-tall slot in the grid row and the arrowhead collides
+     with the cards; square, the footprint is the same either way and the
+     arrow just letterboxes inside it. */
+  width: 2.125rem;
+  height: 2.125rem;
+  /* Pointing down while the steps are stacked. */
+  transform: rotate(90deg);
+}
+
+@container (min-width: 30rem) {
+  .rejected-flow__row {
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: center;
+  }
+
+  .rejected-flow__step {
+    align-self: stretch;
+  }
+
+  .rejected-flow__arrow {
+    transform: none;
+  }
+}
+
+/* ---------- Same game, twice (case-study problem lede) ----------
+   Three columns reading left to right: the two stills of one game
+   stacked, each with an arrow into what it costs to tag, and a card
+   saying what comes out of both. It runs above the section's own H2 as a
+   lede, so it stays quiet — the figure doing the real work in this
+   section is .journey-probe further down, and this one only has to make
+   "the same game, twice" concrete before the prose says it. */
+.same-game {
+  container-type: inline-size;
+  max-width: 56rem;
+  /* Centred, not left-hugging. Capped well short of the measure the
+     figure otherwise pools ~330px of dead space against its right edge,
+     which reads as the card being pushed out of position rather than as
+     a narrower figure. Same reasoning as .figure-solo--small. Running it
+     full measure instead would fix the space but make the stills — and
+     so the whole column — much taller, leaving the card about 20% full. */
+  margin: 0 auto var(--space-xl);
+}
+
+.same-game__flow {
+  display: grid;
+  /* A generous column gap: the step column ends in a bare chip now that
+     the arrow out of it is gone, and at --space-sm the chip sat almost
+     against the panel's border. */
+  gap: var(--space-md) var(--space-xl);
+  align-items: center;
+}
+
+.same-game__shot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 9;
+  /* Solid, like every other framed image on the site (.figure-solo img,
+     .figure-row img). The surface fill and the centred label below are
+     the fallback if the image is missing or fails. */
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.same-game__shot img {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+}
+
+.same-game__who {
+  margin: var(--space-2xs) 0 0;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* Arrow into the chip, and on out of it to the card. Hidden when the
+   flow stacks, where a rightward arrow would point at nothing. */
+.same-game__step {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2xs);
+}
+
+.same-game__arrow {
+  display: none;
+  flex: none;
+  width: 2.125rem;
+  height: auto;
+}
+
+/* The sting: the same two hours, paid twice. Drawn as a chip rather than
+   accent-coloured text, following .bet__flag — the clay as small text on
+   the surface only reaches 3.37:1, while dark ink on a clay chip is
+   4.91:1 in both themes. */
+.same-game__cost {
+  margin: 0;
+  padding: 0.35em 0.85em;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  color: var(--color-accent-text);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+/* Sized by the layout, not by its own text: stretched to the full height
+   of both stills so it squares off against them. Left to size itself it
+   came out ~200px tall in a ~400px column and floated there with a big
+   gap above and below, which is what read as an arbitrary size. */
+.same-game__out {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: stretch;
+  padding: var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+}
+
+.same-game__out-lead {
+  margin: 0;
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-text);
+}
+
+.same-game__out-body {
+  margin: var(--space-2xs) 0 0;
+  font-size: var(--fs-base);
+  color: var(--color-text-muted);
+}
+
+.same-game > figcaption {
+  margin-top: var(--space-md);
+  font-size: var(--fs-base);
+  color: var(--color-text-muted);
+}
+
+/* Stacked, the source order already reads film A, its cost, film B, its
+   cost, then the card — so only the arrows need suppressing. Three-up,
+   named areas pair each still with its own chip row and let the card span
+   both. */
+@container (min-width: 44rem) {
+  .same-game__flow {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.15fr);
+    grid-template-areas:
+      "filmA stepA out"
+      "filmB stepB out";
+  }
+
+  .same-game__film--a {
+    grid-area: filmA;
+  }
+
+  .same-game__film--b {
+    grid-area: filmB;
+  }
+
+  .same-game__step--a {
+    grid-area: stepA;
+  }
+
+  .same-game__step--b {
+    grid-area: stepB;
+  }
+
+  .same-game__out {
+    grid-area: out;
+  }
+
+
+  .same-game__arrow {
+    display: block;
+  }
 }
 
 /* ---------- Journey probe (case-study "three places to go looking") ----------
@@ -5137,33 +5682,39 @@
 /* A slot for a photo of the moment this stretch covers. Until the
    photographs land it draws itself as a plainly-marked empty frame; drop
    an <img> in and the frame is what crops it. */
+/* The cell, not the frame: a photo with its line of copy underneath.
+   The framing lives on the img below so the caption sits outside it —
+   with the frame on this element the paragraph was laid out inside the
+   picture area alongside the image. */
 .journey-probe__photo {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: 16 / 10;
+  flex-direction: column;
+  align-items: stretch;
   width: 100%;
-  /* Stacked, the frame runs the full measure and 16:10 would make it
-     taller than the question it belongs to, so the height is capped. Note
-     that a cap plus an aspect-ratio drives the WIDTH too — it is lifted
-     three-up below, or each frame would sit 13px narrower than its
-     column and slide off the marker it belongs to. */
-  max-height: 14rem;
-  border: 1px dashed var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface);
-  color: var(--color-text-muted);
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .journey-probe__photo img {
+  display: block;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 16 / 10;
+  /* Stacked, the frame runs the full measure and 16:10 would make it
+     taller than the question it belongs to, so the height is capped. Note
+     that a cap plus an aspect-ratio drives the WIDTH too — it is lifted
+     three-up below, or each frame would sit narrower than its column and
+     slide off the marker it belongs to. */
+  max-height: 14rem;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
+  background: var(--color-surface);
   object-fit: cover;
+}
+
+/* What that moment is, under the picture of it. */
+.journey-probe__photo p {
+  margin: var(--space-2xs) 0 0;
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+  color: var(--color-text-muted);
 }
 
 /* Repeats the marker on the track above, so a card still says which
@@ -5259,8 +5810,11 @@
      spanning all three columns, then the cards. */
   .journey-probe__grid > .journey-probe__photo {
     order: 1;
-    max-height: none;
     margin-bottom: var(--space-md);
+  }
+
+  .journey-probe__grid > .journey-probe__photo img {
+    max-height: none;
   }
 
   .journey-probe__grid > .journey-probe__track {
@@ -5603,6 +6157,7 @@
    skimming reader rather than blend into the scroll. Use once per
    case study; if everything gets this treatment nothing does. */
 .moment {
+  container-type: inline-size;
   padding: var(--space-xl) var(--space-lg);
   background: var(--color-accent-soft);
   border-radius: var(--radius-lg);
@@ -5650,12 +6205,37 @@
   line-height: var(--lh-loose);
 }
 
-.moment__diagram {
+/* Two halves of the same argument side by side: the meme that carried
+   the idea, and the diagram that proves it. Each keeps its own panel and
+   its own caption — one shared caption under a pair would have to
+   describe both, which is how the pairing stops reading as two claims. */
+.moment__diagrams {
+  display: grid;
+  gap: var(--space-md);
   margin-top: var(--space-lg);
+  align-items: start;
+}
+
+@container (min-width: 46rem) {
+  .moment__diagrams {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.moment__diagram {
+  margin: 0;
   padding: var(--space-md);
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+}
+
+/* A lone .moment__diagram sitting straight in .moment, rather than in a
+   pair, keeps the spacing it had. Not :only-child — a standalone one
+   still has the kicker and the prose block as siblings, so that would
+   never match. */
+.moment > .moment__diagram {
+  margin-top: var(--space-lg);
 }
 
 .moment__diagram-caption {
@@ -5704,105 +6284,6 @@
   font-size: var(--fs-base);
   color: var(--color-text-muted);
   line-height: var(--lh-normal);
-}
-
-/* ---------- Roadmap (case-study version status) ----------
-   For a project told in versions rather than a single arc: each stage
-   gets a status rather than a position in a story, so "shipped" vs
-   "in progress" vs "not started yet" reads at a glance instead of
-   needing the prose to carry that distinction. A connecting line ties
-   the stages into one sequence; each stage's own state (filled dot,
-   ring, dashed) carries how real it is yet, independent of the line. */
-.roadmap {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  margin-top: var(--space-lg);
-}
-
-.roadmap__item {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2xs);
-  padding: 0 0 var(--space-lg) var(--space-lg);
-  border-left: 2px solid var(--color-border);
-  margin-left: 5px;
-}
-
-.roadmap__item:last-child {
-  padding-bottom: 0;
-  border-left-color: transparent;
-}
-
-.roadmap__dot {
-  position: absolute;
-  left: -7px;
-  top: 0.2em;
-  width: 12px;
-  height: 12px;
-  border-radius: var(--radius-full);
-  background: var(--color-bg);
-  border: 2px solid var(--color-text-muted);
-}
-
-.roadmap__item--shipped .roadmap__dot {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-}
-
-.roadmap__item--active .roadmap__dot {
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px var(--color-accent-soft);
-}
-
-.roadmap__item--upcoming .roadmap__dot {
-  border-style: dashed;
-}
-
-.roadmap__header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-sm);
-}
-
-.roadmap__version {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: var(--fw-semibold);
-}
-
-.roadmap__status {
-  font-size: var(--fs-base);
-  font-weight: var(--fw-semibold);
-}
-
-.roadmap__item--shipped .roadmap__status {
-  color: var(--color-accent);
-}
-
-.roadmap__item--active .roadmap__status {
-  color: var(--color-accent);
-}
-
-.roadmap__body {
-  margin: 0;
-  max-width: 60ch;
-  color: var(--color-text-muted);
-  line-height: var(--lh-loose);
-}
-
-/* Upcoming stages are content nobody's written yet — dim the whole card
-   rather than just labeling it, so the eye naturally settles on what's
-   real (shipped, active) before what's speculative. */
-.roadmap__item--upcoming .roadmap__version,
-.roadmap__item--upcoming .roadmap__body {
-  color: var(--color-text-muted);
-}
-
-.roadmap__item--upcoming {
-  opacity: 0.75;
 }
 
 /* ---------- Series context bar (chapter pages) ----------
@@ -6049,6 +6530,33 @@
   font-size: var(--fs-base);
   color: var(--color-text-muted);
   line-height: var(--lh-normal);
+}
+
+/* Motion thumbnail across the top of the tile, bled out through the
+   tile's padding so it sits flush with the border the way .card__media
+   does. The box is the clips' own 1280x612 ratio, so the poster frame
+   shows whole rather than cropped. Hover/focus play and the wake-up
+   zoom are the same as .card__media--video. */
+.chapter__media {
+  aspect-ratio: 1280 / 612;
+  margin: calc(-1 * var(--space-md)) calc(-1 * var(--space-md)) var(--space-2xs);
+  overflow: hidden;
+  border-radius: calc(var(--radius-lg) - 1px) calc(var(--radius-lg) - 1px) 0 0;
+  background: var(--color-surface);
+}
+
+.chapter__media video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-enter);
+  will-change: transform;
+}
+
+.chapter:hover .chapter__media video,
+.chapter__media video.is-playing {
+  transform: scale(1.03);
 }
 
 /* ---------- Swatch (used only on the styleguide page) ---------- */
@@ -6690,14 +7198,16 @@
   margin-top: 0;
 }
 
-/* The diagram slot is full-width, but the artifact in it often isn't -
-   a meme, a small chart. Centred and capped so a narrow image reads as
-   placed in the panel rather than abandoned in its top-left corner,
-   which is where a bare <img> lands. */
+/* Fills its panel. This used to cap at 34rem and centre, back when
+   .moment__diagram was a single full-width slot and a small artifact —
+   the meme is 260px natural — needed to avoid looking abandoned in a
+   ~1200px-wide panel. Now the meme and the pauses diagram sit side by
+   side in .moment__diagrams at roughly half that width each, so letting
+   the image fill its own panel is what makes the pair read as a matched
+   set instead of one at native size next to one scaled down. */
 .moment__diagram img {
   display: block;
-  margin-inline: auto;
-  max-width: min(100%, 34rem);
+  width: 100%;
   border-radius: var(--radius-sm);
 }
 
@@ -6942,7 +7452,7 @@
    channel on information the bar already shows. */
 
 /* ---------- The split ----------
-   One bar, all 2,239 searches, cut in two. The whole finding is that cut,
+   One bar, all 20,239 searches, cut in two. The whole finding is that cut,
    so it gets the bar to itself and the labels sit underneath, flexed to
    the same proportions — each one over its own share, wearing a rule in
    its own colour. Same 2px-top-rule gesture as .stat-band__item. */
@@ -7214,5 +7724,158 @@
 
   .rfind-table-toggle .rfind-table {
     display: table;
+  }
+}
+
+/* ---------- The vocabulary work (.lex — AI command bar case study) ----------
+   Three plates, side by side on one row, each one a small wiring diagram:
+   the words someone says along the top, the fields we actually filter on
+   along the bottom, and drawn wire between them.
+
+   The wire is the figure. Its shape is what separates the three kinds of
+   gap, so the plates can be read without reading a word of them — two
+   straight lanes, three straight lanes, and then one word bracketing out
+   into three fields, which is the only place the shape breaks and the only
+   kind of word that had no single right answer. Colour follows the same
+   rule the rest of this case study's figures follow: the accent is on the
+   wire and nothing else, because the translation is the work.
+
+   The plates are .pillar, the same raised card as the four principles at
+   the top of this case study — one of which is "speak the user's
+   language," which is the thing this figure is the evidence for. */
+.lex {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lex__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.lex__kind {
+  margin: 0 0 var(--space-2xs);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-tight);
+}
+
+/* One lane per word. Equal columns rather than content-width ones, so a
+   lane's centre is a fixed fraction of the plate and the wire under it can
+   be positioned off the same fraction — that's what keeps word, wire and
+   field stacked in one line without measuring anything. */
+.lex__lanes {
+  display: grid;
+  grid-template-columns: repeat(var(--lanes, 1), minmax(0, 1fr));
+  justify-items: center;
+  align-items: center;
+  gap: var(--space-3xs);
+}
+
+/* What someone says: quoted, and in the display face at reading size,
+   because it is speech. */
+.lex__word {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-tight);
+  letter-spacing: -0.01em;
+  text-align: center;
+  color: var(--color-text);
+}
+
+/* What the product has: a chip, because a stored field is a discrete
+   object and ought to look like one. Same well as .rfind-q above, at body
+   weight rather than quoted — this side of the wire is the system's word,
+   not anyone's. */
+.lex__term {
+  padding: 0.25em 0.7em;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
+  text-align: center;
+  color: var(--color-text);
+}
+
+/* The wiring. Drawn in elements rather than an SVG: the lanes are
+   percentages of the plate and so are the wires, so the two stay locked
+   together at every width with nothing to keep in sync — and a stretched
+   viewBox would have flattened the arrowheads. */
+.lex__wires {
+  position: relative;
+  height: 2.25rem;
+}
+
+.lex__wire,
+.lex__stem,
+.lex__bus {
+  position: absolute;
+  background: var(--color-accent);
+}
+
+.lex__wire {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  transform: translateX(-50%);
+}
+
+/* The head, which is what makes this a translation rather than a pairing:
+   it only points one way. A rotated corner rather than a glyph, so it
+   holds its shape at any plate width. */
+.lex__wire::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 1px;
+  width: 6px;
+  height: 6px;
+  border-right: 1px solid var(--color-accent);
+  border-bottom: 1px solid var(--color-accent);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* The fan-out. One word, no single field to land on, so the wire brackets:
+   a stem down from the word, a bus across, and a drop into each field it
+   turned out to mean. The bus ends on the outer lanes' centres, which at
+   three equal lanes is a sixth in from each edge. */
+.lex__wires--fan .lex__wire {
+  top: 45%;
+}
+
+.lex__stem {
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 45%;
+  transform: translateX(-50%);
+}
+
+.lex__bus {
+  top: 45%;
+  left: 16.667%;
+  right: 16.667%;
+  height: 1px;
+}
+
+/* One line on what the kind of word is, under the diagram it explains.
+   Pushed to the bottom of the plate so the three diagrams stay on one line
+   across the row even when one plate's line wraps and another's doesn't. */
+.lex__gloss {
+  margin: var(--space-2xs) 0 0;
+  padding-top: var(--space-2xs);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 900px) {
+  .lex__gloss {
+    margin-top: auto;
   }
 }

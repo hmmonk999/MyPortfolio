@@ -44,9 +44,10 @@
      accent-text uses dark ink instead — 4.5:1+ against #c96c4a. */
   --color-accent-text: #241209;
 
-  /* Dot grid on #main.has-dot-grid surfaces (layout.css). Kept
-     barely-there — texture, not a pattern anyone consciously sees. */
-  --hero-grid-dot: rgba(33, 29, 25, 0.06);
+  /* Dot grid on #main.has-dot-grid surfaces (layout.css). Light
+     texture, but it has to actually land on the warm paper ground —
+     below about 0.10 the dots disappear on brighter screens. */
+  --hero-grid-dot: rgba(33, 29, 25, 0.11);
 
   /* ---- Color: feedback ---- */
   --color-success: #1a7f4e;
@@ -328,45 +329,85 @@
      trailing it on a spring. See the .hero__liquid block in layout.css
      and js/hero-atmosphere.js.
 
-     How liquid each kind of shape is: its blur radius, which is how far
-     its edge reaches out to meet a neighbour. The filter snaps the
-     result back to a hard edge whatever the radius, so these set reach
-     and softness of corner, not sharpness. The type is kept to a hair so
-     it reads crisp — the reference this follows blurs its name by 5px
-     and the letters come out rounded and bloated; the drops get most, so
-     they stretch into whatever they touch. A drop's blur also shrinks
-     it: past about a third of its diameter the middle no longer reaches
-     full coverage and the snapped edge pulls inward. */
+     How liquid each kind of shape is: how far its alpha reaches out
+     past its edge to meet a neighbour's. The filter snaps the result
+     back to a hard edge whatever the reach, so these set reach and
+     softness of corner, not sharpness. For the type and the decorations
+     the reach is a blur, and it is kept to a hair so they read crisp —
+     the reference this follows blurs its name by 5px and the letters
+     come out rounded and bloated. */
   --liquid-blur-pretitle: 0px;
   --liquid-blur-type: 1.6px;
   --liquid-blur-deco: 0.8px;
   /* The arrow gets next to none: it has to read as the pointer, sharp,
      so all it has is the wrapper filter's own smoothing — enough that it
-     fuses on contact and no more. The drop keeps some, so it still
-     stretches, but not so much that its edge goes soft: the ramp's
-     anti-aliasing widens with the blur behind it. */
+     fuses on contact and no more. */
   --liquid-blur-lead: 0px;
-  --liquid-blur-trail: 8px;
-  /* The wake carries more blur than the drop ahead of it: it is the
-     softer body, and the extra reach is what bridges the gap between
-     the two into a neck rather than letting them read as two dots. Kept
-     under a third of --cursor-wake-size, past which the wrapper's
-     threshold starts eating the body from the edge in. */
-  --liquid-blur-wake: 9.5px;
-  /* The drop's blur at full melt — when it is right up against a letter
-     or a decoration. The script ramps the drop between the two off how
-     near it is (--melt, 0 to 1), so its edge reaches further exactly
-     when there is something in reach to reach for, and the neck between
-     the two forms earlier and thicker. Resting reach is what the drop
-     looks like on its own, so this is the only one that grows.
+  /* The drops are built differently, because a blurred disc can't be
+     both: blur it enough to reach and its snapped edge goes soft (the
+     ramp's anti-aliasing widens with the blur behind it) and its core
+     pulls inward, and that was the drops through most of a merge — a
+     fuzzy disc against crisp letters. So a drop's twin is a radial
+     gradient (see .hero__blob--trail in layout.css): a solid core the
+     size of the fixed copy, stepping down at its edge to the tail
+     strength and fading from there to nothing over the tail length.
+     The core's edge is steep, so it snaps as crisp as a letter; the
+     tail sits under the threshold, so on its own it never shows, and
+     only comes out where it adds to something — the other body's tail,
+     or a letter's halo (below) — as the neck and the fillets of a
+     merge. The tail is what reaches; the blur here is only the
+     anti-aliasing on the core's edge, and it also sets where that edge
+     lands: the gradient's core stop sits this far inside the fixed
+     copy's radius, so the snapped edge comes out at the radius and
+     twin and fixed copy are the one size for the hand-off. Strength is
+     the tail's alpha at the core's edge — under the 0.45 the ramp
+     snaps at, with the margin that keeps the edge steep. */
+  --liquid-blur-trail: 1.5px;
+  --liquid-blur-wake: 2px;
+  --liquid-tail-trail: 17px;
+  /* The wake is the softer body: the longer tail is what bridges the
+     gap to the drop ahead of it into a neck as the two separate,
+     rather than letting them read as two dots. */
+  --liquid-tail-wake: 22px;
+  --liquid-tail-strength: 35%;
+  /* At full melt — right up against a letter — the script swells a
+     drop (MELT_SWELL in js/hero-atmosphere.js, tail and all, so its
+     reach grows with it) and its blur eases up to this, a touch of
+     extra give at the edge where it is merging. Both run off --melt,
+     0 to 1, over the last stretch before contact only. */
+  --liquid-blur-trail-melt: 2.5px;
+  --liquid-blur-wake-melt: 3px;
+  /* The halo: the field the letters put out for the drops to merge
+     into. The merged outline is where the two bodies' blurred alpha
+     adds up past the wrapper's threshold, and with the type blurred a
+     hair the letters have almost no field outside their own edge — so
+     a drop's outline stayed its own circle right up to the letter and
+     docked against it at a sharp corner. Blurring the type wider would
+     give it a field, at the cost of the crisp edge, and of the letters
+     bridging each other in tight gaps. Instead each run carries an
+     invisible copy of itself (.hero__halo in layout.css, built by the
+     script): its letters blurred this wide, at this strength — kept
+     under the threshold, so on its own the copy never shows — and
+     masked to a disc of this reach around each drop, so it exists
+     only where a drop is. There the drop's tail and the halo add up:
+     the drop bulges toward a letter before touching it, the neck comes
+     out as a wide fillet rather than a corner, and on a stroke the
+     drop runs along it instead of sitting on it as a disc.
 
-     Held just under a third of the drop's diameter, which is where the
-     note above bites: at 13px the snapped edge pulled in so far that
-     the drop all but vanished at the moment it was meant to be merging.
-     The script swells the drop as it melts for the same reason, and
-     that swell is what buys the last of this. */
-  --liquid-blur-trail-melt: 10.5px;
-  --liquid-blur-wake-melt: 12px;
+     All in em of the run, so the halo is the same fraction of a letter
+     at every size and the pretitle's, in its small type, is a fraction
+     of that. Blur is a text-shadow radius, which blurs at half that as
+     a standard deviation. Strength is the halo's alpha at its core; at
+     a letter's edge it is half that, and its tail falls off from
+     there. Held around 50%: a small counter — the e's eye — sits
+     inside the halo of the stroke around it, and much past that the
+     eye fills in on its own wherever a drop is near, touching or not.
+     Pad is how far past its text the copy's box extends, since the
+     mask clips to the box and the halo bleeds past the letters. */
+  --liquid-halo-blur: 0.13em;
+  --liquid-halo-strength: 45%;
+  --liquid-halo-reach: 0.5em;
+  --liquid-halo-pad: 0.3em;
   /* The cursor: an arrow the shape of the system pointer, and a blob
      trailing it. Their resting ink is the text colour; the script
      recolours them to whatever they approach. Solid — they go through
@@ -419,8 +460,9 @@
   --color-accent-soft: #3a2a22;
   --color-accent-text: #241209;
 
-  /* Same barely-there texture, tuned for a dark ground. */
-  --hero-grid-dot: rgba(243, 239, 234, 0.05);
+  /* Same texture, tuned for a dark ground: light dots on dark carry
+     further than dark ones on paper, so this sits a touch lower. */
+  --hero-grid-dot: rgba(243, 239, 234, 0.09);
 
   /* Glass over a dark ground: the pane tints toward the page bg rather
      than white, and the hairline flips to a faint white lift so the

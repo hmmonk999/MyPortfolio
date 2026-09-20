@@ -43,15 +43,15 @@
         </a>
 
         <h1 class="case-hero__title">AI Command Bar</h1>
-        <p class="case-hero__tagline">One week to build it. Two months to find out what it should be.</p>
+        <p class="case-hero__tagline">One week to build it. Four months understanding what it should grow to be.</p>
         <p class="case-hero__client">Hudl</p>
 
         <p class="case-hero__summary">
           During Hudl's annual one-week skunkworks event, my coworker Gabby wanted to build an AI-powered
           search bar just to learn how to build with AI. I already suspected we'd need real filter-search for
           our upcoming Volleyball Consolidation work, so we built toward that instead of a demo. A week later
-          we convinced our PM to ship the V1 straight to production. I've spent the eight months since watching
-          real search queries come in to learn what people actually want from it.
+          we convinced our PM to ship the V1 straight to production. I spent 4 months after it was shipped continuing the side project to understand the
+          real search queries coming in so I could learn what people actually want from it.
         </p>
       </div>
 
@@ -230,76 +230,96 @@
           <div class="mt-lg">
           <h4>The natural language piece</h4>
           <p>
-            My education isn't in design. It's actually in rhetorical analysis of written language. One of my strengths is being about to think about language and ideas in a very abstract manner. I felt pretty suited to help my team think through the higher probability words that we would be met with and how to write instructions explainig to the AI so it was more likely to get the sentence correct.
+            My education isn't in fully design. The other half is actually in rhetorical analysis of written language. One of my strengths is being about to think about language and ideas in a very abstract manner. I felt pretty suited to help my team think through the higher probability words that we would be met with and how to write instructions explainig to the AI so it was more likely to get the sentence correct.
           </p>
+            <h4>Step 1: The first thing the search bar had to do was connect words &mdash; even ones outside our schema &mdash; to the related filters, so a user could more quickly find the clips they wanted to watch.</h4>
+
+          <figure class="figure-solo mt-lg">
+            <ul class="lex grid grid--3up grid--row">
+              <li class="pillar lex__card">
+                <p class="lex__kind">Pronouns</p>
+                <div class="lex__lanes" style="--lanes: 2">
+                  <span class="lex__word">&ldquo;my&rdquo;<span class="visually-hidden"> becomes you.</span></span>
+                  <span class="lex__word">&ldquo;their&rdquo;<span class="visually-hidden"> becomes the opponent.</span></span>
+                </div>
+                <div class="lex__wires" aria-hidden="true">
+                  <span class="lex__wire" style="left: 25%"></span>
+                  <span class="lex__wire" style="left: 75%"></span>
+                </div>
+                <div class="lex__lanes" style="--lanes: 2" aria-hidden="true">
+                  <span class="lex__term">athlete name</span>
+                  <span class="lex__term">opponent team name</span>
+                </div>
+                <p class="lex__gloss">They&rsquo;re already signed in. We should know who "my" is.</p>
+              </li>
+
+              <li class="pillar lex__card">
+                <p class="lex__kind">Slang</p>
+                <div class="lex__lanes" style="--lanes: 3">
+                  <span class="lex__word">&ldquo;swing&rdquo;<span class="visually-hidden"> becomes Attack.</span></span>
+                  <span class="lex__word">&ldquo;dime&rdquo;<span class="visually-hidden"> becomes Set.</span></span>
+                  <span class="lex__word">&ldquo;roof&rdquo;<span class="visually-hidden"> becomes Block.</span></span>
+                </div>
+                <div class="lex__wires" aria-hidden="true">
+                  <span class="lex__wire" style="left: 16.667%"></span>
+                  <span class="lex__wire" style="left: 50%"></span>
+                  <span class="lex__wire" style="left: 83.333%"></span>
+                </div>
+                <div class="lex__lanes" style="--lanes: 3" aria-hidden="true">
+                  <span class="lex__term">Attack</span>
+                  <span class="lex__term">Set</span>
+                  <span class="lex__term">Block</span>
+                </div>
+                <p class="lex__gloss">Common terms aren't always the one that gets used in description sentences.</p>
+              </li>
+
+              <li class="pillar lex__card">
+                <p class="lex__kind">Scenarios</p>
+                <div class="lex__lanes">
+                  <span class="lex__word">&ldquo;scoring moments&rdquo;<span class="visually-hidden"> becomes Kill, Ace and Block together.</span></span>
+                </div>
+                <div class="lex__wires lex__wires--fan" aria-hidden="true">
+                  <span class="lex__stem"></span>
+                  <span class="lex__bus"></span>
+                  <span class="lex__wire" style="left: 16.667%"></span>
+                  <span class="lex__wire" style="left: 50%"></span>
+                  <span class="lex__wire" style="left: 83.333%"></span>
+                </div>
+                <div class="lex__lanes" style="--lanes: 3" aria-hidden="true">
+                  <span class="lex__term">Kill</span>
+                  <span class="lex__term">Ace</span>
+                  <span class="lex__term">Block</span>
+                </div>
+                <p class="lex__gloss">Connected concepts grouped by purpose. Things aren't always described individually.</p>
+              </li>
+            </ul>
+
+            <figcaption>
+              Three kinds of gap between the word someone types and the field we filter on. Each one became a rule
+              in the prompt &mdash; and the third was the expensive one, since a scenario has no single right
+              answer until somebody decides which fields count.
+            </figcaption>
+          </figure>
+
           </div> 
 
           <div class="mt-lg">
           <h4>The first shippable version</h4>
           <p>
-            By Friday we had something that worked end to end. It was fast. It was cheap to queary. It was mostly accurate as far as we could tell. And a user could ask to see "swings" or "dimes" instead of attacks or sets, like what we 
+            By Friday we had something that worked end to end. It was fast. It was cheap to queary. It was mostly accurate as far as we could tell. And a user could ask to see "swings" or "dimes" or describe the pieces of video they wanted to watch instead of needing to click 4-5 sets of filters to get to where they wanted.
           </p>
           </div> 
 
-          <figure class="rdemo-fig mt-lg">
-            <!-- The command bar drawn in CSS, same component as the project card on
-                 index.html. .card__media--demo supplies the container the cqw units
-                 size against; wrap this figure in a .card if you want the sweep to
-                 animate on hover. -->
-            <div class="card__media card__media--demo">
-            <div class="cmdbar" role="img" aria-label="The command bar over volleyball footage: a filter count on the left, an open search field in the middle, a share action on the right">
-              <div class="cmdbar__panel">
-                <div class="cmdbar__row">
-                  <span class="cmdbar__btn">
-                    <svg class="cmdbar__icon cmdbar__icon--btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                      <path d="M3.5 5h17l-6.6 7.8v6.4l-3.8-2.1v-4.3z" />
-                    </svg>
-                    0 Filters
-                  </span>
-
-                  <span class="cmdbar__field">
-                    <svg class="cmdbar__icon cmdbar__icon--search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false">
-                      <circle cx="10.5" cy="10.5" r="7" />
-                      <path d="m15.6 15.6 5 5" />
-                    </svg>
-                    <svg class="cmdbar__icon cmdbar__icon--spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                      <path d="M9 3 Q10.3 7.7 15 9 Q10.3 10.3 9 15 Q7.7 10.3 3 9 Q7.7 7.7 9 3 Z" />
-                      <path d="M17.5 13 Q18.3 15.7 21 16.5 Q18.3 17.3 17.5 20 Q16.7 17.3 14 16.5 Q16.7 15.7 17.5 13 Z" />
-                      <path d="M18 3.5 Q18.5 5.5 20.5 6 Q18.5 6.5 18 8.5 Q17.5 6.5 15.5 6 Q17.5 5.5 18 3.5 Z" />
-                    </svg>
-                    <span class="cmdbar__placeholder">Finding moments</span>
-                    <svg class="cmdbar__icon cmdbar__icon--clear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false">
-                      <path d="M5.5 5.5 18.5 18.5M18.5 5.5 5.5 18.5" />
-                    </svg>
-                    <span class="cmdbar__divider"></span>
-                    <svg class="cmdbar__icon cmdbar__icon--mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                      <rect x="9" y="2" width="6" height="11" rx="3" />
-                      <path d="M5 11a7 7 0 0 0 14 0" />
-                      <path d="M12 18v3.2M9.2 21.2h5.6" />
-                    </svg>
-                  </span>
-
-                  <span class="cmdbar__btn">
-                    <svg class="cmdbar__icon cmdbar__icon--btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                      <path d="M3.5 5h17l-6.6 7.8v6.4l-3.8-2.1v-4.3z" />
-                    </svg>
-                    Share
-                  </span>
-                </div>
-
-                <img
-                  class="cmdbar__footage"
-                  src="assets/img/ai-command-bar-footage.webp"
-                  alt=""
-                  width="900"
-                  height="375"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-            </div>
-            </div>
-                        <figcaption>
+          <figure class="figure-solo mt-lg">
+            <img
+              src="assets/img/ai-command-bar-v1.png"
+              alt="The V1 search field, labeled &quot;Ask Hudl...&quot;, open over a volleyball clip with two saved filters and two AI-suggested searches, one for the athlete's moments and one for their scoring plays"
+              width="1600"
+              height="900"
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>
               V1, end of week one: the field in the chrome, the sweep as the only color in the bar, and a
               placeholder doing the work of a manual.
             </figcaption>
@@ -338,13 +358,13 @@
           <h2>Two months of reading real searches</h2>
           <p>
             Then I ran the research we couldn&rsquo;t run up front, because now there was something to run it on.
-            2,239 searches from 1,168 coaches, athletes and staff &mdash; every one of them typed by someone who
+            20,239 searches from 1,168 coaches, athletes and staff &mdash; every one of them typed by someone who
             wanted something, with no researcher in the room.
           </p>
 
           <div class="stat-band mt-xl">
             <div class="stat-band__item">
-              <p class="stat-band__value">2,239</p>
+              <p class="stat-band__value">20,239</p>
               <p class="stat-band__label">searches, read and coded one at a time</p>
             </div>
             <div class="stat-band__item">
@@ -361,48 +381,23 @@
             </div>
           </div>
 
-          <h3 class="mt-xl">How I did it</h3>
-          <div class="figure-row">
-            <div>
-              <h4>A script, not a spreadsheet</h4>
-              <p class="text-muted">
-                2,239 queries is too many to sort by hand and too few to hand to a model and trust. I used AI to
-                write and refine a Python script that tagged every query against our own data schema.
-              </p>
-            </div>
-            <div>
-              <h4>AI to build the tool, not to do the job</h4>
-              <p class="text-muted">
-                The output is rules I can read, not a judgment I made 2,239 times. When the categories changed, I
-                re-ran it in seconds instead of re-reading everything.
-              </p>
-            </div>
-          </div>
-
-          <div class="figure-row mt-lg">
-            <div>
-              <h4>Coded twice</h4>
-              <p class="text-muted">
-                Once for what the person was trying to do, once for whether we handed back the right thing. The
-                second pass is the one that found the problem.
-              </p>
-            </div>
-            <div>
-              <h4>Numbers I could argue from</h4>
-              <p class="text-muted">
-                Deterministic tagging meant I could take the findings into a roadmap conversation without anyone
-                asking whether I&rsquo;d just picked the examples that suited me.
-              </p>
-            </div>
-          </div>
+          <h3 class="mt-xl">How I analyzed it</h3>
+          <p>
+            20,239 queries is too many to sort by hand and too few to hand to a model and trust. So I used AI to
+            help me write a deterministic Python script instead: it pulled the searches, tagged each one against
+            our own data schema, and scored whether what came back was the right set of filters. The judgment
+            lives in rules I can read rather than in 20,239 calls I made one at a time &mdash; so when the
+            categories changed I re-ran it in seconds, and I could take the numbers into conversations.
+          </p>
 
           <!-- TODO (Hannah): screenshot of the tagging script / its output goes here.
                A snippet of the classifier next to a few tagged rows would carry it best. -->
 
           <h3 class="mt-xl">What I found</h3>
 
-          <h4 class="mt-lg">They were using it as a command bar</h4>
+          <h4 class="mt-lg">Users were already using it as a command bar.</h4>
           <p class="text-muted">
+            <b> And we had started with just search. The long term vision was aligning with users expectations.</b>
             Only two thirds of it was filtering. The rest asked the product to <em>do</em> something &mdash; and
             the queries say exactly what.
           </p>
@@ -411,10 +406,10 @@
             <div
               class="rfind-split__bar"
               role="img"
-              aria-label="Of 2,239 searches, 65.3% were filter requests and 34.7% asked the product to do something else"
+              aria-label="Of 20,239 searches, 65.3% were filter requests and 34.7% asked the product to do something else"
             >
-              <span class="rfind-split__seg rfind-split__seg--filter" style="flex: 65.3"></span>
-              <span class="rfind-split__seg" style="flex: 34.7"></span>
+              <span class="rfind-split__seg " style="flex: 65.3"></span>
+              <span class="rfind-split__seg rfind-split__seg--filter" style="flex: 34.7"></span>
             </div>
             <div class="rfind-split__legend">
               <p style="flex: 65.3"><b>65.3%</b> filtering &mdash; the feature we built</p>
@@ -475,7 +470,7 @@
             </figcaption>
           </figure>
 
-          <h4 class="mt-xl">It was right, but not reliably</h4>
+          <h4 class="mt-xl">Accuracy for choosing the correct filters was a mixed bag.</h4>
           <p class="text-muted">
             87% of searches came back with the correct filters. The other 13% isn&rsquo;t spread evenly &mdash;
             it lands almost entirely on the things the field was never wired to do, plus two filters that needed
@@ -485,11 +480,11 @@
           <figure class="figure-solo mt-lg">
             <div class="rfind-acc">
               <div>
-                <p class="rfind-acc__head">Right more than 87% of the time</p>
+                <p class="rfind-acc__head">Search Result Accuracy - Right more than 87% of the time</p>
                 <ul class="rfind-acc__list">
                   <li class="rfind-acc__row">
                     <div class="rfind-acc__line">
-                      <span class="rfind-acc__name">Event</span>
+                      <span class="rfind-acc__name">Event Only</span>
                       <span class="rfind-acc__pct">95.6%</span>
                       <span class="rfind-acc__n">160</span>
                     </div>
@@ -497,7 +492,7 @@
                   </li>
                   <li class="rfind-acc__row">
                     <div class="rfind-acc__line">
-                      <span class="rfind-acc__name">Result</span>
+                      <span class="rfind-acc__name">Result Only</span>
                       <span class="rfind-acc__pct">93.5%</span>
                       <span class="rfind-acc__n">108</span>
                     </div>
@@ -505,15 +500,7 @@
                   </li>
                   <li class="rfind-acc__row">
                     <div class="rfind-acc__line">
-                      <span class="rfind-acc__name">Unknown athletes</span>
-                      <span class="rfind-acc__pct">92.9%</span>
-                      <span class="rfind-acc__n">363</span>
-                    </div>
-                    <div class="rfind-acc__meter"><span style="width: 92.9%"></span></div>
-                  </li>
-                  <li class="rfind-acc__row">
-                    <div class="rfind-acc__line">
-                      <span class="rfind-acc__name">Athlete</span>
+                      <span class="rfind-acc__name">Athlete Only</span>
                       <span class="rfind-acc__pct">91.7%</span>
                       <span class="rfind-acc__n">648</span>
                     </div>
@@ -521,7 +508,7 @@
                   </li>
                   <li class="rfind-acc__row">
                     <div class="rfind-acc__line">
-                      <span class="rfind-acc__name">Multiple filters</span>
+                      <span class="rfind-acc__name">Multiple basic events + results</span>
                       <span class="rfind-acc__pct">88.8%</span>
                       <span class="rfind-acc__n">322</span>
                     </div>
@@ -531,11 +518,11 @@
               </div>
 
               <div>
-                <p class="rfind-acc__head">Wrong more often than that</p>
+                <p class="rfind-acc__head">Search Result Accuracy - Wrong more often than that</p>
                 <ul class="rfind-acc__list">
                   <li class="rfind-acc__row">
                     <div class="rfind-acc__line">
-                      <span class="rfind-acc__name">Playback</span>
+                      <span class="rfind-acc__name">Event + Athlete</span>
                       <span class="rfind-acc__pct">79.4%</span>
                       <span class="rfind-acc__n">34</span>
                     </div>
@@ -543,15 +530,7 @@
                   </li>
                   <li class="rfind-acc__row">
                     <div class="rfind-acc__line">
-                      <span class="rfind-acc__name">Curation</span>
-                      <span class="rfind-acc__pct">63.6%</span>
-                      <span class="rfind-acc__n">11</span>
-                    </div>
-                    <div class="rfind-acc__meter"><span style="width: 63.6%"></span></div>
-                  </li>
-                  <li class="rfind-acc__row">
-                    <div class="rfind-acc__line">
-                      <span class="rfind-acc__name">Team</span>
+                      <span class="rfind-acc__name">Team Only</span>
                       <span class="rfind-acc__pct">58.5%</span>
                       <span class="rfind-acc__n">41</span>
                     </div>
@@ -567,7 +546,7 @@
                   </li>
                   <li class="rfind-acc__row">
                     <div class="rfind-acc__line">
-                      <span class="rfind-acc__name">Reports</span>
+                      <span class="rfind-acc__name">Complex filter sentences</span>
                       <span class="rfind-acc__pct">33.3%</span>
                       <span class="rfind-acc__n">12</span>
                     </div>
@@ -577,211 +556,175 @@
               </div>
             </div>
 
-            <figcaption>
-              Bar is accuracy; the figure on the right is how many searches that category got. The four smallest
-              are left out &mdash; highlights (0 of 2), overlay (3 of 3), action (7 of 9), advanced event type
-              (4 of 6). Unknown athletes scores well on a technicality: we can&rsquo;t filter on it, so
-              &ldquo;correct&rdquo; there means returning nothing.
-            </figcaption>
-          </figure>
+            <h4 class="mt-xl">The need for more search guidance (we needed better type ahead)</h4>
+          <p class="text-muted">
+            The 2 most accurate search types, event only and result only. Even though these searches were accurate, they tended to be followed up with a subject + event/result. Users were searching for something that we were not providing. The lacked an implied subject. My theory was that when a user was typing attacks or serves, they were really looking for moments done by a specific player or team (i.e. [Hannah's] <b>attacks</b> or [FHS's] <b>serves</b>. Users just didn't think to add in the subject, but it was needed because we can't really infer it from what someone types.
+          </p>
 
-          <details class="rfind-table-toggle">
-            <summary>Every category, as a table</summary>
-            <table class="rfind-table">
-              <caption class="visually-hidden">Accuracy by subcategory, all fourteen categories</caption>
-              <thead>
-                <tr>
-                  <th scope="col">Category</th>
-                  <th scope="col">Kind</th>
-                  <th scope="col">Searches</th>
-                  <th scope="col">Correct</th>
-                  <th scope="col">Accuracy</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><th scope="row">Overlay</th><td>not a filter</td><td>3</td><td>3</td><td>100.0%</td></tr>
-                <tr><th scope="row">Event</th><td>filter</td><td>160</td><td>153</td><td>95.6%</td></tr>
-                <tr><th scope="row">Result</th><td>filter</td><td>108</td><td>101</td><td>93.5%</td></tr>
-                <tr><th scope="row">Unknown athletes</th><td>can&rsquo;t filter yet</td><td>363</td><td>328</td><td>92.9%</td></tr>
-                <tr><th scope="row">Athlete</th><td>filter</td><td>648</td><td>594</td><td>91.7%</td></tr>
-                <tr><th scope="row">Multiple filters</th><td>filter</td><td>322</td><td>286</td><td>88.8%</td></tr>
-                <tr><th scope="row">Playback</th><td>not a filter</td><td>34</td><td>27</td><td>79.4%</td></tr>
-                <tr><th scope="row">Action</th><td>not a filter</td><td>9</td><td>7</td><td>77.8%</td></tr>
-                <tr><th scope="row">Event type</th><td>advanced filter</td><td>6</td><td>4</td><td>66.7%</td></tr>
-                <tr><th scope="row">Curation</th><td>not a filter</td><td>11</td><td>7</td><td>63.6%</td></tr>
-                <tr><th scope="row">Team</th><td>filter</td><td>41</td><td>24</td><td>58.5%</td></tr>
-                <tr><th scope="row">Rotations</th><td>filter</td><td>13</td><td>7</td><td>53.8%</td></tr>
-                <tr><th scope="row">Reports</th><td>not a filter</td><td>12</td><td>4</td><td>33.3%</td></tr>
-                <tr><th scope="row">Highlights</th><td>not a filter</td><td>2</td><td>0</td><td>0.0%</td></tr>
-              </tbody>
-            </table>
-          </details>
-
-          <div class="figure-row mt-xl">
-            <div>
-              <h4>No view of the result</h4>
-              <p class="text-muted">
-                You typed a sentence and the video list changed. Nothing told you what had been narrowed or how
-                much was left.
-              </p>
-            </div>
-            <div>
-              <h4>No view of the thinking</h4>
-              <p class="text-muted">
-                And nothing showed which filters it had chosen. A wrong guess and an empty match looked
-                identical.
-              </p>
-            </div>
-          </div>
-
-          <p class="mt-lg">
-            The last two are the same problem, and they&rsquo;re the reason the 13% hurt more than it should
-            have. Being wrong 13% of the time is survivable. Being wrong 13% of the time <em>invisibly</em> is
-            what makes people stop trusting a feature. So I stopped designing a filter box and started designing
-            a command surface, and took three changes to the team.
+            <h4 class="mt-xl">We over indexed on the natural language and sentence complexity</h4>
+          <p class="text-muted">
+            Though it did become more common toward the tail end of the four month time frame, most searches were very simple and based in language used in our schema (ie #4 Hannah Monk's attacks, FHS's serves, etc). It was a cool feature. But for now, it's not something to add more to. It's just not how people were searching for things.
           </p>
         </div>
 
         <div id="the-changes" class="anchor-target">
-          <h2>Three changes I argued for</h2>
+          <h2>Four changes we made based on the findings</h2>
 
-          <h3 class="mt-xl">1. Data chips</h3>
+          <h3 class="mt-xl">1. Improve type ahead with more options</h3>
           <div class="figure-row">
             <div>
               <h4>The gap</h4>
               <p class="text-muted">
-                Type-ahead told you <em>how many</em>. It never told you <em>what</em>. Nothing showed the
-                filters behind a suggestion until you&rsquo;d already committed to it.
+                Event only and result only were our most accurate search types, but they were almost always
+                followed by a repeat search with a subject added on. Users typed <b>attacks</b> and meant
+                <em>someone&rsquo;s</em> attacks &mdash; they just never thought to say whose. Type-ahead did
+                nothing with that. It returned one raw AI Search entry and made you find out the hard way.
               </p>
             </div>
             <div>
               <h4>The fix</h4>
               <p class="text-muted">
-                Every reading now carries its filters &mdash; <span class="tag tag--neutral">#4 H Monk</span>
-                <span class="tag tag--neutral">Attacks</span>
-                <span class="tag tag--neutral">to Zone 4</span> &mdash; eleven moments. A wrong guess is visible
-                before it costs you your place, and the chips stay after you commit.
+                Type-ahead now supplies the subject for you, ranked above the raw search &mdash;
+                <span class="tag tag--neutral">#4 H Monk attacks &middot; 16</span>
+                <span class="tag tag--neutral">Farmington High School attacks &middot; 47</span> &mdash; each
+                with a live count, so a wrong guess is visible before it costs you your place. It also stopped
+                treating &ldquo;attack&rdquo; as only a filter: a saved <b>Attack Tendencies</b> report and the
+                comments that mention it surface in the same list.
               </p>
             </div>
           </div>
 
-          <figure class="rdemo-fig mt-lg">
+          <figure class="rdemo-fig">
             <img
-              src="assets/img/ai-command-bar-search-dropdown.webp"
-              alt="The search field open on the word &quot;attack&quot;, showing three ranked interpretations, each with its data chips and result count"
+              src="assets/img/ai-command-bar-search-update.png"
+              alt="The search field open on the word &quot;attack&quot;, showing the raw AI search, two subject-scoped readings with their counts, a saved report, and matching comments"
               width="1379"
               height="946"
             />
             <figcaption>
-              Three readings of one word, each showing the chips it would apply and what it would leave you
-              with. The interpretation is the interface.
+              Four kinds of matches for one word &mdash; a raw AI search, two subject-scoped readings with
+              counts, a saved report, and the comments that mention it. Type-ahead stopped being just a
+              filter preview.
             </figcaption>
           </figure>
 
-          <h3 class="mt-xl">2. Less AI</h3>
-          <div class="figure-row">
-            <div>
-              <h4>&ldquo;Hannah&rsquo;s attacks&rdquo; doesn&rsquo;t need a model</h4>
-              <p class="text-muted">
-                A player plus an event, resolvable against a data schema we already own. The model gets player
-                names right 91.7% of the time; a fuzzy match against the roster can only ever return names that
-                exist.
-              </p>
-            </div>
-            <div>
-              <h4>Match first, model second</h4>
-              <p class="text-muted">
-                The AI gets saved for what only it can do &mdash; judgment, relationships across a rally, math
-                asked out loud. Everything else resolves instantly, for nothing, while you&rsquo;re still typing.
-              </p>
-            </div>
-          </div>
-
-          <div class="figure-row mt-lg">
-            <div>
-              <h4>What it costs to over-use a model</h4>
-              <p class="text-muted">
-                $1.03 per 1,000 searches and a 1.07s average wait &mdash; cheap today, but spent on the two
-                thirds that never needed it, and both numbers scale with volume.
-              </p>
-            </div>
-            <div>
-              <h4>The same move I made on my own research</h4>
-              <p class="text-muted">
-                Use the model to build the deterministic thing, then let the deterministic thing do the work.
-                Only 2.1% of searches genuinely need one.
-              </p>
-            </div>
-          </div>
-
-          <h3 class="mt-xl">3. New destinations</h3>
-          <p>
-            People were already using it as a command bar. The design hadn&rsquo;t caught up.
-          </p>
-
-          <div class="grid grid--4up mt-lg">
+          <h3 class="mt-xl">2. New destinations</h3>
+          <div class="grid grid--2up mt-lg">
             <div class="pillar">
               <p class="pillar__title">Start a workflow</p>
-              <p class="pillar__text">Identify unknowns. Tag the game. Split tool.</p>
+              <p class="text-muted">
+                20.1% of all searches &mdash; the single biggest ask &mdash; were someone typing
+                &ldquo;identify unknowns&rdquo; or &ldquo;update player number,&rdquo; not looking for a
+                moment at all. Type-ahead now catches that intent, typos included, and starts the task
+                itself: identify an unknown athlete by image or by video, straight from the search field.
+              </p>
+              <img
+                src="assets/img/search1.png"
+                alt="The search field open on the misspelled query &quot;idenity unknown athlet&quot;, offering to start an unknown athlete task by image or by video"
+              />
             </div>
             <div class="pillar">
-              <p class="pillar__title">Open a report</p>
-              <p class="pillar__text">Spray chart. Attack tendencies.</p>
+              <p class="pillar__title">Open full screen reports</p>
+              <p class="text-muted">
+                Only 0.6% of searches asked for a report by name, but those used to just run as a filter and
+                come back empty. Typing <b>attack tendencies report</b> now recognizes the report and opens
+                it full screen &mdash; no filtered results standing in the way.
+              </p>
+              <img
+                src="assets/img/search2.png"
+                alt="The search field open on &quot;attack tendencies report&quot;, offering to open the Attack Tendencies report directly"
+              />
             </div>
             <div class="pillar">
-              <p class="pillar__title">Change the content</p>
-              <p class="pillar__text">Past seasons, another team, the whole library.</p>
+              <p class="pillar__title">Toggle between video modes</p>
+              <p class="text-muted">
+                &ldquo;Big screen&rdquo; and &ldquo;turn stats off&rdquo; made up the 2% of searches asking
+                to change how the video played, not what was in it. Typing <b>full video</b> now offers to
+                switch playback modes directly &mdash; full video playback or full screen &mdash; instead of
+                returning zero moments for a query that was never about filtering.
+              </p>
+              <img
+                src="assets/img/search3.png"
+                alt="The search field open on &quot;full video&quot;, offering to switch to full video playback or open full screen video"
+              />
             </div>
             <div class="pillar">
-              <p class="pillar__title">Not a model problem</p>
-              <p class="pillar__text">&ldquo;Big screen&rdquo; doesn&rsquo;t need AI. It needs somewhere to go.</p>
+              <p class="pillar__title">Change selected videos while filtering</p>
+              <p class="text-muted">
+                11.2% of searches were asking to leave the current video entirely &mdash; &ldquo;north scott
+                vs pv,&rdquo; &ldquo;past videos.&rdquo; A query like <b>hannah&rsquo;s attacks in the last 5
+                matches</b> now does both at once: pulls those five matches in as the selected video set and
+                filters all of them for her attacks, in one search.
+              </p>
+              <img
+                src="assets/img/search4.png"
+                alt="The search field open on &quot;hannah&rsquo;s attacks in the last 5 matches&quot;, resolving as a single AI search across the selected video set"
+              />
             </div>
           </div>
 
-          <!-- TODO (Hannah): correct these three statuses. -->
-          <div class="roadmap">
-            <div class="roadmap__item roadmap__item--shipped">
-              <span class="roadmap__dot"></span>
-              <div class="roadmap__header">
-                <p class="roadmap__version">Data chips</p>
-                <span class="roadmap__status">Shipped</span>
-              </div>
-              <p class="roadmap__body">Ranked readings, visible chips, counts before you commit.</p>
+          <h3 class="mt-xl">3. Less AI. A more hybrid approach beteen AI and fuzzy search allow our searches to be more accurate (and cheaper!)</h3>
+          <div>
+            <div>
+              <h4>Searches with just Attacks or Aces don&rsquo;t need a model</h4>
+              <p class="text-muted">
+                A player plus an event, schema words by themseleves, they're resolvable against a data schema we already own. When users typed exclusively 
+                words that we owned in a very simple sentence structure, we trigged fuzzy search instead. This increased the accuracy to Event only, Result only, Athlete Only, Team only to 100% accurate search results.  Everything else still used AI to guess at what a user typed. We just flipped a switch for the things we were 100% confident what someone was searhing for.
+              </p>
             </div>
-            <div class="roadmap__item roadmap__item--active">
-              <span class="roadmap__dot"></span>
-              <div class="roadmap__header">
-                <p class="roadmap__version">New destinations</p>
-                <span class="roadmap__status">In progress</span>
-              </div>
-              <p class="roadmap__body">Workflows, reports and content changes routed out of the field.</p>
-            </div>
-            <div class="roadmap__item roadmap__item--upcoming">
-              <span class="roadmap__dot"></span>
-              <div class="roadmap__header">
-                <p class="roadmap__version">Less AI</p>
-                <span class="roadmap__status">Proposed</span>
-              </div>
-              <p class="roadmap__body">Schema match first, model second. Argument made, work not yet done.</p>
+          </div>
+          <h3 class="mt-xl">4. A new AI color</h3>
+          <div>
+            <div>
+              <h4>More Hudl-y. More orange.</h4>
+              <p class="text-muted">
+                The blue -> orange -> blue used one of Hudl's brand colors and a selection state color. Working with our design system team and branding, who were focused on multiple AI initives wanted our AI color to be differnt. The orange -> yellow, to be more subtle gradient with less browns in between was switched.
+              </p>
+              <figure class="rdemo-fig">
+            <img
+              src="assets/img/ai-command-bar-yellow.png"
+              alt="The search field open on the word &quot;attack&quot;, showing three ranked interpretations, each with its data chips and result count"
+              width="100%"
+              height="auto"
+            />
+          </figure>
             </div>
           </div>
         </div>
 
         <div>
-          <h2>What I&rsquo;d do differently</h2>
-          <div class="figure-row mt-lg">
+          <h2>Results from Improvements</h2>
+          <div>
             <div>
-              <h4>Instrument on day one</h4>
+              <h4>Improvements in Accuracy</h4>
               <p class="text-muted">
-                We had logs from launch, but I built the coding scheme two months in &mdash; so the earliest
-                queries got sorted by someone who already had a hunch about what she&rsquo;d find.
+                The swich from full AI to a hybrid AI/fuzzy search helped us see massive gains in simple phrase searches. One or two word searches tended to hit 100% accuracy because they were not using AI. This freed up space to have the AI get more focused and narrow in its usage, which helped us see a slight increase in accuracy. Complex sentences, for example, saw a bump in accuracy from 33.3% to 43.8% (returning the exact correct filter set, no more and no less). It's not yet where I want that number to be, but it's a real improvement.
+
+              </p>
+              <h4>Higher search filter usage - higher repeat users. Workflow searches became one offs, not repeated usage.</h4>
+              <p class="text-muted">
+                This isn't a hard number for successs, but it feels good. There were two very important initiatives going on at Hudl while this was shipping/after it shipped. Hudl was trying to cpature more of the NFL and elite volleyball market. AI Search that simplied filter was one of the two major benefits that these user groups saw that got them excited to explore a new product, which is saying something coming from groups of users that are very resistent to changes in their software.
               </p>
             </div>
+          </div>
+          <h2>User Sentiment</h2>
+          <div>
             <div>
-              <h4>Name it later</h4>
+              <h4>Excitement from our most elite users</h4>
               <p class="text-muted">
-                We called it AI Filters, an honest description of a one-week build. It quietly became a ceiling
-                on what people thought to ask it for.
+                This isn't a hard number for successs, but it feels good. There were two very important initiatives going on at Hudl while this was shipping/after it shipped. Hudl was trying to cpature more of the NFL and elite volleyball market. AI Search that simplied filter was one of the two major benefits that these user groups saw that got them excited to explore a new product, which is saying something coming from groups of users that are very resistent to changes in their software. The next steps would be to add it in for these two groups. 
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <h2>What I learned</h2>
+          <div>
+            <div>
+              <h4>How to really use MVPS to guide the road map of a product</h4>
+              <p class="text-muted">
+                This project felt like such a great way to under stand what feautres are important and need to be designed. We built the most minimal thing we could build without all of the bells and whistles we would normally add or panic about it not having, while making sure the basics felt very polished. And then we let it sit and breath. I learned so much about how users were trying to use search for. But also how we used it to influence other parts of our road map. Our users searching for "unknown athletes" were looking for a feature they were use to and did not have, but moved it up in priority simply due to the sheer number of searches.<br><br>Not all product features can be built this way. But sticking with the basics and learning from there for 0-1 features are a fantastic use of a developement team's time.
               </p>
             </div>
           </div>
